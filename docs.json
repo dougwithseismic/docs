@@ -1,76 +1,113 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "WithSeismic - Agency Productization Platform",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#5B21B6",
+    "light": "#7C3AED",
+    "dark": "#4C1D95"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Platform",
         "groups": [
-
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "platform/why-productize",
+              "platform/assessment",
+              "platform/case-studies"
             ]
           },
           {
-            "group": "Careers",
+            "group": "Productization Guide",
             "pages": [
-              "careers/working-at-withseismic",
-              "careers/open-positions"
+              "guide/identifying-opportunities",
+              "guide/choosing-first-product",
+              "guide/pricing-models",
+              "guide/launch-strategy"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Platform Features",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "features/tool-builder",
+              "features/client-portals",
+              "features/white-labeling",
+              "features/marketplace"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Templates",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "templates/audit-tools",
+              "templates/calculators",
+              "templates/assessments",
+              "templates/dashboards"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Agency Tools",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Internal Tools",
             "pages": [
-              "api-reference/introduction"
+              "tools/process-automation",
+              "tools/project-templates",
+              "tools/team-workflows",
+              "tools/quality-control"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Client-Facing Tools",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "tools/interactive-demos",
+              "tools/roi-calculators",
+              "tools/audit-reports",
+              "tools/progress-dashboards"
+            ]
+          },
+          {
+            "group": "Sales Tools",
+            "pages": [
+              "tools/proposal-builder",
+              "tools/value-assessments",
+              "tools/scoping-tools",
+              "tools/pricing-calculators"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Resources",
+        "groups": [
+          {
+            "group": "Success Stories",
+            "pages": [
+              "resources/case-studies",
+              "resources/roi-examples",
+              "resources/before-after"
+            ]
+          },
+          {
+            "group": "Best Practices",
+            "pages": [
+              "resources/productization-playbook",
+              "resources/scaling-guide",
+              "resources/monetization-strategies"
+            ]
+          },
+          {
+            "group": "Partner Program",
+            "pages": [
+              "partners/benefits",
+              "partners/requirements",
+              "partners/application"
             ]
           }
         ]
@@ -79,19 +116,19 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Schedule Demo",
+          "href": "https://calendly.com/withseismic/demo",
+          "icon": "calendar"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
+          "anchor": "Agency Community",
+          "href": "https://community.withseismic.com",
+          "icon": "users"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Marketplace",
+          "href": "https://marketplace.withseismic.com",
+          "icon": "store"
         }
       ]
     }
@@ -104,13 +141,13 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:hello@withseismic.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Start Productizing",
+      "href": "https://app.withseismic.com/signup"
     }
   },
   "contextual": {
@@ -127,9 +164,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/withseismic",
+      "github": "https://github.com/withseismic",
+      "linkedin": "https://linkedin.com/company/withseismic"
     }
   }
 }
