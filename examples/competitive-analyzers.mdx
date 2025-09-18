@@ -1,0 +1,304 @@
+---
+title: Competitive Analyzers
+description: Tools that help prospects understand their competitive position and opportunities
+icon: "sword"
+---
+
+# Competitive Analyzer Examples
+
+Interactive competitive analysis tools that position your agency as the strategic partner for market dominance.
+
+## Market Position Analyzers
+
+### Competitive Gap Analysis Tool
+**Agency**: Strategic Insights Group
+**Purpose**: Identify and quantify competitive disadvantages
+
+**Key Features**:
+- Side-by-side feature comparisons
+- Market share visualization
+- Pricing strategy analysis
+- Customer sentiment scoring
+- Opportunity heat maps
+
+**Business Impact**:
+- 70% of users schedule strategy sessions
+- Average engagement: 12 minutes
+- 45% higher proposal acceptance rate
+
+[Try Demo](https://demo.withseismic.com/competitive-gap)
+
+### Digital Maturity Assessment
+**Agency**: Digital Evolution Partners
+**Purpose**: Benchmark digital capabilities against industry leaders
+
+**Assessment Areas**:
+- Website performance metrics
+- SEO competitive analysis
+- Social media presence
+- Content marketing effectiveness
+- Technology stack evaluation
+
+**Client Results**:
+- 80% identify 3+ improvement areas
+- 60% request detailed roadmaps
+- $75K average project value
+
+## SEO Competitive Analyzers
+
+### Search Visibility Comparator
+**Agency**: RankFirst SEO
+**Purpose**: Show search ranking gaps and opportunities
+
+**Analysis Components**:
+- Keyword ranking comparisons
+- Traffic share analysis
+- Backlink profile gaps
+- Content gap identification
+- Local SEO benchmarking
+
+**Conversion Metrics**:
+- 55% email capture rate
+- 40% book audits
+- 3x higher close rates
+
+### Content Competition Analyzer
+**Agency**: ContentEdge Marketing
+**Purpose**: Reveal content strategy opportunities
+
+**Intelligence Provided**:
+- Topic coverage gaps
+- Content quality scores
+- Publishing frequency analysis
+- Engagement comparisons
+- Share of voice metrics
+
+## Paid Media Analyzers
+
+### Ad Spend Intelligence Tool
+**Agency**: MediaMax Agency
+**Purpose**: Estimate competitor ad spending and strategy
+
+**Insights Delivered**:
+- Estimated ad budgets
+- Channel distribution
+- Creative strategy analysis
+- Seasonal patterns
+- ROI comparisons
+
+**Lead Generation**:
+- 65% request competitor reports
+- 50% increase in qualified leads
+- 35% shorter sales cycles
+
+### PPC Auction Insights Analyzer
+**Agency**: ClickWise Digital
+**Purpose**: Understand paid search competitive landscape
+
+**Features**:
+- Impression share analysis
+- Average position tracking
+- Overlap rate calculations
+- Outranking share metrics
+- Time-of-day patterns
+
+## Social Media Analyzers
+
+### Social Competitive Benchmark
+**Agency**: SocialSphere Agency
+**Purpose**: Compare social media performance and strategy
+
+**Comparison Metrics**:
+- Follower growth rates
+- Engagement ratios
+- Content type effectiveness
+- Posting frequency optimization
+- Influencer partnerships
+
+**Engagement Results**:
+- 8 minutes average session
+- 70% complete full analysis
+- 45% download reports
+
+### Brand Sentiment Comparator
+**Agency**: RepTrack Digital
+**Purpose**: Analyze brand perception vs competitors
+
+**Analysis Dimensions**:
+- Sentiment score tracking
+- Review rating comparisons
+- Social mention volume
+- Response time benchmarks
+- Crisis vulnerability scoring
+
+## Sales & Marketing Analyzers
+
+### Sales Process Benchmarker
+**Agency**: SalesCatalyst Consulting
+**Purpose**: Compare sales efficiency against industry standards
+
+**Benchmarking Areas**:
+- Sales cycle length
+- Win rate comparisons
+- Average deal sizes
+- Pipeline velocity
+- CAC efficiency
+
+**Outcomes**:
+- 75% identify improvement priorities
+- 60% request process audits
+- 40% increase in enterprise deals
+
+### Marketing Mix Analyzer
+**Agency**: GrowthMatrix Partners
+**Purpose**: Evaluate marketing channel effectiveness vs competitors
+
+**Channel Analysis**:
+- Budget allocation insights
+- Channel ROI comparisons
+- Attribution modeling
+- Customer journey mapping
+- Conversion path analysis
+
+## Technical Implementation
+
+### Frontend Architecture
+
+```javascript
+// Example competitive scoring algorithm
+const calculateCompetitiveScore = (clientData, competitorData) => {
+  const metrics = [
+    { name: 'seo', weight: 0.25 },
+    { name: 'content', weight: 0.20 },
+    { name: 'social', weight: 0.15 },
+    { name: 'paid', weight: 0.20 },
+    { name: 'tech', weight: 0.20 }
+  ];
+
+  return metrics.reduce((score, metric) => {
+    const gap = competitorData[metric.name] - clientData[metric.name];
+    return score + (gap * metric.weight);
+  }, 0);
+};
+```
+
+### Data Sources
+
+**Primary Data Inputs**:
+- SEMrush/Ahrefs APIs
+- Social media APIs
+- Google Ads transparency data
+- Industry benchmark databases
+- Custom crawling scripts
+
+### Visualization Libraries
+
+**Recommended Stack**:
+- D3.js for custom visualizations
+- Chart.js for standard graphs
+- Recharts for React apps
+- ApexCharts for dashboards
+- Plotly for interactive charts
+
+## Design Best Practices
+
+### User Flow Optimization
+
+1. **Quick Start**: Begin with company URL input
+2. **Competitor Selection**: Auto-suggest or manual entry
+3. **Progressive Analysis**: Show results as calculated
+4. **Actionable Insights**: Clear improvement recommendations
+5. **Next Steps**: Consultation scheduling
+
+### Visual Design Principles
+
+<Info>
+Use color psychology: Red for gaps, green for advantages, yellow for opportunities
+</Info>
+
+**Design Elements**:
+- Spider charts for multi-dimension comparison
+- Heat maps for opportunity identification
+- Progress bars for metric comparisons
+- Trend lines for historical context
+- Score cards for executive summaries
+
+## Lead Capture Strategies
+
+### Gating Strategy
+
+**Free Access**:
+- Basic competitive scores
+- Top 3 opportunities
+- Summary insights
+
+**Gated Content**:
+- Detailed analysis reports
+- Competitor strategy guides
+- Custom recommendations
+- Historical trend data
+- Export capabilities
+
+### Follow-up Sequences
+
+**Engagement Timeline**:
+1. Immediate: Summary email with results
+2. Day 1: Detailed report PDF
+3. Day 3: Case study relevant to gaps
+4. Day 7: Consultation invitation
+5. Day 14: Strategy guide offer
+
+## Success Metrics
+
+### Performance Benchmarks
+
+| Metric | Industry Average | Top Performers |
+|--------|-----------------|----------------|
+| Completion Rate | 35% | 55%+ |
+| Report Downloads | 20% | 40%+ |
+| Consultation Requests | 10% | 25%+ |
+| Proposal Rate | 5% | 15%+ |
+| Close Rate | 20% | 35%+ |
+
+### Optimization Tactics
+
+**A/B Testing Priorities**:
+- Number of competitors analyzed
+- Depth of initial free results
+- CTA messaging and placement
+- Report design and content
+- Follow-up email sequences
+
+## Common Questions
+
+<AccordionGroup>
+  <Accordion title="How do we get competitor data legally?">
+    Use publicly available data from tools like SEMrush, social media APIs, and web scraping of public information. Always respect robots.txt and terms of service.
+  </Accordion>
+
+  <Accordion title="What if the data isn't 100% accurate?">
+    Position estimates as directional insights. Include disclaimers about data sources and limitations. Focus on relative comparisons rather than absolute numbers.
+  </Accordion>
+
+  <Accordion title="How many competitors should we analyze?">
+    Start with 3-5 direct competitors. Too many creates analysis paralysis; too few doesn't provide enough context.
+  </Accordion>
+
+  <Accordion title="Should we show where prospects are winning?">
+    Yes! Showing strengths builds trust and makes gaps more credible. It also helps prioritize where to focus improvements.
+  </Accordion>
+</AccordionGroup>
+
+## Build Your Analyzer
+
+Transform competitive intelligence into a powerful lead generation and sales tool.
+
+<CardGroup cols={2}>
+  <Card title="See Live Examples" icon="eye" href="https://demo.withseismic.com/analyzers">
+    Explore working competitive analyzers
+  </Card>
+
+  <Card title="Start Your Project" icon="rocket" href="/contact/book-consultation">
+    Build your competitive analyzer tool
+  </Card>
+</CardGroup>
