@@ -1,94 +1,87 @@
 ---
-title: 'Development'
-description: 'Preview changes locally to update your docs'
+title: 'Our Tech Stack'
+description: 'The modern stack we use to ship interactive tools in weeks, not months'
 ---
 
+## Our Tech Stack
+
+At WithSeismic, we've carefully selected a modern, performance-focused stack that allows us to ship interactive tools in 2-4 week sprints. Every technology choice is optimized for rapid development and stellar user experience.
+
+### Core Technologies
+
+<CardGroup cols={2}>
+  <Card title="TypeScript" icon="code" href="https://www.typescriptlang.org/">
+    Type-safe JavaScript for building robust, maintainable applications with fewer runtime errors.
+  </Card>
+  <Card title="React" icon="react" href="https://react.dev/">
+    Component-based UI library for building interactive user interfaces with predictable data flow.
+  </Card>
+  <Card title="Next.js" icon="n" href="https://nextjs.org/">
+    Full-stack React framework with built-in routing, SSR/SSG, and optimized performance out of the box.
+  </Card>
+  <Card title="Vite" icon="bolt" href="https://vite.dev/">
+    Lightning-fast build tool and dev server for modern web projects with hot module replacement.
+  </Card>
+</CardGroup>
+
+### Backend & Infrastructure
+
+<CardGroup cols={2}>
+  <Card title="Node.js" icon="node" href="https://nodejs.org/">
+    JavaScript runtime for building scalable server-side applications with a massive ecosystem.
+  </Card>
+  <Card title="Hono" icon="fire" href="https://hono.dev/">
+    Ultra-fast, lightweight web framework for building APIs with excellent TypeScript support.
+  </Card>
+  <Card title="Railway" icon="train" href="https://railway.app/">
+    Modern infrastructure platform for deploying and scaling applications with zero DevOps overhead.
+  </Card>
+</CardGroup>
+
+### UI & State Management
+
+<CardGroup cols={2}>
+  <Card title="Tailwind CSS" icon="palette" href="https://tailwindcss.com/">
+    Utility-first CSS framework for rapidly building custom user interfaces without leaving your HTML.
+  </Card>
+  <Card title="Motion" icon="wand-magic-sparkles" href="https://motion.dev/">
+    Production-ready animation library (formerly Framer Motion) for creating fluid, gesture-based interactions.
+  </Card>
+  <Card title="Zustand" icon="database" href="https://zustand-demo.pmnd.rs/">
+    Lightweight state management solution that's simple, fast, and scales from small to complex applications.
+  </Card>
+  <Card title="TanStack Query" icon="arrows-rotate" href="https://tanstack.com/query">
+    Powerful data synchronization library (formerly React Query) for fetching, caching, and updating server state.
+  </Card>
+</CardGroup>
+
+## Communication & Project Management
+
+We maintain clear, consistent communication channels with our clients throughout every sprint:
+
+<CardGroup cols={3}>
+  <Card title="Slack" icon="slack" href="https://slack.com/">
+    Real-time messaging for daily updates, quick questions, and seamless collaboration.
+  </Card>
+  <Card title="Google Meet" icon="video" href="https://meet.google.com/">
+    Video conferencing for discovery workshops, sprint reviews, and strategic discussions.
+  </Card>
+  <Card title="Linear" icon="list-check" href="https://linear.app/">
+    Modern issue tracking for managing sprint tasks, tracking progress, and maintaining transparency.
+  </Card>
+</CardGroup>
+
+## Why This Stack?
+
+Every tool in our stack is chosen for a specific reason:
+
+- **Speed**: Vite's instant HMR and Next.js optimizations mean we iterate faster
+- **Type Safety**: TypeScript catches errors before runtime, reducing bugs in production
+- **Developer Experience**: Modern tooling means we spend time building features, not fighting config
+- **Performance**: Every choice prioritizes sub-second load times and smooth interactions
+- **Scalability**: From MVP to millions of users, this stack grows with your success
+
 <Info>
-  **Prerequisites**:
-  - Node.js version 19 or higher
-  - A docs repository with a `docs.json` file
+  This is the exact stack we use to build interactive tools that convert. No theoretical choices—these are battle-tested technologies we ship with every day.
 </Info>
 
-Follow these steps to install and run Mintlify on your operating system.
-
-<Steps>
-<Step title="Install the Mintlify CLI">
-
-```bash
-npm i -g mint
-```
-</Step>
-
-<Step title="Preview locally">
-
-Navigate to your docs directory where your `docs.json` file is located, and run the following command:
-
-```bash
-mint dev
-```
-
-A local preview of your documentation will be available at `http://localhost:3000`.
-
-</Step>
-</Steps>
-
-## Custom ports
-
-By default, Mintlify uses port 3000. You can customize the port Mintlify runs on by using the `--port` flag. For example, to run Mintlify on port 3333, use this command:
-
-```bash
-mint dev --port 3333
-```
-
-If you attempt to run Mintlify on a port that's already in use, it will use the next available port:
-
-```md
-Port 3000 is already in use. Trying 3001 instead.
-```
-
-## Mintlify versions
-
-Please note that each CLI release is associated with a specific version of Mintlify. If your local preview does not align with the production version, please update the CLI:
-
-```bash
-npm mint update
-```
-
-## Validating links
-
-The CLI can assist with validating links in your documentation. To identify any broken links, use the following command:
-
-```bash
-mint broken-links
-```
-
-## Deployment
-
-If the deployment is successful, you should see the following:
-
-<Frame>
-  <img src="/images/checks-passed.png" alt="Screenshot of a deployment confirmation message that says All checks have passed." style={{ borderRadius: '0.5rem' }} />
-</Frame>
-
-## Code formatting
-
-We suggest using extensions on your IDE to recognize and format MDX. If you're a VSCode user, consider the [MDX VSCode extension](https://marketplace.visualstudio.com/items?itemName=unifiedjs.vscode-mdx) for syntax highlighting, and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for code formatting.
-
-## Troubleshooting
-
-<AccordionGroup>
-  <Accordion title='Error: Could not load the "sharp" module using the darwin-arm64 runtime'>
-
-    This may be due to an outdated version of node. Try the following:
-    1. Remove the currently-installed version of the CLI: `npm remove -g mint`
-    2. Upgrade to Node v19 or higher.
-    3. Reinstall the CLI: `npm i -g mint`
-  </Accordion>
-
-  <Accordion title="Issue: Encountering an unknown error">
-  
-    Solution: Go to the root of your device and delete the `~/.mintlify` folder. Then run `mint dev` again.
-  </Accordion>
-</AccordionGroup>
-
-Curious about what changed in the latest CLI version? Check out the [CLI changelog](https://www.npmjs.com/package/mintlify?activeTab=versions).
