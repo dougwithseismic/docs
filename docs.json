@@ -13,18 +13,20 @@
       {
         "tab": "Guides",
         "groups": [
-          {
-            "group": "Agency",
-            "pages": [
-              "agency/referral-program"
-            ]
-          },
+
           {
             "group": "Getting started",
             "pages": [
               "index",
               "quickstart",
               "development"
+            ]
+          },
+          {
+            "group": "Careers",
+            "pages": [
+              "careers/working-at-withseismic",
+              "careers/open-positions"
             ]
           },
           {
