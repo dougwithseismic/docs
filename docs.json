@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "WithSeismic - Agency Productization Platform",
+  "name": "WithSeismic - Agency Productization Services",
   "colors": {
     "primary": "#5B21B6",
     "light": "#7C3AED",
@@ -11,74 +11,64 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Platform",
+        "tab": "Our Services",
         "groups": [
           {
             "group": "Getting Started",
             "pages": [
               "index",
-              "platform/why-productize",
-              "platform/assessment",
-              "platform/case-studies"
+              "services/why-productize",
+              "services/our-process"
             ]
           },
           {
-            "group": "Productization Guide",
+            "group": "What We Build",
             "pages": [
-              "guide/identifying-opportunities",
-              "guide/choosing-first-product",
-              "guide/pricing-models",
-              "guide/launch-strategy"
+              "build/assessment-tools",
+              "build/roi-calculators",
+              "build/client-dashboards",
+              "build/internal-tools"
             ]
           },
           {
-            "group": "Platform Features",
+            "group": "Our Approach",
             "pages": [
-              "features/tool-builder",
-              "features/client-portals",
-              "features/white-labeling",
-              "features/marketplace"
-            ]
-          },
-          {
-            "group": "Templates",
-            "pages": [
-              "templates/audit-tools",
-              "templates/calculators",
-              "templates/assessments",
-              "templates/dashboards"
+              "approach/discovery-process",
+              "approach/development-sprints",
+              "approach/launch-support",
+              "approach/ongoing-optimization"
             ]
           }
         ]
       },
       {
-        "tab": "Agency Tools",
+        "tab": "Tool Examples",
         "groups": [
           {
-            "group": "Internal Tools",
+            "group": "Growth Tools",
             "pages": [
-              "tools/process-automation",
-              "tools/project-templates",
-              "tools/team-workflows",
-              "tools/quality-control"
+              "examples/conversion-calculators",
+              "examples/roi-demonstrators",
+              "examples/competitive-analyzers",
+              "examples/opportunity-assessments"
             ]
           },
           {
-            "group": "Client-Facing Tools",
+            "group": "Operational Tools",
             "pages": [
-              "tools/interactive-demos",
-              "tools/roi-calculators",
-              "tools/audit-reports",
-              "tools/progress-dashboards"
+              "examples/project-estimators",
+              "examples/resource-planners",
+              "examples/quality-checkers",
+              "examples/workflow-automation"
             ]
           },
           {
-            "group": "Sales Tools",
+            "group": "Client Success Tools",
             "pages": [
-              "tools/proposal-builder",
-              "tools/value-assessments",
-              "tools/scoping-tools",
-              "tools/pricing-calculators"
+              "examples/onboarding-portals",
+              "examples/progress-trackers",
+              "examples/report-generators",
+              "examples/feedback-systems"
             ]
           }
         ]
@@ -87,27 +77,19 @@
         "tab": "Resources",
         "groups": [
           {
-            "group": "Success Stories",
+            "group": "Getting Started",
             "pages": [
-              "resources/case-studies",
-              "resources/roi-examples",
-              "resources/before-after"
+              "resources/productization-guide",
+              "resources/assessment-framework",
+              "resources/pricing-your-products"
             ]
           },
           {
-            "group": "Best Practices",
+            "group": "Work With Us",
             "pages": [
-              "resources/productization-playbook",
-              "resources/scaling-guide",
-              "resources/monetization-strategies"
-            ]
-          },
-          {
-            "group": "Partner Program",
-            "pages": [
-              "partners/benefits",
-              "partners/requirements",
-              "partners/application"
+              "contact/book-consultation",
+              "contact/project-requirements",
+              "contact/faq"
             ]
           }
         ]
@@ -116,19 +98,19 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Schedule Demo",
-          "href": "https://calendly.com/withseismic/demo",
-          "icon": "calendar"
+          "anchor": "Book Discovery Call",
+          "href": "https://calendly.com/withseismic/discovery",
+          "icon": "phone"
         },
         {
-          "anchor": "Agency Community",
-          "href": "https://community.withseismic.com",
-          "icon": "users"
+          "anchor": "View Portfolio",
+          "href": "https://portfolio.withseismic.com",
+          "icon": "briefcase"
         },
         {
-          "anchor": "Marketplace",
-          "href": "https://marketplace.withseismic.com",
-          "icon": "store"
+          "anchor": "Blog",
+          "href": "https://withseismic.com/blog",
+          "icon": "newspaper"
         }
       ]
     }
@@ -146,8 +128,8 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Start Productizing",
-      "href": "https://app.withseismic.com/signup"
+      "label": "Get Started",
+      "href": "https://calendly.com/withseismic/discovery"
     }
   },
   "contextual": {

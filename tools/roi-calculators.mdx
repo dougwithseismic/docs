@@ -1,0 +1,314 @@
+---
+title: "ROI Calculators We Build"
+description: "How WithSeismic builds calculators that prove your agency's value"
+icon: "calculator"
+---
+
+## We Turn Your Value Proposition Into Numbers
+
+ROI calculators are the ultimate agency sales tool. At WithSeismic, we specialize in building custom calculators that transform your agency's promises into concrete financial projections, letting your prospects see exactly what you can deliver before they ever talk to your sales team.
+
+## Why ROI Calculators Convert
+
+### Immediate Value Demonstration
+Instead of saying "we improve performance," your calculator shows "$847K in additional revenue based on your current metrics."
+
+### Personalized Business Case
+Generic case studies tell someone else's story. Your calculator tells THEIR story with THEIR numbers.
+
+### Trust Through Transparency
+When you show your math, you build credibility. Prospects see exactly how you arrive at projections.
+
+### Qualification at Scale
+Your calculator pre-qualifies leads 24/7, surfacing high-value opportunities automatically.
+
+## Types of ROI Calculators for Agencies
+
+### Marketing ROI Calculator
+Show the impact of better marketing:
+
+```javascript
+// Example calculation logic
+const currentRevenue = monthlyTraffic * conversionRate * averageOrderValue;
+const improvedConversion = conversionRate * 1.35; // Your 35% improvement rate
+const newRevenue = monthlyTraffic * improvedConversion * averageOrderValue;
+const additionalRevenue = (newRevenue - currentRevenue) * 12;
+const roi = (additionalRevenue - annualInvestment) / annualInvestment * 100;
+```
+
+**Key Inputs:**
+- Current website traffic
+- Conversion rate
+- Average order value
+- Customer lifetime value
+- Current marketing spend
+
+**Value Demonstrations:**
+- Revenue increase from conversion optimization
+- Cost savings from improved efficiency
+- Market share gains from better positioning
+- Customer value from retention improvements
+
+### SEO Value Calculator
+Quantify the value of organic growth:
+
+**Key Inputs:**
+- Current organic traffic
+- Average position for target keywords
+- Industry click-through rates
+- Conversion value by channel
+
+**Value Demonstrations:**
+- Revenue from increased organic traffic
+- Cost savings vs. paid acquisition
+- Compound growth over time
+- Competitive advantage gained
+
+### Paid Media Efficiency Calculator
+Show how you'll stretch their ad dollars:
+
+**Key Inputs:**
+- Current ad spend
+- Cost per acquisition
+- Conversion rates by channel
+- Customer lifetime value
+
+**Value Demonstrations:**
+- Lower CPA through optimization
+- Higher ROAS from better targeting
+- Scale opportunities identified
+- Wasted spend eliminated
+
+### Development Cost Savings Calculator
+Demonstrate efficiency gains:
+
+**Key Inputs:**
+- Current development velocity
+- Bug rate and fix time
+- Time to market for features
+- Developer hourly rates
+
+**Value Demonstrations:**
+- Faster time to market value
+- Reduced technical debt costs
+- Lower maintenance overhead
+- Opportunity cost recovered
+
+## How We Build High-Converting Calculators
+
+### Our Calculator Development Framework
+
+#### 1. Compelling Hook
+Start with a question that matters:
+- "How much revenue are you leaving on the table?"
+- "What's your true customer acquisition cost?"
+- "How much could you save with better processes?"
+
+#### 2. Progressive Data Collection
+Don't overwhelm - collect information in stages:
+
+```html
+<!-- Stage 1: Basic Information -->
+<div class="calculator-stage">
+  <h3>Let's start with the basics</h3>
+  <input type="text" placeholder="Monthly Website Visitors" />
+  <input type="text" placeholder="Current Conversion Rate %" />
+  <button>Next →</button>
+</div>
+
+<!-- Stage 2: Detailed Metrics (if needed) -->
+<div class="calculator-stage">
+  <h3>Now let's get specific</h3>
+  <input type="text" placeholder="Average Order Value" />
+  <input type="text" placeholder="Customer Lifetime Value" />
+  <button>Calculate My ROI →</button>
+</div>
+```
+
+#### 3. Visual Results
+Make the impact impossible to ignore:
+
+- **Before/After Comparisons** - Show their current state vs. potential
+- **Growth Charts** - Visualize improvement over time
+- **Breakdown Tables** - Detail where value comes from
+- **Benchmark Comparisons** - Show how they stack up
+
+#### 4. Personalized Recommendations
+Turn calculations into action:
+
+Based on your inputs, we recommend:
+1. **Quick Win** - Optimize checkout flow (Est. +15% conversion)
+2. **Medium Term** - Implement email automation (Est. +$50K/month)
+3. **Strategic** - Rebuild on modern stack (Est. 40% efficiency gain)
+
+#### 5. Clear Next Steps
+Don't leave them hanging:
+
+- **Download Detailed Report** - Gate behind email
+- **Schedule Strategy Call** - Calendar link for qualified leads
+- **Start Free Assessment** - Deeper dive into their situation
+- **Share with Team** - Make it easy to build consensus
+
+## Advanced Calculator Features
+
+### Dynamic Assumptions
+Let sophisticated users adjust your assumptions:
+
+```javascript
+const assumptions = {
+  conversionImprovement: { default: 35, min: 20, max: 50 },
+  implementationTime: { default: 90, min: 60, max: 120 },
+  rampUpPeriod: { default: 6, min: 3, max: 12 }
+};
+
+// Allow users to toggle "Advanced Settings"
+// to adjust these assumptions
+```
+
+### Scenario Modeling
+Show best, expected, and worst-case scenarios:
+
+- **Conservative** - Minimum expected improvement
+- **Realistic** - Based on typical client results
+- **Optimistic** - Best-case with full adoption
+
+### Industry Benchmarks
+Contextualize their performance:
+
+"Your 2.3% conversion rate is below the industry average of 3.1%, representing $450K in missed revenue annually."
+
+### Competitive Comparison
+Show the cost of inaction:
+
+"If your competitor achieves just 20% better conversion, they'll capture an additional $2.3M in market share this year."
+
+## Implementation Best Practices
+
+### Data Validation
+Ensure quality inputs:
+
+```javascript
+function validateInput(value, field) {
+  // Check for realistic ranges
+  if (field === 'conversionRate' && (value < 0.1 || value > 20)) {
+    return "Please enter a conversion rate between 0.1% and 20%";
+  }
+
+  // Prevent gaming the system
+  if (field === 'monthlyRevenue' && value > 1000000000) {
+    return "Please contact us for enterprise calculations";
+  }
+
+  return null; // Valid input
+}
+```
+
+### Mobile Optimization
+Many executives use phones:
+
+- Large touch targets for inputs
+- Single-column layouts
+- Progressive disclosure of fields
+- Thumb-friendly button placement
+
+### Speed and Performance
+Every millisecond matters:
+
+- Client-side calculations for instant feedback
+- Debounced API calls for complex logic
+- Skeleton screens while loading
+- Optimized assets and lazy loading
+
+### Trust Elements
+Build credibility throughout:
+
+- Customer logos near results
+- Methodology explanations
+- Data privacy assurances
+- Case study links
+
+## Measuring Calculator Success
+
+### Key Metrics to Track
+
+#### Engagement Metrics
+- **Completion Rate** - % who finish all inputs
+- **Time to Complete** - Optimal is 2-4 minutes
+- **Field Abandonment** - Which inputs lose users
+- **Results Engagement** - Time spent reviewing results
+
+#### Conversion Metrics
+- **Email Capture Rate** - % who provide contact info
+- **Meeting Book Rate** - % who schedule calls
+- **Qualified Lead Rate** - % that match ICP
+- **Pipeline Influence** - Revenue attributed to calculator
+
+#### Usage Patterns
+- **Repeat Usage** - Same user returning with different scenarios
+- **Sharing Rate** - Results shared with others
+- **Report Downloads** - Detailed PDF downloads
+- **API Integrations** - Embedded calculator usage
+
+### Optimization Opportunities
+
+Based on data, continuously improve:
+
+- **Simplify High-Abandonment Fields** - Remove or make optional
+- **A/B Test Value Props** - Different hooks and benefits
+- **Adjust Calculations** - Refine based on actual client results
+- **Personalize Follow-up** - Segment based on calculator results
+
+## ROI Calculator Examples
+
+### Agency Growth Calculator
+Help agencies see their productization potential:
+
+**Inputs:**
+- Current revenue
+- Number of employees
+- Average project value
+- Client retention rate
+
+**Outputs:**
+- Revenue per employee comparison
+- Productization opportunity size
+- Valuation impact
+- Implementation roadmap
+
+### Digital Transformation Calculator
+Show enterprises the cost of delay:
+
+**Inputs:**
+- Current manual processes
+- Employee time spent
+- Error rates
+- Competition digital maturity
+
+**Outputs:**
+- Efficiency gains possible
+- Cost savings identified
+- Risk mitigation value
+- Competitive advantage timeline
+
+## Get Your ROI Calculator Built
+
+ROI calculators typically generate 40-60% conversion rates from visitor to meeting. Doug and the team can build yours in a 2-4 week sprint.
+
+<Card title="Start Your Sprint" icon="calculator" href="/quickstart">
+  Tell Doug about your value prop and conversion blocker. Get a response in 4 hours.
+</Card>
+
+### What We Need From You:
+- Your core value proposition (one sentence)
+- The specific conversion blocker you're facing
+- Historical data on client improvements
+- 90 minutes for the discovery workshop
+
+### What You Get:
+- Working calculator within 48 hours of sprint start
+- Your methodology coded into calculation engines
+- White-labeled with your branding
+- Lead capture and follow-up automation
+- Full source code and documentation
+
+**Investment**: $6K for 2-week sprint or $12K for 4-week sprint with advanced features.
