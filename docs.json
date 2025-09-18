@@ -18,7 +18,9 @@
             "pages": [
               "index",
               "services/why-productize",
-              "services/our-process"
+              "services/our-process",
+              "development",
+              "quickstart"
             ]
           },
           {
