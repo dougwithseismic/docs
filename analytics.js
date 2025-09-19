@@ -30,6 +30,149 @@
     },
   };
 
+  // Achievements System
+  const ACHIEVEMENTS = [
+    {
+      id: "first_steps",
+      name: "First Steps",
+      icon: "👣",
+      description: "Visit your first page",
+      qualifier: (profile) => profile.behavior?.totalPageViews >= 1
+    },
+    {
+      id: "explorer",
+      name: "Explorer",
+      icon: "🗺️",
+      description: "Visit 5 different pages",
+      qualifier: (profile) => profile.behavior?.uniquePagesViewed >= 5
+    },
+    {
+      id: "deep_diver",
+      name: "Deep Diver",
+      icon: "🤿",
+      description: "Scroll to 100% on 3 pages",
+      qualifier: (profile) => {
+        const pages = Object.values(profile.behavior?.pages || {});
+        return pages.filter(p => p.maxScrollDepth >= 100).length >= 3;
+      }
+    },
+    {
+      id: "speed_reader",
+      name: "Speed Reader",
+      icon: "⚡",
+      description: "Visit 10 pages in under 5 minutes",
+      qualifier: (profile) => {
+        return profile.behavior?.totalPageViews >= 10 &&
+               profile.behavior?.totalTimeSpent < 300;
+      }
+    },
+    {
+      id: "dedicated_reader",
+      name: "Dedicated Reader",
+      icon: "📚",
+      description: "Spend over 10 minutes reading",
+      qualifier: (profile) => profile.behavior?.totalTimeSpent >= 600
+    },
+    {
+      id: "case_study_enthusiast",
+      name: "Case Study Enthusiast",
+      icon: "📊",
+      description: "Read 3 case studies",
+      qualifier: (profile) => {
+        const pages = Object.keys(profile.behavior?.pages || {});
+        return pages.filter(p => p.includes('/case-studies/')).length >= 3;
+      }
+    },
+    {
+      id: "tool_tester",
+      name: "Tool Tester",
+      icon: "🔧",
+      description: "Try at least one tool",
+      qualifier: (profile) => profile.behavior?.toolsUsed?.length >= 1
+    },
+    {
+      id: "night_owl",
+      name: "Night Owl",
+      icon: "🦉",
+      description: "Browse after midnight",
+      qualifier: (profile) => {
+        const hour = new Date().getHours();
+        return hour >= 0 && hour < 6;
+      }
+    },
+    {
+      id: "early_bird",
+      name: "Early Bird",
+      icon: "🐦",
+      description: "Browse before 7 AM",
+      qualifier: (profile) => {
+        const hour = new Date().getHours();
+        return hour >= 5 && hour < 7;
+      }
+    },
+    {
+      id: "return_visitor",
+      name: "Return Visitor",
+      icon: "🔄",
+      description: "Come back for a second visit",
+      qualifier: (profile) => {
+        if (!profile.firstVisit) return false;
+        const firstVisit = new Date(profile.firstVisit);
+        const now = new Date();
+        const hoursSinceFirst = (now - firstVisit) / (1000 * 60 * 60);
+        return hoursSinceFirst > 1 && profile.behavior?.totalPageViews > 5;
+      }
+    },
+    {
+      id: "serious_buyer",
+      name: "Serious Buyer",
+      icon: "💼",
+      description: "Visit pricing and contact pages",
+      qualifier: (profile) => {
+        const pages = Object.keys(profile.behavior?.pages || {});
+        return pages.includes('/pricing') &&
+               pages.some(p => p.includes('/contact'));
+      }
+    },
+    {
+      id: "code_copier",
+      name: "Code Copier",
+      icon: "📋",
+      description: "Copy a code block",
+      qualifier: (profile) => {
+        const sessions = Object.values(profile.behavior?.pages || {})
+          .flatMap(p => p.sessions || []);
+        return sessions.some(s =>
+          s.actions?.some(a => a.type === 'code_copied')
+        );
+      }
+    },
+    {
+      id: "tracker_detective",
+      name: "Tracker Detective",
+      icon: "🕵️",
+      description: "Discover the lead qualifier case study",
+      qualifier: (profile) => {
+        return Object.keys(profile.behavior?.pages || {})
+          .includes('/case-studies/lead-qualifier');
+      }
+    },
+    {
+      id: "engagement_champion",
+      name: "Engagement Champion",
+      icon: "🏆",
+      description: "Reach 'Hot' engagement level",
+      qualifier: (profile) => profile.engagement?.score >= 2500
+    },
+    {
+      id: "qualified_legend",
+      name: "Qualified Legend",
+      icon: "👑",
+      description: "Become a qualified lead (5000 points)",
+      qualifier: (profile) => profile.engagement?.score >= 5000
+    }
+  ];
+
   // Utility functions
   const log = (...args) => {
     if (CONFIG.debugMode) console.log("[WithSeismic V2]", ...args);
@@ -127,6 +270,12 @@
           screenResolution: `${window.screen.width}x${window.screen.height}`,
           deviceType: this.detectDeviceType(),
         },
+
+        // Achievements
+        achievements: {
+          unlocked: [],
+          unlockedAt: {}
+        }
       };
 
       this.saveVisitorProfile(profile);
@@ -143,6 +292,10 @@
     static saveVisitorProfile(profile) {
       try {
         profile.lastVisit = new Date().toISOString();
+
+        // Check for achievements before saving
+        StorageManager.checkAchievements(profile);
+
         localStorage.setItem(CONFIG.storageKey, JSON.stringify(profile));
         return true;
       } catch (e) {
@@ -227,6 +380,46 @@
       if (!profile.engagement.toastShown) {
         profile.engagement.toastShown = {};
       }
+      // Ensure achievements exist
+      if (!profile.achievements) {
+        profile.achievements = {
+          unlocked: [],
+          unlockedAt: {}
+        };
+      }
+    }
+
+    static checkAchievements(profile) {
+      let newAchievements = [];
+
+      ACHIEVEMENTS.forEach(achievement => {
+        // Skip if already unlocked
+        if (profile.achievements?.unlocked?.includes(achievement.id)) return;
+
+        // Check if qualifier is met
+        if (achievement.qualifier(profile)) {
+          // Add to unlocked list
+          if (!profile.achievements) {
+            profile.achievements = { unlocked: [], unlockedAt: {} };
+          }
+          profile.achievements.unlocked.push(achievement.id);
+          profile.achievements.unlockedAt[achievement.id] = new Date().toISOString();
+          newAchievements.push(achievement);
+        }
+      });
+
+      // Show toast for new achievements
+      if (newAchievements.length > 0) {
+        newAchievements.forEach((achievement, index) => {
+          setTimeout(() => {
+            const message = `${achievement.icon} Achievement Unlocked: ${achievement.name}!`;
+            ToastManager.show(message, 'achievement', 6000);
+            log(`Achievement unlocked: ${achievement.name} - ${achievement.description}`);
+          }, index * 1500); // Stagger multiple achievements
+        });
+      }
+
+      return newAchievements;
     }
   }
 
@@ -882,6 +1075,45 @@
       log("Debug mode enabled");
       log("Current profile:", StorageManager.getVisitorProfile());
     },
+
+    getAchievements: () => {
+      const profile = StorageManager.getVisitorProfile();
+      const unlocked = profile.achievements?.unlocked || [];
+
+      return ACHIEVEMENTS.map(achievement => ({
+        ...achievement,
+        unlocked: unlocked.includes(achievement.id),
+        unlockedAt: profile.achievements?.unlockedAt?.[achievement.id] || null
+      }));
+    },
+
+    getUnlockedAchievements: () => {
+      const profile = StorageManager.getVisitorProfile();
+      const unlocked = profile.achievements?.unlocked || [];
+
+      return ACHIEVEMENTS.filter(a => unlocked.includes(a.id))
+        .map(achievement => ({
+          ...achievement,
+          unlockedAt: profile.achievements?.unlockedAt?.[achievement.id]
+        }));
+    },
+
+    checkForAchievements: () => {
+      const profile = StorageManager.getVisitorProfile();
+      const newAchievements = StorageManager.checkAchievements(profile);
+      StorageManager.saveVisitorProfile(profile);
+      return newAchievements;
+    },
+
+    resetAchievements: () => {
+      const profile = StorageManager.getVisitorProfile();
+      profile.achievements = {
+        unlocked: [],
+        unlockedAt: {}
+      };
+      StorageManager.saveVisitorProfile(profile);
+      log("Achievements reset");
+    },
   };
 
   // Initialize tracking
@@ -1023,6 +1255,12 @@
           border: "#f59e0b",
           text: "#ffffff",
           icon: "🎯",
+        },
+        achievement: {
+          bg: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+          border: "#7c3aed",
+          text: "#ffffff",
+          icon: "🏅",
         },
       };
 
@@ -1386,6 +1624,32 @@
     console.log(
       "🍞 Testing toasts with engagement level notifications!"
     );
+  };
+
+  // Test achievements
+  window.WithSeismicTracker.testAchievement = (achievementId) => {
+    const achievement = ACHIEVEMENTS.find(a => a.id === achievementId);
+    if (achievement) {
+      const message = `${achievement.icon} Achievement Unlocked: ${achievement.name}!`;
+      ToastManager.show(message, 'achievement', 6000);
+      console.log(`🏅 Testing achievement: ${achievement.name} - ${achievement.description}`);
+    } else {
+      console.log(`Achievement '${achievementId}' not found. Available IDs:`, ACHIEVEMENTS.map(a => a.id));
+    }
+  };
+
+  window.WithSeismicTracker.showAllAchievements = () => {
+    console.log("🏅 All Achievements:");
+    const achievements = WithSeismicTracker.getAchievements();
+    achievements.forEach(a => {
+      const status = a.unlocked ? "✅ UNLOCKED" : "🔒 LOCKED";
+      console.log(`${status} ${a.icon} ${a.name}: ${a.description}`);
+      if (a.unlocked && a.unlockedAt) {
+        console.log(`   Unlocked at: ${new Date(a.unlockedAt).toLocaleString()}`);
+      }
+    });
+    const unlockedCount = achievements.filter(a => a.unlocked).length;
+    console.log(`\nProgress: ${unlockedCount}/${achievements.length} achievements unlocked`);
   };
 
   // Initialize everything
