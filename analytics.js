@@ -810,7 +810,7 @@
       // Store previous level to detect changes
       const previousLevel = profile.engagement.level || "cold";
 
-      // Determine engagement level with new thresholds
+      // Determine engagement level with updated thresholds
       if (profile.engagement.score >= 5000) {
         profile.engagement.level = "qualified";
         if (!profile.engagement.signals.includes("qualified_lead")) {
@@ -1529,7 +1529,7 @@
           </div>
         </div>
         `
-            : profile.engagement.score >= 2500
+            : profile.engagement.score >= 50
             ? `
         <div style="margin-top: 12px; padding: 8px; background: #fef3c7; border-radius: 6px; border: 1px solid #fbbf24;">
           <div style="font-size: 12px; color: #92400e;">
