@@ -412,7 +412,7 @@
       if (newAchievements.length > 0) {
         newAchievements.forEach((achievement, index) => {
           setTimeout(() => {
-            const message = `${achievement.icon} Achievement Unlocked: ${achievement.name}!`;
+            const message = `Achievement Unlocked: ${achievement.name}!`;
             ToastManager.show(message, 'achievement', 6000);
             log(`Achievement unlocked: ${achievement.name} - ${achievement.description}`);
           }, index * 1500); // Stagger multiple achievements
@@ -1630,7 +1630,7 @@
   window.WithSeismicTracker.testAchievement = (achievementId) => {
     const achievement = ACHIEVEMENTS.find(a => a.id === achievementId);
     if (achievement) {
-      const message = `${achievement.icon} Achievement Unlocked: ${achievement.name}!`;
+      const message = `Achievement Unlocked: ${achievement.name}!`;
       ToastManager.show(message, 'achievement', 6000);
       console.log(`🏅 Testing achievement: ${achievement.name} - ${achievement.description}`);
     } else {

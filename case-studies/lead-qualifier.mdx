@@ -9,14 +9,17 @@ export const VisitorProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [topPages, setTopPages] = useState([]);
   const [mostPopularPage, setMostPopularPage] = useState(null);
+  const [achievements, setAchievements] = useState([]);
 
 useEffect(() => {
 const loadProfile = () => {
 if (typeof window !== 'undefined' && window.WithSeismicTracker) {
 const data = window.WithSeismicTracker.getProfile();
 const pages = window.WithSeismicTracker.getTopPages(5);
+const achievementsData = window.WithSeismicTracker.getAchievements();
 setProfile(data);
 setTopPages(pages);
+setAchievements(achievementsData);
 if (pages && pages.length > 0) {
 setMostPopularPage(pages[0]);
 }
@@ -33,8 +36,10 @@ setTimeout(loadProfile, 100);
       if (window.WithSeismicTracker) {
         const data = window.WithSeismicTracker.getProfile();
         const pages = window.WithSeismicTracker.getTopPages(5);
+        const achievementsData = window.WithSeismicTracker.getAchievements();
         setProfile(data);
         setTopPages(pages);
+        setAchievements(achievementsData);
         if (pages && pages.length > 0) {
           setMostPopularPage(pages[0]);
         }
@@ -154,6 +159,15 @@ if (!profile) return {};
 const { deepPages, totalLinks, returnVisits, bouncePages, engagedPages } = getPageStats();
 const { sessionLength, mostUsedTool, contentPreference } = getInterestingStats();
 
+// Calculate achievement stats and sort by unlock time (most recent first)
+const unlockedAchievements = achievements
+  .filter(a => a.unlocked)
+  .sort((a, b) => {
+    if (!a.unlockedAt || !b.unlockedAt) return 0;
+    return new Date(b.unlockedAt) - new Date(a.unlockedAt);
+  });
+const achievementPercentage = Math.round((unlockedAchievements.length / achievements.length) * 100);
+
 return (
 
 <div className="bg-background rounded-lg p-6 my-6 border border-neutral-500/20 shadow-sm">
@@ -171,6 +185,39 @@ score:
 
 </div>
 </div>
+
+      {/* Achievement Stats Bar */}
+      <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">🏅</span>
+            <span className="text-sm font-semibold text-purple-700 dark:text-purple-400">
+              Achievements
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl font-bold text-purple-700 dark:text-purple-400">
+              {unlockedAchievements.length}/{achievements.length}
+            </span>
+            <span className="text-xs text-purple-600 dark:text-purple-500">
+              ({achievementPercentage}% Complete)
+            </span>
+          </div>
+        </div>
+        {/* Achievement Progress Bar */}
+        <div className="mt-2 w-full bg-purple-200 dark:bg-purple-800 rounded-full h-2">
+          <div
+            className="h-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-500"
+            style={{ width: `${achievementPercentage}%` }}
+          />
+        </div>
+        {/* Recent Achievement */}
+        {unlockedAchievements.length > 0 && (
+          <div className="mt-2 text-xs text-purple-600 dark:text-purple-400">
+            Latest: {unlockedAchievements[0].icon} {unlockedAchievements[0].name}
+          </div>
+        )}
+      </div>
 
       {/* Most Popular Page Highlight */}
       {mostPopularPage && (
@@ -359,6 +406,40 @@ score:
           </span>
         </div>
       </div>
+
+      {/* Unlocked Achievements Showcase */}
+      {unlockedAchievements.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            Unlocked Achievements ({unlockedAchievements.length})
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {unlockedAchievements.map((achievement, i) => {
+              const unlockedTime = achievement.unlockedAt ? new Date(achievement.unlockedAt) : null;
+              const timeAgo = unlockedTime ? formatDate(achievement.unlockedAt) : 'Unknown';
+
+              return (
+                <div
+                  key={i}
+                  className="group relative"
+                >
+                  <span className="text-2xl cursor-help hover:scale-110 transition-transform">
+                    {achievement.icon}
+                  </span>
+                  {/* Enhanced Tooltip on hover */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 min-w-[200px] shadow-lg">
+                    <div className="font-semibold mb-1">{achievement.name}</div>
+                    <div className="text-gray-300 mb-1">{achievement.description}</div>
+                    <div className="text-gray-400 text-[10px] border-t border-gray-700 pt-1 mt-1">
+                      Unlocked {timeAgo}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
 
 );
