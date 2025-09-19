@@ -1,0 +1,516 @@
+export const VisitorProfile = () => {
+  const [profile, setProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [topPages, setTopPages] = useState([]);
+  const [mostPopularPage, setMostPopularPage] = useState(null);
+  const [achievements, setAchievements] = useState([]);
+
+  useEffect(() => {
+    const loadProfile = () => {
+      if (typeof window !== "undefined" && window.WithSeismicTracker) {
+        const data = window.WithSeismicTracker.getProfile();
+        const pages = window.WithSeismicTracker.getTopPages(5);
+        const achievementsData = window.WithSeismicTracker.getAchievements();
+        setProfile(data);
+        setTopPages(pages);
+        setAchievements(achievementsData);
+        if (pages && pages.length > 0) {
+          setMostPopularPage(pages[0]);
+        }
+        setIsLoading(false);
+      } else {
+        setTimeout(loadProfile, 100);
+      }
+    };
+
+    loadProfile();
+
+    // Update every 2 seconds to show real-time changes
+    const interval = setInterval(() => {
+      if (window.WithSeismicTracker) {
+        const data = window.WithSeismicTracker.getProfile();
+        const pages = window.WithSeismicTracker.getTopPages(5);
+        const achievementsData = window.WithSeismicTracker.getAchievements();
+        setProfile(data);
+        setTopPages(pages);
+        setAchievements(achievementsData);
+        if (pages && pages.length > 0) {
+          setMostPopularPage(pages[0]);
+        }
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  if (isLoading || !profile) {
+    return (
+      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 my-6 animate-pulse">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
+        <div className="space-y-3">
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+        </div>
+      </div>
+    );
+  }
+
+  const getEngagementColor = (level) => {
+    switch (level) {
+      case "qualified":
+        return "text-green-600 dark:text-green-400";
+      case "hot":
+        return "text-green-500 dark:text-green-400";
+      case "warm":
+        return "text-yellow-600 dark:text-yellow-400";
+      default:
+        return "text-gray-500 dark:text-gray-400";
+    }
+  };
+
+  const getEngagementEmoji = (level) => {
+    switch (level) {
+      case "qualified":
+        return "🎯";
+      case "hot":
+        return "🔥";
+      case "warm":
+        return "☀️";
+      default:
+        return "❄️";
+    }
+  };
+
+  const formatTime = (seconds) => {
+    if (!seconds) return "0s";
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${secs}s`;
+    }
+    return `${secs}s`;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Never";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffSecs < 10) return "🔴 Just now";
+    if (diffSecs < 60) return `🔴 ${diffSecs} seconds ago`;
+    if (diffMins < 5)
+      return `🟡 ${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+    if (diffHours < 24)
+      return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30)
+      return `${Math.floor(diffDays / 7)} week${
+        Math.floor(diffDays / 7) > 1 ? "s" : ""
+      } ago`;
+    return date.toLocaleDateString();
+  };
+
+  const getPageStats = () => {
+    if (!profile.behavior?.pages)
+      return {
+        deepPages: 0,
+        totalLinks: 0,
+        returnVisits: 0,
+        bouncePages: 0,
+        engagedPages: 0,
+      };
+    const pages = Object.values(profile.behavior.pages);
+    const deepPages = pages.filter((p) => p.maxScrollDepth >= 75).length;
+    const totalLinks = profile.behavior.globalLinksClicked?.length || 0;
+    const returnVisits = pages.filter((p) => p.visitCount > 1).length;
+    const bouncePages = pages.filter((p) => p.totalTimeSpent < 10).length;
+    const engagedPages = pages.filter((p) => p.totalTimeSpent >= 60).length;
+    return { deepPages, totalLinks, returnVisits, bouncePages, engagedPages };
+  };
+
+  const getInterestingStats = () => {
+    if (!profile) return {};
+
+    // Calculate session length
+    const sessionLength = profile.currentSession?.startTime
+      ? Math.floor((Date.now() - profile.currentSession.startTime) / 1000)
+      : 0;
+
+    // Get most used tool
+    const mostUsedTool =
+      profile.behavior?.toolsUsed?.length > 0
+        ? profile.behavior.toolsUsed[profile.behavior.toolsUsed.length - 1]
+        : null;
+
+    // Get content preference
+    const contentPreference =
+      profile.behavior?.contentCategories?.length > 0
+        ? profile.behavior.contentCategories[0]
+        : null;
+
+    return { sessionLength, mostUsedTool, contentPreference };
+  };
+
+  const { deepPages, totalLinks, returnVisits, bouncePages, engagedPages } =
+    getPageStats();
+  const { sessionLength, mostUsedTool, contentPreference } =
+    getInterestingStats();
+
+  // Calculate achievement stats and sort by unlock time (most recent first)
+  const unlockedAchievements = achievements
+    .filter((a) => a.unlocked)
+    .sort((a, b) => {
+      if (!a.unlockedAt || !b.unlockedAt) return 0;
+      return new Date(b.unlockedAt) - new Date(a.unlockedAt);
+    });
+  const achievementPercentage = Math.round(
+    (unlockedAchievements.length / achievements.length) * 100
+  );
+
+  return (
+    <div className="bg-background rounded-lg p-6 my-6 border border-neutral-500/20 shadow-sm">
+      <div className="flex items-end justify-between mb-4">
+        <h3 className="text-lg my-0 font-semibold text-gray-900 dark:text-gray-100">
+          Your Live Engagement Profile
+        </h3>
+        <div className="flex items-end gap-3">
+          <span
+            className={`text-xs ${getEngagementColor(
+              profile.engagement?.level
+            )}`}
+          >
+            score:
+          </span>
+          <span
+            className={`text-3xl font-bold ${getEngagementColor(
+              profile.engagement?.level
+            )}`}
+          >
+            {profile.engagement?.score || 0}
+          </span>
+        </div>
+      </div>
+
+      {/* Achievement Stats Bar */}
+      <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">🏅</span>
+            <span className="text-sm font-semibold text-purple-700 dark:text-purple-400">
+              Achievements
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl font-bold text-purple-700 dark:text-purple-400">
+              {unlockedAchievements.length}/{achievements.length}
+            </span>
+            <span className="text-xs text-purple-600 dark:text-purple-500">
+              ({achievementPercentage}% Complete)
+            </span>
+          </div>
+        </div>
+        {/* Achievement Progress Bar */}
+        <div className="mt-2 w-full bg-purple-200 dark:bg-purple-800 rounded-full h-2">
+          <div
+            className="h-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-500"
+            style={{ width: `${achievementPercentage}%` }}
+          />
+        </div>
+        {/* Recent Achievement */}
+        {unlockedAchievements.length > 0 && (
+          <div className="mt-2 text-xs text-purple-600 dark:text-purple-400">
+            Latest: {unlockedAchievements[0].icon}{" "}
+            {unlockedAchievements[0].name}
+          </div>
+        )}
+      </div>
+
+      {/* Most Popular Page Highlight */}
+      {mostPopularPage && (
+        <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/10 rounded-lg border border-green-200 dark:border-green-800">
+          <div className="text-xs text-green-700 dark:text-green-400 mb-1 font-medium">
+            ⭐ Your Favorite Page
+          </div>
+          <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {mostPopularPage.title || mostPopularPage.path}
+          </div>
+          <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+            {formatTime(mostPopularPage.totalTimeSpent)} spent ·{" "}
+            {mostPopularPage.visitCount} visit
+            {mostPopularPage.visitCount > 1 ? "s" : ""}
+          </div>
+        </div>
+      )}
+
+      {/* Engagement Status Bar */}
+      <div className="mb-6">
+        <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
+          <span>Cold (0)</span>
+          <span>Warm (1000)</span>
+          <span>Hot (2500)</span>
+          <span>Qualified (5000+)</span>
+        </div>
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+          <div
+            className={`h-3 rounded-full transition-all duration-500 ${
+              profile.engagement?.level === "qualified"
+                ? "bg-gradient-to-r from-yellow-500 to-yellow-600"
+                : profile.engagement?.level === "hot"
+                ? "bg-gradient-to-r from-orange-500 to-red-500"
+                : profile.engagement?.level === "warm"
+                ? "bg-gradient-to-r from-yellow-400 to-orange-400"
+                : "bg-gradient-to-r from-blue-300 to-blue-400"
+            }`}
+            style={{
+              width: `${Math.min(
+                ((profile.engagement?.score || 0) / 5000) * 100,
+                100
+              )}%`,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Key Metrics Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="bg-neutral-500/5 p-3 rounded">
+          <div className="text-xs text-gray-600 dark:text-gray-400">
+            Page Views
+          </div>
+          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {profile.behavior?.totalPageViews || 0}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            {profile.behavior?.uniquePagesViewed || 0} unique
+          </div>
+        </div>
+
+        <div className="bg-neutral-500/5 p-3 rounded">
+          <div className="text-xs text-gray-600 dark:text-gray-400">
+            Total Time
+          </div>
+          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {formatTime(profile.behavior?.totalTimeSpent || 0)}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            {formatTime(profile.behavior?.averageTimePerPage || 0)}/page
+          </div>
+        </div>
+
+        <div className="bg-neutral-500/5 p-3 rounded">
+          <div className="text-xs text-gray-600 dark:text-gray-400">
+            Deep Reads
+          </div>
+          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {deepPages}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            {engagedPages} engaged
+          </div>
+        </div>
+
+        <div className="bg-neutral-500/5 p-3 rounded">
+          <div className="text-xs text-gray-600 dark:text-gray-400">
+            Return Visits
+          </div>
+          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {returnVisits}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            pages revisited
+          </div>
+        </div>
+      </div>
+
+      {/* Interesting Stats Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+          <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+            Current Session
+          </div>
+          <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {formatTime(sessionLength)} active
+          </div>
+        </div>
+
+        {mostUsedTool && (
+          <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+              Tool Used
+            </div>
+            <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              {mostUsedTool}
+            </div>
+          </div>
+        )}
+
+        {contentPreference && (
+          <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+              Content Interest
+            </div>
+            <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 capitalize">
+              {contentPreference}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Visit Timeline */}
+      <div className="bg-neutral-500/5/50 rounded-lg p-4 mb-6 border border-neutral-500/10">
+        <div className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+          📅 Visitor Timeline
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <div className="text-xs text-gray-500 dark:text-gray-500">
+              First Seen
+            </div>
+            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {formatDate(profile.firstVisit)}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-500 dark:text-gray-500">
+              Last Active
+            </div>
+            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {formatDate(profile.lastVisit)}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-500 dark:text-gray-500">
+              Traffic Source
+            </div>
+            <div className="text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">
+              {profile.source?.value || profile.source?.type || "Direct"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Top Pages */}
+      {topPages && topPages.length > 1 && (
+        <div className="mb-6">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            📊 Page Engagement Ranking
+          </div>
+          <div className="space-y-2">
+            {topPages.slice(0, 4).map((page, i) => {
+              const maxTime = topPages[0].totalTimeSpent;
+              const percentage = (page.totalTimeSpent / maxTime) * 100;
+              return (
+                <div key={i} className="bg-neutral-500/5 p-3 rounded">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-gray-700 dark:text-gray-300 truncate flex-1">
+                      {i === 0 && "🥇"} {i === 1 && "🥈"} {i === 2 && "🥉"}{" "}
+                      {page.title || page.path}
+                    </span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100 ml-2">
+                      {formatTime(page.totalTimeSpent)}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                    <div
+                      className="bg-green-600 h-1.5 rounded-full"
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                    {page.visitCount} visit{page.visitCount > 1 ? "s" : ""} ·{" "}
+                    {page.maxScrollDepth}% scroll depth
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Engagement Signals */}
+      {profile.engagement?.signals && profile.engagement.signals.length > 0 && (
+        <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            Behavioral Signals Detected
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {profile.engagement.signals.map((signal, i) => (
+              <span
+                key={i}
+                className="text-xs bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-1 rounded border border-green-200 dark:border-green-800"
+              >
+                ✓ {signal.replace(/_/g, " ")}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Current Session */}
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+          Current Session
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-gray-700 dark:text-gray-300">
+            Viewing:{" "}
+            <span className="font-medium">
+              {profile.currentSession?.currentPage || "Unknown"}
+            </span>
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-500">
+            Session ID: {profile.currentSession?.sessionId?.slice(-6) || "N/A"}
+          </span>
+        </div>
+      </div>
+
+      {/* Unlocked Achievements Showcase */}
+      {unlockedAchievements.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            Unlocked Achievements ({unlockedAchievements.length})
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {unlockedAchievements.map((achievement, i) => {
+              const unlockedTime = achievement.unlockedAt
+                ? new Date(achievement.unlockedAt)
+                : null;
+              const timeAgo = unlockedTime
+                ? formatDate(achievement.unlockedAt)
+                : "Unknown";
+
+              return (
+                <div key={i} className="group relative">
+                  <span className="text-2xl cursor-help hover:scale-110 transition-transform">
+                    {achievement.icon}
+                  </span>
+                  {/* Enhanced Tooltip on hover */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 min-w-[200px] shadow-lg">
+                    <div className="font-semibold mb-1">{achievement.name}</div>
+                    <div className="text-gray-300 mb-1">
+                      {achievement.description}
+                    </div>
+                    <div className="text-gray-400 text-[10px] border-t border-gray-700 pt-1 mt-1">
+                      Unlocked {timeAgo}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

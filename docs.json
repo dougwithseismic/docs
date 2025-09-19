@@ -213,7 +213,7 @@
     ]
   },
   "custom": {
-    "js": [],
+    "js": ["/analytics.js"],
     "css": ["custom.css"]
   }
 }
