@@ -608,6 +608,70 @@ The toasts will appear in the bottom-left corner with smooth animations. They st
 
 Or just keep reading, exploring, and using the tools. If what I'm building resonates with you, your score will reflect that - and you'll see the toasts appear naturally as you progress through the engagement levels. When you're ready to talk, I'll be ready too.
 
+### Gamification & Achievement System
+
+Beyond just scoring, I've added a full achievement system that makes browsing more engaging. You're not just accumulating points - you're unlocking badges for different behaviors. Check your achievements displayed at the top of your profile card above!
+
+#### Available Achievements
+
+```javascript
+// See all available achievements and your progress
+WithSeismicTracker.showAllAchievements()
+
+// Test an achievement notification
+WithSeismicTracker.testAchievement('deep_diver')
+
+// Check what you've unlocked so far
+WithSeismicTracker.getUnlockedAchievements()
+```
+
+Here are some achievements you can unlock:
+
+- **👣 First Steps**: Visit your first page (you already have this!)
+- **🗺️ Explorer**: Visit 5 different pages
+- **🤿 Deep Diver**: Scroll to 100% on 3 pages
+- **⚡ Speed Reader**: Visit 10 pages in under 5 minutes
+- **📚 Dedicated Reader**: Spend over 10 minutes reading
+- **📊 Case Study Enthusiast**: Read 3 case studies
+- **🔧 Tool Tester**: Try at least one tool
+- **🦉 Night Owl**: Browse after midnight
+- **🐦 Early Bird**: Browse before 7 AM
+- **🔄 Return Visitor**: Come back for a second visit
+- **💼 Serious Buyer**: Visit pricing and contact pages
+- **📋 Code Copier**: Copy a code block
+- **🕵️ Tracker Detective**: Discover this lead qualifier case study (you have this!)
+- **🏆 Engagement Champion**: Reach 'Hot' engagement level
+- **👑 Qualified Legend**: Become a qualified lead (5000 points)
+
+Each achievement unlocks with a purple toast notification. Your unlocked achievements are saved and displayed with timestamps. It's a small touch that makes the experience more memorable.
+
+#### Why Gamification?
+
+This isn't just for fun (though it is fun). Gamification serves real business purposes:
+
+1. **Increased Engagement**: Achievements give visitors reasons to explore more content
+2. **Behavioral Insights**: Achievement patterns reveal visitor interests and intent
+3. **Memorable Experience**: People remember sites that surprise and delight them
+4. **Qualification Signals**: Achievement combinations indicate buying readiness
+5. **Return Incentive**: Unfinished achievements encourage return visits
+
+For example, someone who unlocks "Tool Tester," "Case Study Enthusiast," and "Serious Buyer" is showing clear product evaluation behavior. That's more valuable than any form field.
+
+#### Implementation Notes
+
+The achievement system is lightweight and runs entirely client-side:
+- Achievements check conditions in real-time as you browse
+- Unlocked achievements persist in localStorage
+- Toast notifications appear with a 1.5-second stagger for multiple unlocks
+- Each achievement has an icon, name, and description for clarity
+- The profile component displays your achievement collection
+
+This same gamification approach can be applied to any business:
+- **SaaS**: Unlock features through exploration
+- **E-commerce**: Reward browsing patterns with discounts
+- **Content Sites**: Badge readers for completion milestones
+- **B2B**: Identify champions through engagement achievements
+
 ## The Bottom Line
 
 This lead qualifier is exactly what I build for clients - intelligent, behavioral tracking that identifies real interest without being intrusive. It's the difference between "spray and pray" marketing and actually understanding who's interested in what you offer.

@@ -513,13 +513,18 @@
         return;
       }
 
+      // Skip if delta is 0 or negative (can happen with rapid calls)
+      if (deltaTime <= 0) {
+        return;
+      }
+
       this.lastUpdateTime = now;
       this.totalTrackedTime += deltaTime;
 
       const profile = StorageManager.getVisitorProfile();
       const pageData = profile.behavior.pages[this.pagePath];
 
-      if (pageData && deltaTime > 0 && deltaTime <= 300) {
+      if (pageData) {
         // Update page-specific time with ONLY the delta
         pageData.totalTimeSpent += deltaTime;
         pageData.averageTimeSpent = Math.floor(
@@ -935,6 +940,7 @@
       this.setupTimeTracking();
 
       // Track time every 10 seconds for accurate measurement
+      // Using 10 seconds to balance accuracy with performance
       this.timeTrackingInterval = setInterval(() => {
         if (!document.hidden) {
           this.trackTimeOnPage();
@@ -1171,6 +1177,7 @@
     // Clean up previous tracker
     if (currentTracker) {
       currentTracker.cleanup();
+      currentTracker = null; // Ensure old tracker is fully cleared
     }
 
     currentTracker = new PageTracker();
