@@ -158,6 +158,16 @@
       }
     },
     {
+      id: "insider_trading",
+      name: "Insider Trading",
+      icon: "📈",
+      description: "Read 100% of how I'm tracking you",
+      qualifier: (profile) => {
+        const leadQualifierPage = profile.behavior?.pages?.['/case-studies/lead-qualifier'];
+        return leadQualifierPage && leadQualifierPage.maxScrollDepth >= 100;
+      }
+    },
+    {
       id: "engagement_champion",
       name: "Engagement Champion",
       icon: "🏆",
