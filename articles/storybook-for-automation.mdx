@@ -1,0 +1,545 @@
+---
+title: "How I Structure the AI Function at Challenger Brands Serious About Using LLMs to Get Ahead"
+description: "A battle-tested blueprint for building scalable, reusable AI automation systems that actually deliver revenue—not just hype"
+icon: cube
+---
+
+# How I Structure the AI Function at Challenger Brands Serious About Using LLMs to Get Ahead
+
+*By Doug Silkstone | March 10, 2025*
+
+> After 15 years building automation systems, I've developed some opinions about what actually works. This is the blueprint I've been using with teams who want to move fast without getting caught up in hype. Take what's useful, adapt it to your needs, and let me know how it goes.
+
+Here's what I'm seeing: Teams have ChatGPT licenses, Zapier subscriptions, multiple no-code platforms, but they're struggling to get real value. The automations they build get lost, forgotten, or can't be reused by other teams.
+
+What's been working for me is thinking about architecture first, tools second. Imagine having a structured approach where every automation becomes discoverable and reusable—like [Storybook](https://storybook.js.org/) for AI automation. A living catalog where your team's work compounds instead of getting buried.
+
+Here's the approach I've been using—feel free to adapt it to your situation.
+
+## Start Here: Code Blocks as Your Foundation (Not Another Platform)
+
+<Note>
+  **Key principle**: Start with simple, atomic code blocks that solve real problems. One input, one output, one clear purpose. You can always add complexity later.
+</Note>
+
+These blocks handle everything from basic tasks to complex operations:
+
+<CardGroup cols={2}>
+  <Card title="Basic Operations" icon="envelope">
+    - Send emails
+    - Create tickets
+    - Post to Slack
+    - Update spreadsheets
+  </Card>
+  <Card title="Complex Processing" icon="chart-line">
+    - Pull Shopify analytics
+    - Process Stripe invoices
+    - Execute SQL queries
+    - Run ML models
+  </Card>
+</CardGroup>
+
+The key is **standardization**—every block follows the same pattern:
+
+```typescript
+interface CodeBlock {
+  input: ZodSchema
+  handler: async (input) => output
+  output: ZodSchema
+  metadata: {
+    name: string
+    description: string
+    category: string
+    version: string
+  }
+}
+```
+
+<Accordion title="Platform Flexibility: The Game Changer">
+  Bundle blocks into components when it makes sense, creating a Lego-style ecosystem. The beauty? **Platform agnostic**:
+
+  - A workflow built in n8n becomes a reusable component in code
+  - A Python script becomes a no-code module
+  - A Zapier automation becomes an API endpoint
+  - A Make.com scenario becomes a TypeScript function
+
+  This flexibility is essential for challenger brands—you need to meet your team where they are, not force them into yet another tool they'll abandon in three months.
+</Accordion>
+
+Every component lives in a central registry that automatically generates production-ready infrastructure. This ensures both developers and no-code users have equal access to your organization's automation capabilities.
+
+## Why Most AI Implementations Struggle
+
+<Warning>
+  According to [Red Hat's research](https://www.redhat.com/en/resources/automated-enterprise-e-book), 77% of IT professionals consider automation essential, yet most implementations fail. The problem? Focusing on tools rather than architecture.
+</Warning>
+
+The statistics tell a stark story:
+
+| Success Metric | Winners | Losers | Gap |
+|----------------|---------|--------|-----|
+| **Process Automation** | 20M records/year | &lt;100K records/year | 200x |
+| **Time Savings** | 100,000+ hours | &lt;1,000 hours | 100x |
+| **ROI** | 300-500% | Negative | ∞ |
+| **Adoption Rate** | >80% of employees | &lt;10% of employees | 8x |
+
+### The Platform Comparison Reality
+
+<Tabs>
+  <Tab title="n8n (Advanced)">
+    **Best for**: Complex, custom AI workflows
+    - 500+ integrations
+    - Code flexibility
+    - Self-hostable ([Enterprise options available](https://n8n.io/enterprise/))
+    - LangChain nodes for LLM apps
+    - Pay per execution, not per step
+
+    **Limitation**: Requires technical expertise
+  </Tab>
+  <Tab title="Make (Balanced)">
+    **Best for**: Visual workflows with depth
+    - Good balance of power and simplicity
+    - European data sovereignty
+    - Robust scenario builder
+    - Moderate pricing
+
+    **Limitation**: Less AI-native than n8n
+  </Tab>
+  <Tab title="Zapier (Simple)">
+    **Best for**: Entry-level automation
+    - Most user-friendly
+    - Largest app ecosystem
+    - AI Copilot features
+    - Quick setup
+
+    **Limitation**: Expensive at scale, limited customization
+  </Tab>
+</Tabs>
+
+What I've found is that teams need a structured methodology that works across their existing platforms. A practical way to create, document, test, and share automation components that any motivated team member can understand and use.
+
+## Building Your Component Registry: A Practical Approach
+
+What's worked well for me is starting with a straightforward component registry that serves as the central hub for all automation efforts. I've implemented this approach at several companies, and it's been consistently effective.
+
+This registry isn't just documentation—it's an active system that:
+
+- Makes every automation component discoverable across teams
+- Provides crystal-clear usage instructions and examples
+- Enables interactive testing before integration
+- Automatically generates integration points for any platform
+
+Think of it as building a workshop for AI components, where teams can develop and test automation in isolation before deploying at scale. The goal is to create repeatable systems that compound value over time instead of starting from scratch with each new project.
+
+## Common Pitfalls and How to Avoid Them
+
+<Info>
+  After working with dozens of teams on AI implementations, I've noticed four patterns that consistently cause problems. Here's what to watch out for:
+</Info>
+
+<AccordionGroup>
+  <Accordion title="🏝️ The Silo Trap" icon="island-tropical">
+    **Problem**: Teams build in isolation. Appolica engineers boosted productivity 2x with AI tools but couldn't share gains company-wide.
+
+    **Impact**: 70% of automation value trapped in individual teams
+
+    **Solution**: Mandate every automation becomes a reusable component from inception. No exceptions.
+
+    ```yaml
+    policy:
+      all_automations:
+        must_register: true
+        must_document: true
+        must_test: true
+    ```
+  </Accordion>
+
+  <Accordion title="♻️ The Duplication Death Spiral" icon="recycle">
+    **Problem**: Same solutions built repeatedly. One Fortune 500 built the same Slack integration 7 times.
+
+    **Impact**: 5-10x wasted development effort
+
+    **Solution**: Registry with mandatory search before new development.
+
+    ```typescript
+    // Before creating any component:
+    const existing = await registry.search({
+      functionality: 'slack notification',
+      department: 'any'
+    })
+    if (existing.length > 0) {
+      useExisting(existing[0])
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="🔌 The Integration Nightmare" icon="plug">
+    **Problem**: Manual integration creates bottlenecks. [Red Hat's automation study](https://www.redhat.com/sysadmin/it-automation-book) found 60% of barriers are cultural, not technical.
+
+    **Impact**: 3-6 month delays for cross-team adoption
+
+    **Solution**: Auto-generate integration points for every platform.
+
+    <CardGroup cols={2}>
+      <Card title="Auto-Generated" icon="sparkles">
+        - REST APIs
+        - GraphQL endpoints
+        - Webhook receivers
+        - Event streams
+      </Card>
+      <Card title="Platform Nodes" icon="puzzle-piece">
+        - n8n nodes
+        - Zapier apps
+        - Make modules
+        - Custom SDKs
+      </Card>
+    </CardGroup>
+  </Accordion>
+
+  <Accordion title="📚 The Knowledge Black Hole" icon="book-skull">
+    **Problem**: Undocumented automations die in darkness.
+
+    **Impact**: 90% of components never reused
+
+    **Solution**: Documentation-as-code with enforcement.
+
+    ```typescript
+    @Component({
+      name: 'Invoice Processor',
+      description: 'Processes Stripe invoices and updates CRM',
+      examples: [
+        { input: sampleInvoice, output: expectedResult }
+      ],
+      sla: '99.9% uptime, &lt;500ms response'
+    })
+    class InvoiceProcessor {
+      // Won't compile without decorator metadata
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Four Pillars for Success
+
+Here's the framework that's been working well for the teams I've worked with:
+
+### 1. Democratized Creation with Structure
+Everyone can contribute automations, but within a clear framework. At Roo, this approach helped them double their output without adding engineers. The key is making component creation accessible to non-technical team members while maintaining production standards.
+
+### 2. Modular Architecture
+Instead of monolithic platforms, focus on building composable blocks that your team will actually use:
+
+- **Self-Describing**: Components explain themselves through schemas
+- **Platform-Agnostic**: Works in code, no-code, or hybrid environments
+- **Instantly Testable**: Validate behavior before integration
+- **Auto-Documented**: Documentation generated from code, not maintained separately
+
+### 3. The Registry as a Value Center
+The component registry becomes more than infrastructure—it's an asset that drives value. One team I worked with now processes $2M in monthly transactions through their registry with minimal maintenance:
+
+- **Discovery Engine**: AI-powered search finds components by describing what you need
+- **Automatic API Generation**: Every component becomes an endpoint instantly
+- **Version Control Built-In**: Track changes, dependencies, and compatibility automatically
+- **Security by Design**: Role-based access control at the component level
+- **Performance Monitoring**: Know which components deliver value, which need optimization
+
+Core registry requirements:
+- TypeScript/Zod schemas for type safety
+- GraphQL interface for flexible querying
+- Git-based versioning for complete history
+- Automated testing on every change
+- SLA tracking for mission-critical components
+
+### 4. Production-Ready From the Start
+Rather than building proof of concepts that get stuck, aim to ship production-ready components from day one:
+
+- [Swagger UI](https://swagger.io/tools/swagger-ui/) for interactive exploration
+- Automatic cloud exposure via [secure tunneling](https://ngrok.com/our-product/secure-tunnels)
+- Load balancing and queue management built-in
+- Monitoring and alerting out of the box
+
+## The Real Impact (With Actual Numbers)
+
+### For Individual Contributors
+- Stop reinventing wheels—discover what exists instantly
+- Ship features 10x faster using pre-built components
+- Focus on business logic, not boilerplate
+- Contribute improvements that benefit everyone
+
+As documented in [Microsoft's real-world automation stories](https://www.microsoft.com/en-us/power-platform/blog/power-automate/real-world-automation-stories-with-microsoft-power-automate/), teams that adopt component-based approaches see dramatic productivity gains.
+
+### For Engineering Teams
+- Establish and enforce standards automatically
+- Eliminate duplicate work across departments
+- Ship with confidence—everything is pre-tested
+- Scale teams without scaling headcount
+
+### For Leadership
+- Direct line-of-sight from automation to business impact
+- Quantifiable ROI on every automation investment
+- Compressed time-to-market for new capabilities
+- Transform fixed costs into variable wins
+
+## The Technical Stack I Recommend
+
+Here's what's been working well for me and the teams I work with:
+
+### Type Safety: The Foundation
+
+When you're building LEGO blocks, you need to know their shape, size, color, and how they fit together. That's where **TypeScript + Zod** comes in.
+
+Zod gives you blazing-fast runtime validation (100K+ objects/second) and auto-generates TypeScript types from your schemas. It's perfect for defining component interfaces—making your automation blocks snap together perfectly every time.
+
+### API Layer: Hono
+
+For the API layer, I use [Hono](https://hono.dev/). It's a small, fast web framework that runs anywhere—Cloudflare Workers, Deno, Bun, Node.js. The TypeScript-first design means you get type safety from edge to edge, and at 12KB, it's incredibly lightweight. The developer experience is fantastic, and it just works.
+
+### Documentation That Actually Gets Read
+
+<CardGroup cols={2}>
+  <Card title="OpenAPI/Scalar" icon="book-open">
+    **For API documentation:**
+    - Scalar creates beautiful, interactive API docs
+    - OpenAPI spec for standards compliance
+    - Auto-generates client SDKs
+    - Try-it-now functionality
+  </Card>
+  <Card title="Mintlify" icon="file-lines">
+    **For user documentation:**
+    - You're reading this on Mintlify right now!
+    - MDX-powered documentation
+    - Beautiful out of the box
+    - Great search and navigation
+  </Card>
+</CardGroup>
+
+### Job Queue Options
+
+For orchestrating your automation components, here are the platforms I recommend:
+
+<Tabs>
+  <Tab title="BullMQ">
+    **[BullMQ](https://docs.bullmq.io/)** - Rock-solid Redis-based queues
+    - Battle-tested in production
+    - Excellent TypeScript support
+    - Dashboard UI available
+    - Handles millions of jobs daily
+  </Tab>
+  <Tab title="RabbitMQ">
+    **[RabbitMQ](https://www.rabbitmq.com/)** - Enterprise-grade messaging
+    - Industry standard for message queuing
+    - Multiple messaging patterns
+    - Great for microservices
+    - Proven at massive scale
+  </Tab>
+  <Tab title="Trigger.dev">
+    **[Trigger.dev](https://trigger.dev/)** - Modern workflow automation
+    - Write workflows in code
+    - Automatic retries and error handling
+    - Great debugging experience
+    - Generous free tier
+  </Tab>
+  <Tab title="Inngest">
+    **[Inngest](https://www.inngest.com/)** - Event-driven functions
+    - Declarative function definitions
+    - Built-in observability
+    - Step functions without AWS complexity
+    - Excellent TypeScript support
+  </Tab>
+  <Tab title="Hatchet">
+    **[Hatchet](https://hatchet.run/)** - DAG-based workflows
+    - Visual workflow builder
+    - Self-hostable option
+    - Growing ecosystem
+    - Good for complex dependencies
+  </Tab>
+  <Tab title="Kestra">
+    **[Kestra](https://kestra.io/)** - Data pipeline orchestration
+    - YAML-based workflows
+    - 100+ plugins out of the box
+    - Great for ETL/ELT
+    - Strong monitoring capabilities
+  </Tab>
+</Tabs>
+
+### The Key Principle
+
+Once you have your compendium of components and you're ready for existing challenges, adding new LEGO blocks becomes trivial. As new tech emerges, you can integrate it as just another block in your system—no need to rebuild everything.
+
+### Implementation Timeline
+
+```mermaid
+graph LR
+    A[Write Component] -->|5 min| B[Generate APIs]
+    B -->|1 min| C[Publish Docs]
+    C -->|2 min| D[Create Adapters]
+    D -->|1 min| E[Deploy Everywhere]
+```
+
+<Info>
+  **Timeline**: With this setup, components typically go from code to production in under 10 minutes.
+</Info>
+
+## Essential Terminology for AI Functions
+
+- **Code Block**: Atomic unit of automation—single input, single output, single purpose
+- **Component**: Orchestrated collection of blocks solving a business problem
+- **Registry**: Living catalog of all organizational automation assets
+- **Schema**: Contract defining how components communicate
+- **Adapter**: Bridge between your components and external platforms
+- **Pipeline**: Chain of components processing data sequentially
+
+## KPIs That Actually Matter
+
+<Warning>
+  Most companies track vanity metrics. Here are the KPIs that predict real success:
+</Warning>
+
+<CardGroup cols={2}>
+  <Card title="🔄 Reuse Ratio" icon="arrows-rotate">
+    **Target**: >70%
+
+    Components used by 2+ teams
+
+    **Why it matters**: Indicates true platform value
+  </Card>
+  <Card title="⚡ Time-to-Production" icon="bolt">
+    **Target**: &lt;4 hours
+
+    Idea → deployed automation
+
+    **Why it matters**: Speed determines adoption
+  </Card>
+  <Card title="📊 Coverage Rate" icon="chart-bar">
+    **Target**: >80%
+
+    Processes with automation available
+
+    **Why it matters**: Shows strategic completeness
+  </Card>
+  <Card title="🚀 Adoption Velocity" icon="rocket">
+    **Target**: +10/week
+
+    New active component creators
+
+    **Why it matters**: Momentum predicts success
+  </Card>
+</CardGroup>
+
+### The Value Multiplication Formula
+
+```typescript
+const componentValue = {
+  developmentCost: 10_000,      // One-time
+  timeSavedPerUse: 2,           // Hours
+  hourlyRate: 150,              // Dollars
+  usesPerMonth: 50,             // Across org
+
+  monthlyROI: function() {
+    return (this.timeSavedPerUse * this.hourlyRate * this.usesPerMonth)
+           - (this.developmentCost / 12)
+  },
+
+  annualMultiplier: function() {
+    return (this.monthlyROI() * 12) / this.developmentCost
+  }
+}
+
+// Result: 17x annual return on investment
+```
+
+<Note>
+  **Real Example**: One payment processing component at a fintech saved $2.3M annually after 8 hours of development
+</Note>
+
+## Bridging Strategy and Execution
+
+One of the biggest challenges is aligning what leadership envisions with what's technically feasible. Here's how this architecture helps bridge that gap:
+
+| Level | Traditional Problem | This Architecture's Solution |
+|-------|-------------------|----------------------------|
+| **C-Suite** | "We're doing AI" with no measurable impact | Direct metrics linking automation to revenue/cost |
+| **Management** | Can't standardize or scale initiatives | Central registry enforces standards automatically |
+| **Contributors** | Building in isolation, zero visibility | Every creation immediately available company-wide |
+
+What I find encouraging is when unexpected collaborations emerge. Recently, a junior developer at one of the companies I work with built a component that now powers their CFO's revenue dashboard, replacing an expensive SaaS solution. That's the kind of democratization that makes this approach worthwhile.
+
+## Moving Forward: Why Timing Matters
+
+<Note>
+  The gap between companies effectively using AI and those still experimenting is widening. The good news is that with the right architecture, you can catch up quickly.
+</Note>
+
+After implementing AI systems across dozens of organizations, the pattern is clear:
+
+<Tabs>
+  <Tab title="🏆 Winners (20%)">
+    - Treat AI as strategic platform
+    - Component-first architecture
+    - 10-50x productivity gains
+    - Compound value creation
+    - Market leadership positions
+  </Tab>
+  <Tab title="😐 Strugglers (60%)">
+    - Tool-focused approach
+    - Scattered initiatives
+    - 1-2x productivity gains
+    - Linear value creation
+    - Fighting to keep up
+  </Tab>
+  <Tab title="💀 Losers (20%)">
+    - No coherent AI strategy
+    - Random experiments
+    - Negative ROI
+    - Value destruction
+    - Disruption victims
+  </Tab>
+</Tabs>
+
+### A Practical 30-Day Implementation Plan
+
+Here's an approach that's worked well for teams getting started:
+
+<Steps>
+  <Step title="Week 1: Assessment and Quick Win">
+    - Map out your current automation landscape
+    - Identify one high-impact process to improve
+    - Build your first reusable code block
+    - Document the time or cost savings
+  </Step>
+  <Step title="Week 2: Build the Foundation">
+    - Set up TypeScript + Zod for your registry
+    - Convert 5 existing automations to components
+    - Create auto-generated API documentation
+    - Demo the speed improvement to key stakeholders
+  </Step>
+  <Step title="Week 3: Expand the Team">
+    - Onboard a few motivated team members
+    - Help them build components for their workflows
+    - Track and document the impact
+    - Consider internal billing to show value
+  </Step>
+  <Step title="Week 4: Solidify Support">
+    - Present measurable results to leadership
+    - Propose next quarter's roadmap
+    - Consider bringing in dedicated resources
+    - Set realistic but ambitious goals
+  </Step>
+</Steps>
+
+<CardGroup cols={2}>
+  <Card title="📹 Learn More" icon="youtube" href="https://www.youtube.com/@dougsilkstone">
+    Watch real implementation case studies and technical deep-dives
+  </Card>
+  <Card title="📧 Get Help" icon="envelope" href="mailto:doug@withseismic.com">
+    Schedule a consultation to architect your AI function
+  </Card>
+</CardGroup>
+
+<Note>
+  **Final thought**: This approach has helped several teams move from scattered experiments to cohesive AI capabilities. If you find these ideas useful, I'd love to hear how you adapt them to your situation.
+</Note>
+
+---
+
+*If you're working on building an AI function at your company and want to compare notes or discuss implementation details, feel free to reach out. I enjoy hearing how different teams approach these challenges. doug@withseismic.com or [LinkedIn](https://www.linkedin.com/in/dougsilkstone).*

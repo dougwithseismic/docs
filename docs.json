@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "WithSeismic - Agency Productization Services",
+  "name": "WithSeismic - Internal Tools & Automation",
   "colors": {
     "primary": "#FF8000",
     "light": "#FFA040",
@@ -122,7 +122,12 @@
           {
             "group": "Insights",
             "pages": [
-              "articles/fingers-on-the-pulse"
+              "articles/fingers-on-the-pulse",
+              "articles/great-job-search-delusion",
+              "articles/importance-of-being-overlooked",
+              "articles/from-lovable-to-production",
+              "articles/corner-cutters-guide-building-future",
+              "articles/storybook-for-automation"
             ]
           }
         ]
@@ -144,7 +149,7 @@
       "anchors": [
         {
           "anchor": "Book Discovery Call",
-          "href": "https://withseismic.com/contact",
+          "href": "/contact/book-consultation",
           "icon": "phone"
         },
         {
