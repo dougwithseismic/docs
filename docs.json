@@ -72,6 +72,16 @@
             ]
           },
           {
+            "group": "By Sector",
+            "pages": [
+              "tool-ideas/b2b-tools",
+              "tool-ideas/b2c-tools",
+              "tool-ideas/b2b2c-tools",
+              "tool-ideas/marketplace-tools",
+              "tool-ideas/saas-tools"
+            ]
+          },
+          {
             "group": "Lead Generation Tools",
             "pages": [
               "tool-ideas/automated-lead-magnets",
@@ -160,14 +170,22 @@
   "footer": {
     "socials": {
       "youtube": "https://www.youtube.com/@dougsilkstone",
-      "x": "https://x.com/withseismic",
       "github": "https://github.com/dougwithseismic",
       "linkedin": "https://linkedin.com/company/withseismic"
-    }
+    },
+    "links": [
+      {
+        "name": "Resources",
+        "items": [
+          {
+            "label": "Clutch Profile",
+            "href": "https://clutch.co/profile/withseismic-high-growth-ai-automation-ambitious-brands"
+          }
+        ]
+      }
+    ]
   },
   "custom": {
-    "js": [
-      "/tracking/tracker.js"
-    ]
+    "js": []
   }
 }
