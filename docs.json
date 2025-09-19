@@ -46,8 +46,16 @@
       {
         "tab": "Case Studies",
         "groups": [
-          "case-studies/growthrunner-devtools",
-          "case-studies/snacker-ai-video-platform"
+          {
+            "group": "Success Stories",
+            "pages": [
+              "case-studies/growthrunner-devtools",
+              "case-studies/snacker-ai-video-platform",
+              "case-studies/contra-linkedin-automation",
+              "case-studies/fingers-on-pulse-content-intelligence",
+              "case-studies/vouchernaut-programmatic-ppc"
+            ]
+          }
         ]
       },
       {

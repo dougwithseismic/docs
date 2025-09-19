@@ -1,0 +1,227 @@
+---
+title: "Fingers On The Pulse"
+description: "How we built an automated content intelligence system that processes 800+ YouTube channels, transforming months of manual research into minutes of automated insights"
+---
+
+<Note>
+[Read the full technical deep-dive on our blog →](https://blog.withseismic.com/fingers-on-the-pulse-how-we-ate-thousands-of-hours-of-youtube-to-shape-the-zeitgeist-with-trigger-dev/)
+</Note>
+
+## The Challenge
+
+In the fast-moving world of technical education—particularly in growth marketing, MarTech, LLMs, and automation—yesterday's breakthrough is tomorrow's baseline. The half-life of technical knowledge is shrinking rapidly.
+
+A learning management system (LMS) platform specializing in this space faced a critical challenge:
+- **Information overload**: Thousands of new videos published daily across YouTube
+- **High latency**: Educational content lagged 3-6 months behind cutting-edge topics
+- **Resource intensive**: Content researchers spent 60% of their time just trying to stay current
+- **Limited coverage**: Could only monitor 25 channels manually
+- **Inconsistent analysis**: Different researchers extracted different insights from the same content
+
+The team needed to "keep their fingers on the pulse" of the industry—to know within minutes when GPT-4.5 launches, when a new automation tool emerges, or when best practices shift.
+
+## The Solution
+
+I built an automated content intelligence system that could:
+- Monitor 800+ YouTube channels simultaneously
+- Process thousands of hours of video content
+- Extract structured insights using AI
+- Identify emerging trends and topics in real-time
+- Reduce content research time by 75%
+
+The goal: Shape the zeitgeist by knowing what's happening as it happens, enabling the creation of educational content that's always relevant and current.
+
+## Technical Implementation
+
+### Architecture Overview
+
+The system uses a multi-level batch processing pipeline:
+
+```
+Channel Discovery → Video Processing → Content Analysis → Insight Storage → Trend Analysis
+```
+
+### Tech Stack
+
+- **Job Orchestration**: Trigger.dev for distributed processing
+- **Backend**: Hono framework
+- **AI Processing**: OpenAI GPT-4 for content analysis
+- **Data Pipeline**: Multi-level batch processing architecture
+- **APIs**: YouTube Data API for content retrieval
+
+### Why Trigger.dev Was Essential
+
+Most developers have horror stories about production queue systems—Redis running out of memory at 3 AM, jobs silently failing, dead-letter queues not configured. For this project, Trigger.dev eliminated these concerns entirely:
+
+```typescript
+export const processYouTubeChannels = task({
+  id: "process-youtube-channels",
+  maxDuration: 600,
+  run: async (payload: ProcessYouTubeChannelsPayload) => {
+    // Create batch payloads for each channel
+    const channelPayloads = payload.channels.map((channel) => ({
+      payload: { youtubeUrl: channel },
+      options: {
+        queue: {
+          name: "youtube-channels",
+          concurrency: 5,
+        },
+      },
+    }));
+
+    // Batch trigger channel scraping
+    const batchResult = await scrapeYouTubeProfile.batchTrigger(channelPayloads);
+
+    return {
+      success: true,
+      tasksTriggered: batchResult.runs.length,
+    };
+  },
+});
+```
+
+## Key Innovations
+
+### Multi-Level Batch Processing
+
+The system processes content at two levels for maximum efficiency:
+- **Level 1**: Process multiple channels concurrently
+- **Level 2**: For each channel, process multiple videos concurrently
+
+This approach enables processing hundreds of videos simultaneously:
+- **Manual approach**: 200 videos × 30 minutes = 100 hours (2.5 work weeks)
+- **Our system**: 200 videos in parallel = ~30 minutes total
+- **Result**: 200x speedup
+
+### AI-Powered Structured Analysis
+
+For each video, the system extracts:
+- **Talking Points**: Key topics discussed
+- **Category**: Primary content classification
+- **Summary**: Concise overview
+- **Keywords**: Relevant terms and concepts
+- **Learnings**: Actionable insights
+
+```typescript
+const response = await generateObject({
+  model: openai("gpt-4o"),
+  schema: z.object({
+    talkingPoints: z.array(z.string()),
+    category: z.string(),
+    summary: z.string(),
+    keywords: z.array(z.string()),
+    learnings: z.array(z.string()).nullable(),
+  }),
+  prompt: `Analyze transcript: ${markdown}`,
+});
+```
+
+### Universal Content Adapter Pattern
+
+Designed for expansion beyond YouTube:
+
+```typescript
+interface ContentAdapter<T, U> {
+  extract(source: T): Promise<RawContent>;
+  normalize(raw: RawContent): UnifiedContent;
+  process(content: UnifiedContent): Promise<ContentInsights>;
+  store(insights: ContentInsights, metadata: U): Promise<void>;
+}
+```
+
+This pattern makes adding new content sources (LinkedIn, Twitter, blogs) straightforward—all sources flow through the same processing pipeline.
+
+## Timeline & Development
+
+- **Proof of Concept**: 1 week sprint
+- **Production Build**: 2 weeks total
+- **Approach**: Rapid prototyping to test viability before full commitment
+
+The one-week POC allowed the client to:
+- Test the automation concept
+- Validate the quality of insights
+- Determine ROI before full investment
+
+## Results & Impact
+
+### Before Automation
+- Content research: 60% of creators' time
+- Channel coverage: 25 YouTube channels
+- Content planning: Subjective impressions
+- Content lag: 3-6 months behind cutting edge
+- Processing speed: 1 audit per day per researcher
+
+### After Automation
+- Content research: 15% of creators' time
+- Channel coverage: **800+ YouTube channels**
+- Content planning: Data-driven based on trends
+- Content lag: Same week or even same day
+- Processing speed: **200x faster**
+
+### Real-World Example
+
+When OpenAI launches a new model:
+1. Video published on YouTube
+2. System detects within minutes
+3. Transcript processed and analyzed
+4. Key insights extracted
+5. Content team notified
+6. Educational material created within 20 minutes
+
+## Technical Challenges Solved
+
+### YouTube API Rate Limiting
+- Channel-based concurrency controls
+- Batch processing optimization
+- State tracking to avoid redundancy
+
+### Processing Long-Form Content
+- Chunked transcript processing
+- Relevant section extraction
+- Intelligent caching system
+
+### Ensuring Reliability
+- Comprehensive error handling
+- Detailed logging and monitoring
+- State tracking for resumable processing
+
+## Lessons Learned
+
+1. **Focus on core problems, not infrastructure**: Trigger.dev eliminated weeks of queue setup
+2. **Pipeline architectures provide flexibility**: Composable tasks make systems resilient
+3. **Smart concurrency is crucial**: Understanding constraints enables reliable scaling
+4. **Structured analysis yields better results**: AI needs structure for consistent insights
+5. **Balance automation with expertise**: Systems augment, don't replace, human judgment
+
+## The Future of Content Intelligence
+
+This system demonstrates how automation can transform content research from a bottleneck into a competitive advantage. By processing the firehose of content automatically, teams can focus on what humans do best—creating engaging, nuanced learning experiences—while the system ensures they're always working with the latest information.
+
+The proof of concept validated that:
+- Automated content intelligence is technically feasible
+- The quality of insights meets educational standards
+- ROI justifies the investment in automation
+- The system scales to handle massive content volumes
+
+## Technologies Used
+
+<CardGroup cols={3}>
+  <Card title="Trigger.dev" icon="play">
+    Job orchestration
+  </Card>
+  <Card title="Hono" icon="server">
+    Backend framework
+  </Card>
+  <Card title="OpenAI GPT-4" icon="brain">
+    Content analysis
+  </Card>
+  <Card title="YouTube API" icon="youtube">
+    Content retrieval
+  </Card>
+  <Card title="TypeScript" icon="code">
+    Type-safe development
+  </Card>
+  <Card title="Batch Processing" icon="layer-group">
+    Parallel execution
+  </Card>
+</CardGroup>
