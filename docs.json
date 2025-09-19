@@ -17,6 +17,7 @@
             "group": "Getting Started",
             "pages": [
               "index",
+              "pricing",
               "services/why-productize",
               "development",
               "quickstart"
@@ -149,7 +150,7 @@
       "anchors": [
         {
           "anchor": "Book Discovery Call",
-          "href": "/contact/book-consultation",
+          "href": "https://withseismic.com/contact",
           "icon": "phone"
         },
         {
@@ -160,7 +161,7 @@
         {
           "anchor": "GitHub",
           "href": "https://github.com/dougwithseismic",
-          "icon": "GitHub"
+          "icon": "github"
         }
       ]
     }
