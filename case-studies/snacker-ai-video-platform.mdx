@@ -1,0 +1,143 @@
+---
+title: "Snacker.ai - AI-Powered Video Content Platform"
+description: "Building a DIY video content platform that scaled GrowthMatch from agency services to SaaS, acquiring 5,000+ users in 3 months"
+icon: "video"
+---
+
+## The Challenge
+
+GrowthMatch, a TechStars alumni company, had successfully pivoted into a done-for-you video concierge service. They would record, help with case studies, generate content ideas, edit videos, and deliver polished content ready for publication.
+
+However, like traditional agencies, they faced a critical scaling challenge:
+- High overhead costs for manual video editing and production
+- Limited capacity to serve multiple clients simultaneously
+- Unable to scale without proportionally increasing headcount
+- Clients' team members couldn't collaborate on content creation
+
+They needed a self-service solution that could maintain their quality standards while enabling massive scale.
+
+## The Solution
+
+I was brought in to transform a Lovable prototype into Snacker.ai - a production-ready, AI-powered DIY video platform that would complement GrowthMatch's concierge service.
+
+Snacker.ai became a standalone SaaS that enabled GrowthMatch to:
+- Offer a self-service tier for budget-conscious clients
+- Enable team collaboration through Snacker for Teams
+- Scale revenue without scaling headcount
+- Create an upsell funnel to their premium services
+
+## Technical Implementation
+
+### Starting Point
+- Inherited a Lovable prototype that needed production-ready architecture
+- Required complete AI integration and video processing pipeline
+
+### Tech Stack
+- **Architecture**: Monorepo with TypeScript
+- **Frontend**: Vite + React
+- **Backend**: Hono framework
+- **Database**: Supabase
+- **Video Processing**: Web Codecs API + HLS playlist generation
+- **AI Integration**: LLM APIs for content generation and editing
+
+### Technical Innovations
+
+**Real-Time Browser Video Editing**: Solved the challenge of video editing in the browser by combining:
+- Web Codecs for efficient video processing
+- HLS playlist generation for streaming
+- Workarounds for iOS mobile audio playback restrictions
+
+## The AI-Powered Workflow
+
+### Three Pillars of AI Integration
+
+1. **Content Ideation**
+   - AI-generated talking points and prompts
+   - Topic suggestions based on audience and goals
+   - Session planning and content calendars
+   - Personalized content strategies
+
+2. **Automatic Video Editing**
+   - Removes gaps, pauses, and mistakes automatically
+   - Creates coherent takes from raw recordings
+   - Accepts feedback for re-editing
+   - Produces polished videos in seconds
+
+3. **Content Distribution**
+   - Generates platform-specific captions and descriptions
+   - One-click publishing to LinkedIn, X, YouTube
+   - Creates blog posts and articles from video content
+   - Publishes to Snacker's own content platform
+
+## Key Features
+
+- **Teleprompter & Notes**: Built-in teleprompter with LLM-powered script assistance
+- **Zero-UI Video Editing**: Hidden complexity - users just record and share
+- **20-Second Turnaround**: From recording end to rendered, shareable video
+- **Team Collaboration**: Invite teammates to work on content together
+- **Multi-Platform Export**: Optimized content for every social platform
+
+## Timeline & Development
+
+- **Project Duration**: 3 months
+- **Starting Point**: Lovable prototype
+- **Deliverable**: Production-ready SaaS with paying customers
+
+## Results & Impact
+
+### User Acquisition (3 months)
+- **20 paying customers** acquired
+- **5,000+ free users** onboarded
+- Created natural upsell funnel to GrowthMatch's premium services
+
+### Product-Market Fit
+- Validated the "done for you" video editing concept
+- Proved demand for simplified video content creation
+- Successfully bridged DIY and concierge service models
+
+### Business Transformation
+- Enabled GrowthMatch to scale beyond traditional agency model
+- Created recurring SaaS revenue stream
+- Reduced customer acquisition costs through self-service tier
+- Increased lifetime value through service upsells
+
+## What Made Snacker Different
+
+Unlike traditional video editing tools, Snacker eliminated the entire editing interface. Users simply:
+1. Sit down to record
+2. Get AI-powered guidance on what to say
+3. Record their video with teleprompter support
+4. Receive a polished, edited video 20 seconds later
+5. Share with one click to any platform
+
+The "done for you" philosophy meant hiding all traditional video editing complexity while maintaining professional output quality.
+
+## Lessons Learned
+
+- **Simplification is innovation**: Removing features (traditional editing UI) can be more valuable than adding them
+- **AI as invisible assistant**: The best AI implementations work behind the scenes
+- **Speed matters**: 20-second turnaround changed user behavior and expectations
+- **Hybrid models work**: Combining SaaS with services creates powerful growth loops
+
+## Technologies Used
+
+<CardGroup cols={3}>
+  <Card title="TypeScript" icon="code">
+    Type-safe development
+  </Card>
+  <Card title="React + Vite" icon="react">
+    Fast, modern frontend
+  </Card>
+  <Card title="Hono" icon="server">
+    Lightweight backend
+  </Card>
+  <Card title="Supabase" icon="database">
+    Real-time database
+  </Card>
+  <Card title="Web Codecs" icon="film">
+    Browser video processing
+  </Card>
+  <Card title="HLS" icon="stream">
+    Video streaming
+  </Card>
+</CardGroup>

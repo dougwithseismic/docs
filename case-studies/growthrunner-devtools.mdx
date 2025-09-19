@@ -1,0 +1,103 @@
+---
+title: "GrowthRunner DevTools Extension"
+description: "How a custom Chrome extension automated 90% of analytics auditing, transforming hours of work into minutes"
+icon: "chart-line"
+---
+
+## The Challenge
+
+Complex tasks with no room for error are prime candidates for automation. When GrowthRunner reached out to automate their entire analytics process, I jumped at the chance to showcase what bespoke tools can do.
+
+GrowthRunner, the expert analytics tracking agency founded by Nitesh Sharoff, specializes in advanced analytics and tracking for iconic brands including Wagamama and Net-a-Porter. Their core business revolves around auditing analytics setups - integral to their lead generation, day-to-day implementations, and billable hours.
+
+These audits require specialists to meticulously comb through client sites, reviewing tracking events, checking each payload and implementation. This process is:
+- Error-prone and monotonous
+- Highly specialized with numerous edge cases
+- Critical to their business model (a misimplementation can cost clients hundreds of thousands)
+- Time-consuming, limiting scalability
+
+## The Solution
+
+I partnered with GrowthRunner to create a custom DevTools extension that reduced their auditing and implementation time by 90%, automating monotonous tasks and improving overall efficiency.
+
+The automation addressed the pain point of lengthy manual auditing by:
+- Leveraging Chrome's Recording API to capture user journeys
+- Building a dataLayer listener that plays back recorded actions
+- Simulating typical user journeys, clicks, and navigation
+- Capturing screenshots and timestamps for documentation
+- Matching actual events against expected events to provide analytics health snapshots
+
+## Technical Implementation
+
+### Tech Stack
+- **Framework**: Plasmo.com - A JavaScript framework for building web extensions
+- **UI**: React with Tailwind CSS for the DevTools interface
+- **Storage**: IndexedDB for images and video storage
+- **Core APIs**: Chrome DevTools API, Chrome Recording API
+
+### Key Technical Challenges
+
+The main technical challenges involved:
+
+1. **DataLayer Tracking**: Monitoring changes to the data layer before, during, and after code execution in the DevTools window
+2. **Cross-Context Communication**: Heavy use of main world JavaScript injection to enable communication between the client window and the isolated world of Chrome extension development
+3. **Chrome Recording API Integration**: Complex implementation to capture and replay user actions accurately
+
+## Key Features
+
+- **Bespoke DevTools Extension**: Custom-built for GrowthRunner's specific workflow
+- **Analytics DataLayer Observer**: Tracks and categorizes all events automatically
+- **User Action Tracking**: Captures clicks, text inputs, and user interactions
+- **Chrome Recording API Extension**: Audits and plays back actions for testing
+- **Automated Reporting**: Generates snapshots with screenshots and timestamps
+
+## Timeline
+
+- **MVP Delivery**: 10 days
+- **Total Project Timeline**: 14 days including sales and iterations
+- **Time to Production**: 2 weeks
+
+## Results & Impact
+
+### Efficiency Gains
+- **90% reduction** in auditing time
+- Tasks reduced from **multiple hours to minutes**
+- Team capacity increased from **1 audit per day** to **10 audits per day** per team member
+- **10x increase** in throughput capacity
+
+### Business Impact
+- Freed up expert team members for high-value strategic work
+- Reduced error rates in analytics implementations
+- Accelerated pitch-to-delivery cycle
+- Enabled scaling without proportional headcount increase
+
+## Lessons Learned
+
+This project demonstrated that:
+- Bespoke automation tools can transform specialized workflows
+- Even complex, edge-case-heavy processes can be automated effectively
+- Two weeks of development can deliver months of time savings
+- Custom DevTools extensions are powerful for technical service businesses
+
+## Technologies Used
+
+<CardGroup cols={3}>
+  <Card title="Plasmo" icon="puzzle">
+    Web extension framework
+  </Card>
+  <Card title="React" icon="react">
+    DevTools UI
+  </Card>
+  <Card title="Chrome APIs" icon="chrome">
+    Recording & DevTools
+  </Card>
+  <Card title="IndexedDB" icon="database">
+    Local storage
+  </Card>
+  <Card title="Tailwind" icon="palette">
+    UI styling
+  </Card>
+  <Card title="TypeScript" icon="code">
+    Type safety
+  </Card>
+</CardGroup>

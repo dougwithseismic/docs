@@ -44,6 +44,13 @@
         ]
       },
       {
+        "tab": "Case Studies",
+        "groups": [
+          "case-studies/growthrunner-devtools",
+          "case-studies/snacker-ai-video-platform"
+        ]
+      },
+      {
         "tab": "Tool Examples",
         "groups": [
           {

@@ -1,0 +1,135 @@
+---
+title: "Indy.ai - LinkedIn Opportunity Discovery Extension"
+description: "How crowdsourced content discovery 5x'd Contra's job marketplace inventory with 20,000+ users actively finding opportunities"
+icon: "linkedin"
+---
+
+## The Challenge
+
+Contra, a freelance marketplace with over a million users, faced a critical inventory problem. The marketplace's success depends entirely on the volume and quality of job opportunities available to freelancers.
+
+As a scrappy startup competing against established platforms, Contra needed to:
+- Find relevant job opportunities at scale
+- Compete for inventory without massive outbound teams
+- Leverage their existing user base as a competitive advantage
+- Transform passive browsing into active opportunity discovery
+
+The key insight: their freelancers were already spending hours on LinkedIn and X (Twitter) looking for opportunities. Could this browsing behavior be transformed into a crowdsourced discovery engine?
+
+## The Solution
+
+I built Indy.ai, a Chrome extension that transforms everyday social media browsing into automated opportunity discovery. The extension crowdsources job finding across Contra's entire user base, creating a compounding effect where more users equals more opportunities for everyone.
+
+The system works by:
+- Passively reading content as users browse LinkedIn and X
+- Collecting first-party connections and their posts
+- Using LLMs to identify hiring signals and opportunities
+- Surfacing relevant matches directly to users
+- Building Contra's job inventory in the background
+
+## Technical Implementation
+
+### Tech Stack
+- **Framework**: Plasmo.com Chrome extension framework
+- **Frontend**: React for the extension UI
+- **Architecture**: Heavy use of background service workers
+- **Processing**: Content collection and parsing pipeline
+- **Analysis**: LLM integration for opportunity identification
+
+### Key Technical Considerations
+
+**LinkedIn Compliance**
+- Implemented heavy rate limiting to respect platform limits
+- No automation of user actions on the platform
+- Read-only content collection from user's own network
+- Respectful data handling practices
+
+**Scalability Architecture**
+- Distributed collection across thousands of users
+- Efficient background processing without impacting browsing
+- Smart caching to avoid duplicate processing
+
+## Key Features
+
+- **Passive Opportunity Discovery**: Works while users browse naturally
+- **Network Leverage**: Analyzes first-party connections and their content
+- **Smart Matching**: LLM-powered relevance scoring
+- **Zero Friction**: No change to user behavior required
+- **Cross-Platform**: Works on LinkedIn and X (Twitter)
+- **Direct Integration**: Seamless connection with Contra's marketplace
+
+## Results & Impact
+
+### Marketplace Growth
+- **5x increase** in job inventory within first 2 weeks
+- Transformed from inventory-constrained to opportunity-rich marketplace
+
+### User Adoption
+- **20,000+ active users** on Chrome Web Store
+- **4.6 star rating** from users
+- High organic growth through word-of-mouth
+
+### User Testimonials
+
+> "Love Indy! It saves me so much time from endlessly scrolling LinkedIn (and even surfaces opportunities I would've missed on X). As a freelance designer, I can focus on applying to the RIGHT ones instead of sifting through every single job post myself."
+> - *Monserrat Vazquez*
+
+> "As a full-time content creator who used to spend hours hunting for jobs, Indy AI has completely changed the game for me. It does all the heavy lifting and only presents me with opportunities that I ACTUALLY want."
+> - *Rachelle Medina*
+
+> "I used to spend 3+ hours daily hunting for opportunities across different platforms. Indy AI shows me hundreds of opportunities in seconds that match my skills."
+> - *Erika Carpio*
+
+> "Takes the algorithm gamble out of finding your next opportunity! Whether you're a freelancer, agency, or individual looking for full-time work, Indy AI is a no-brainer."
+> - *Shan Minhas*
+
+## The Crowdsourcing Effect
+
+The brilliance of this approach is its compounding network effect:
+- Each new user adds coverage of their unique network
+- More users = more content processed = more opportunities found
+- Benefits scale to all users, not just the discoverer
+- Creates a moat through collective intelligence
+
+## Innovation Highlights
+
+- **Transformed passive browsing into active value creation**
+- **Solved the cold start problem through crowdsourcing**
+- **Created competitive advantage from user behavior**
+- **Built network effects into core product**
+
+## Lessons Learned
+
+- **Leverage existing behavior**: Don't ask users to change habits, augment what they already do
+- **Crowdsourcing scales**: Distributed collection beats centralized scraping
+- **Respect platform boundaries**: Sustainable growth requires platform compliance
+- **Network effects compound**: Each user makes the product better for everyone
+
+## Chrome Web Store
+
+<Card title="Indy.ai on Chrome Web Store" icon="chrome" href="https://chromewebstore.google.com/detail/indy-ai/hgpklbhmaaajglapkgebgjjlccndmcoo">
+  20,000+ users • 4.6 stars
+</Card>
+
+## Technologies Used
+
+<CardGroup cols={3}>
+  <Card title="Plasmo" icon="puzzle">
+    Chrome extension framework
+  </Card>
+  <Card title="React" icon="react">
+    Extension UI
+  </Card>
+  <Card title="Service Workers" icon="gear">
+    Background processing
+  </Card>
+  <Card title="Chrome APIs" icon="chrome">
+    Content access
+  </Card>
+  <Card title="LLM Integration" icon="brain">
+    Opportunity identification
+  </Card>
+  <Card title="Rate Limiting" icon="gauge">
+    Platform compliance
+  </Card>
+</CardGroup>
