@@ -46,11 +46,11 @@
           {
             "group": "Success Stories",
             "pages": [
-              "case-studies/growthrunner-devtools",
-              "case-studies/snacker-ai-video-platform",
               "case-studies/contra-linkedin-automation",
+              "case-studies/vouchernaut-programmatic-ppc",
+              "case-studies/growthrunner-devtools",
               "case-studies/fingers-on-pulse-content-intelligence",
-              "case-studies/vouchernaut-programmatic-ppc"
+              "case-studies/snacker-ai-video-platform"
             ]
           }
         ]
@@ -59,16 +59,16 @@
         "tab": "Tool Ideas",
         "groups": [
           {
-            "group": "By Agency Type",
+            "group": "By Team Type",
             "pages": [
-              "tool-ideas/outbound-agencies",
-              "tool-ideas/ppc-agencies",
-              "tool-ideas/seo-agencies",
-              "tool-ideas/content-agencies",
-              "tool-ideas/social-media-agencies",
-              "tool-ideas/video-agencies",
-              "tool-ideas/design-agencies",
-              "tool-ideas/freelancers"
+              "tool-ideas/outbound-teams",
+              "tool-ideas/ppc-teams",
+              "tool-ideas/seo-teams",
+              "tool-ideas/content-teams",
+              "tool-ideas/social-media-teams",
+              "tool-ideas/video-teams",
+              "tool-ideas/design-teams",
+              "tool-ideas/solo-professionals"
             ]
           },
           {
