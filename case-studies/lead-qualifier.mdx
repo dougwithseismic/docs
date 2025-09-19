@@ -404,6 +404,17 @@ Every action you take has a value:
 - **Hot** (50-99 points): Actively engaged
 - **Qualified** (100+ points): Ready for a conversation
 
+### Real-Time Toast Notifications
+
+As you browse and your engagement level changes, you'll see subtle toast notifications appear in the corner of your screen. These aren't just notifications - they're real-time feedback on your engagement journey:
+
+- **❄️ Cold Toast**: "Getting started - Keep exploring to warm things up!"
+- **🔥 Warm Toast**: "You're warming up! Your engagement is growing."
+- **🔥 Hot Toast**: "Things are heating up! You're highly engaged."
+- **🎯 Qualified Toast**: "You're a qualified lead! We should definitely talk."
+
+These toasts slide in from the left, stay for 6 seconds, then gracefully exit. They're color-coded to match your engagement level and only appear once per level to avoid being annoying.
+
 ## The Smart Signals
 
 Beyond points, I track behavioral patterns that indicate real interest:
@@ -498,7 +509,23 @@ Want to see your scoring in action? Here's what to do:
 3. Browse around and watch your score update
 4. Type: `WithSeismicTracker.getProfile()` to see your full profile
 
-Or just keep reading, exploring, and using the tools. If what I'm building resonates with you, your score will reflect that. And when you're ready to talk, I'll be ready too.
+### Testing the Toast Notifications
+
+Want to see all the toast notifications in action? Open your console and run:
+
+```javascript
+// Test all engagement level toasts in sequence
+WithSeismicTracker.testToasts()
+
+// Or trigger individual toasts
+WithSeismicTracker.showToast("Custom message!", "warm", 5000)
+WithSeismicTracker.showToast("You're on fire!", "hot", 5000)
+WithSeismicTracker.showToast("Welcome aboard!", "qualified", 5000)
+```
+
+The toasts will appear in the bottom-left corner with smooth animations. They stack if multiple are shown, and each has its own color theme matching the engagement level.
+
+Or just keep reading, exploring, and using the tools. If what I'm building resonates with you, your score will reflect that - and you'll see the toasts appear naturally as you progress through the engagement levels. When you're ready to talk, I'll be ready too.
 
 ## The Bottom Line
 

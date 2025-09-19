@@ -219,7 +219,13 @@
           level: "cold",
           signals: [],
           lastEngagement: null,
+          previousLevel: "cold",
+          toastShown: {},
         };
+      }
+      // Ensure new toast fields exist
+      if (!profile.engagement.toastShown) {
+        profile.engagement.toastShown = {};
       }
     }
   }
@@ -337,7 +343,9 @@
         );
 
         StorageManager.saveVisitorProfile(profile);
-        log(`Time on ${this.pagePath}: +${deltaTime}s (session: ${this.totalTrackedTime}s, page total: ${pageData.totalTimeSpent}s)`);
+        log(
+          `Time on ${this.pagePath}: +${deltaTime}s (session: ${this.totalTrackedTime}s, page total: ${pageData.totalTimeSpent}s)`
+        );
       }
     }
 
@@ -452,6 +460,127 @@
       });
     }
 
+    getContentSuggestion(profile, level) {
+      // Define content suggestions for each level
+      const contentMap = {
+        cold: [
+          {
+            path: "/services/why-productize",
+            title: "Why Productize Your Services",
+          },
+          {
+            path: "/tool-ideas/outbound-teams",
+            title: "Tools for Outbound Teams",
+          },
+          {
+            path: "/resources/productization-guide",
+            title: "Productization Guide",
+          },
+          { path: "/build/internal-tools", title: "What We Build" },
+        ],
+        warm: [
+          {
+            path: "/case-studies/lead-qualifier",
+            title: "How I'm Scoring Your Engagement Right Now",
+            priority: true,
+          },
+          {
+            path: "/case-studies/contra-linkedin-automation",
+            title: "Contra's LinkedIn Automation",
+          },
+          {
+            path: "/case-studies/vouchernaut-programmatic-ppc",
+            title: "Vouchernaut's PPC System",
+          },
+        ],
+        hot: [
+          {
+            path: "/approach/discovery-process",
+            title: "Our Discovery Process",
+          },
+          { path: "/pricing", title: "Pricing & Packages" },
+          {
+            path: "/articles/from-lovable-to-production",
+            title: "From Lovable to Production",
+          },
+          {
+            path: "/resources/assessment-framework",
+            title: "Assessment Framework",
+          },
+        ],
+        qualified: [
+          {
+            path: "/contact/book-consultation",
+            title: "Book Your Consultation",
+          },
+          {
+            path: "/contact/project-requirements",
+            title: "Project Requirements",
+          },
+          { path: "/contact/faq", title: "Frequently Asked Questions" },
+        ],
+      };
+
+      const suggestions = contentMap[level] || contentMap.cold;
+      const visitedPages = Object.keys(profile.behavior?.pages || {});
+
+      // For warm level, prioritize the lead qualifier if not visited
+      if (
+        level === "warm" &&
+        !visitedPages.includes("/case-studies/lead-qualifier")
+      ) {
+        return {
+          path: "/case-studies/lead-qualifier",
+          title: "How I'm Scoring Your Engagement Right Now",
+        };
+      }
+
+      // Find unvisited suggestions
+      const unvisited = suggestions.filter(
+        (s) => !visitedPages.includes(s.path)
+      );
+
+      // If all suggested pages visited, pick from a broader list
+      if (unvisited.length === 0) {
+        const allPages = [
+          {
+            path: "/articles/corner-cutters-guide-building-future",
+            title: "Corner Cutter's Guide to Building the Future",
+          },
+          {
+            path: "/articles/great-job-search-delusion",
+            title: "The Great Job Search Delusion",
+          },
+          { path: "/tool-ideas/seo-teams", title: "Tools for SEO Teams" },
+          {
+            path: "/tool-ideas/content-teams",
+            title: "Tools for Content Teams",
+          },
+          {
+            path: "/case-studies/growthrunner-devtools",
+            title: "GrowthRunner's DevTools",
+          },
+          {
+            path: "/case-studies/snacker-ai-video-platform",
+            title: "Snacker's AI Video Platform",
+          },
+        ];
+        const unvisitedBroad = allPages.filter(
+          (p) => !visitedPages.includes(p.path)
+        );
+        if (unvisitedBroad.length > 0) {
+          return unvisitedBroad[
+            Math.floor(Math.random() * unvisitedBroad.length)
+          ];
+        }
+      }
+
+      // Return random unvisited suggestion
+      return unvisited.length > 0
+        ? unvisited[Math.floor(Math.random() * unvisited.length)]
+        : null;
+    }
+
     updateEngagement(profile = null, eventType) {
       if (!profile) profile = StorageManager.getVisitorProfile();
 
@@ -461,6 +590,8 @@
           level: "cold",
           signals: [],
           lastEngagement: null,
+          previousLevel: "cold",
+          toastShown: {},
         };
       }
 
@@ -468,17 +599,59 @@
       profile.engagement.score += score;
       profile.engagement.lastEngagement = new Date().toISOString();
 
-      // Determine engagement level
-      if (profile.engagement.score >= 100) {
+      // Store previous level to detect changes
+      const previousLevel = profile.engagement.level || "cold";
+
+      // Determine engagement level with new thresholds
+      if (profile.engagement.score >= 5000) {
         profile.engagement.level = "qualified";
         if (!profile.engagement.signals.includes("qualified_lead")) {
           profile.engagement.signals.push("qualified_lead");
           this.notifyHighValueLead(profile);
         }
-      } else if (profile.engagement.score >= 50) {
+      } else if (profile.engagement.score >= 2500) {
         profile.engagement.level = "hot";
-      } else if (profile.engagement.score >= 25) {
+      } else if (profile.engagement.score >= 1000) {
         profile.engagement.level = "warm";
+      } else if (profile.engagement.score >= 100) {
+        profile.engagement.level = "cold";
+      }
+
+      // Show toast if level changed with hard-coded suggestions
+      if (previousLevel !== profile.engagement.level) {
+        const levelMessages = {
+          cold: {
+            message: "Getting warmer! Check out: Why Productize Your Services",
+            path: "/services/why-productize"
+          },
+          warm: {
+            message: "Curious about these toasts? See How I'm Tracking You Right Now",
+            path: "/case-studies/lead-qualifier"
+          },
+          hot: {
+            message: "Things are heating up! Ready for: Our Discovery Process?",
+            path: "/approach/discovery-process"
+          },
+          qualified: {
+            message: "You're qualified! Let's talk: Book Your Consultation",
+            path: "/contact/book-consultation"
+          }
+        };
+
+        const toastData = levelMessages[profile.engagement.level];
+        if (
+          toastData &&
+          !profile.engagement.toastShown[profile.engagement.level]
+        ) {
+          // Always create clickable toast with hard-coded path
+          ToastManager.showWithLink(
+            toastData.message,
+            profile.engagement.level,
+            toastData.path,
+            8000
+          );
+          profile.engagement.toastShown[profile.engagement.level] = true;
+        }
       }
 
       this.detectEngagementSignals(profile);
@@ -694,7 +867,7 @@
       profile.behavior.averageTimePerPage = 0;
 
       // Reset time for all pages
-      Object.keys(profile.behavior.pages).forEach(path => {
+      Object.keys(profile.behavior.pages).forEach((path) => {
         profile.behavior.pages[path].totalTimeSpent = 0;
         profile.behavior.pages[path].averageTimeSpent = 0;
         profile.behavior.pages[path].sessions = [];
@@ -814,13 +987,208 @@
     };
   };
 
+  // Toast Notification System
+  const ToastManager = {
+    toasts: [],
+    container: null,
+
+    init() {
+      if (!this.container) {
+        this.container = document.createElement("div");
+        this.container.id = "withseismic-toast-container";
+        this.container.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          left: 20px;
+          z-index: 10000;
+          pointer-events: none;
+        `;
+        document.body.appendChild(this.container);
+      }
+    },
+
+    show(message, level = "info", duration = 5000) {
+      this.init();
+
+      const toast = document.createElement("div");
+      toast.className = "withseismic-toast";
+
+      // Define colors based on engagement level
+      const colors = {
+        cold: { bg: "#f3f4f6", border: "#9ca3af", text: "#374151", icon: "❄️" },
+        warm: { bg: "#fef3c7", border: "#fbbf24", text: "#92400e", icon: "🔥" },
+        hot: { bg: "#fee2e2", border: "#f87171", text: "#991b1b", icon: "🔥" },
+        qualified: {
+          bg: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+          border: "#f59e0b",
+          text: "#ffffff",
+          icon: "🎯",
+        },
+      };
+
+      const color = colors[level] || colors.cold;
+
+      // Responsive width based on viewport
+      const isMobile = window.innerWidth < 640;
+      const minWidth = isMobile ? "280px" : "320px";
+      const maxWidth = isMobile ? "calc(100vw - 40px)" : "420px";
+
+      toast.style.cssText = `
+        background: ${color.bg};
+        border: 2px solid ${color.border};
+        color: ${color.text};
+        padding: 12px 48px 12px 16px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: ${minWidth};
+        max-width: ${maxWidth};
+        width: max-content;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        pointer-events: auto;
+        animation: slideInLeft 0.3s ease-out;
+        transition: all 0.3s ease;
+        position: relative;
+      `;
+
+      // Create dismiss button
+      const dismissBtn = document.createElement("button");
+      dismissBtn.style.cssText = `
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: ${color.text};
+        cursor: pointer;
+        padding: 4px;
+        font-size: 18px;
+        line-height: 1;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      `;
+      dismissBtn.innerHTML = "×";
+      dismissBtn.title = "Dismiss";
+      dismissBtn.onmouseover = () => (dismissBtn.style.opacity = "1");
+      dismissBtn.onmouseout = () => (dismissBtn.style.opacity = "0.7");
+
+      toast.innerHTML = `
+        <span style="font-size: 20px; flex-shrink: 0;">${color.icon}</span>
+        <span style="flex: 1; line-height: 1.4;">${message}</span>
+      `;
+
+      toast.appendChild(dismissBtn);
+
+      // Add CSS animation if not already added
+      if (!document.getElementById("withseismic-toast-styles")) {
+        const style = document.createElement("style");
+        style.id = "withseismic-toast-styles";
+        style.textContent = `
+          @keyframes slideInLeft {
+            from {
+              transform: translateX(-120%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+          @keyframes slideOutLeft {
+            from {
+              transform: translateX(0);
+              opacity: 1;
+            }
+            to {
+              transform: translateX(-120%);
+              opacity: 0;
+            }
+          }
+          .withseismic-toast-clickable {
+            cursor: pointer !important;
+          }
+          .withseismic-toast-clickable:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+          }
+          @media (max-width: 640px) {
+            #withseismic-toast-container {
+              left: 10px !important;
+              right: 10px !important;
+              bottom: 10px !important;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      this.container.appendChild(toast);
+      this.toasts.push(toast);
+
+      // Dismiss function
+      const dismissToast = () => {
+        toast.style.animation = "slideOutLeft 0.3s ease-in";
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.remove();
+          }
+          const index = this.toasts.indexOf(toast);
+          if (index > -1) {
+            this.toasts.splice(index, 1);
+          }
+        }, 300);
+      };
+
+      // Add dismiss button click handler
+      dismissBtn.onclick = (e) => {
+        e.stopPropagation();
+        clearTimeout(toast.dismissTimeout);
+        dismissToast();
+      };
+
+      // Auto-dismiss after duration
+      toast.dismissTimeout = setTimeout(dismissToast, duration);
+
+      return toast;
+    },
+
+    showWithLink(message, level = "info", link, duration = 8000) {
+      const toast = this.show(message, level, duration);
+
+      // Make toast clickable
+      toast.classList.add("withseismic-toast-clickable");
+      toast.style.cursor = "pointer";
+
+      // Add click handler
+      toast.addEventListener("click", () => {
+        window.location.href = link;
+      });
+
+      // Add hover effect hint
+      toast.title = "Click to explore this content";
+
+      return toast;
+    },
+  };
+
   // Engagement Profile Widget
   const createEngagementWidget = () => {
     // Only create in development/debug mode
     if (!CONFIG.debugMode) return;
 
-    const widget = document.createElement('div');
-    widget.id = 'withseismic-engagement-widget';
+    const widget = document.createElement("div");
+    widget.id = "withseismic-engagement-widget";
     widget.style.cssText = `
       position: fixed;
       bottom: 20px;
@@ -848,22 +1216,32 @@
         </div>
 
         <div style="margin-bottom: 8px;">
-          <strong>Engagement:</strong> ${profile.engagement.level} (${profile.engagement.score} pts)
+          <strong>Engagement:</strong> ${profile.engagement.level} (${
+        profile.engagement.score
+      } pts)
         </div>
 
         <div style="margin-bottom: 8px;">
-          <strong>Pages Viewed:</strong> ${profile.behavior.uniquePagesViewed} unique / ${profile.behavior.totalPageViews} total
+          <strong>Pages Viewed:</strong> ${
+            profile.behavior.uniquePagesViewed
+          } unique / ${profile.behavior.totalPageViews} total
         </div>
 
         <div style="margin-bottom: 8px;">
-          <strong>Total Time:</strong> ${Math.floor(profile.behavior.totalTimeSpent / 60)}m ${profile.behavior.totalTimeSpent % 60}s
+          <strong>Total Time:</strong> ${Math.floor(
+            profile.behavior.totalTimeSpent / 60
+          )}m ${profile.behavior.totalTimeSpent % 60}s
         </div>
 
         <div style="margin-bottom: 8px;">
-          <strong>Avg Time/Page:</strong> ${profile.behavior.averageTimePerPage}s
+          <strong>Avg Time/Page:</strong> ${
+            profile.behavior.averageTimePerPage
+          }s
         </div>
 
-        ${currentPage ? `
+        ${
+          currentPage
+            ? `
         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
           <div style="font-weight: bold; margin-bottom: 4px;">Current Page</div>
           <div style="font-size: 12px; color: #666;">
@@ -872,9 +1250,13 @@
             <div>Avg Time: ${currentPage.averageTimeSpent}s</div>
           </div>
         </div>
-        ` : ''}
+        `
+            : ""
+        }
 
-        ${profile.engagement.level === 'qualified' ? `
+        ${
+          profile.engagement.level === "qualified"
+            ? `
         <div style="margin-top: 12px; padding: 12px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 6px; color: white;">
           <div style="font-weight: bold; margin-bottom: 8px;">🎯 You're a Qualified Lead!</div>
           <div style="font-size: 12px; line-height: 1.5;">
@@ -891,13 +1273,19 @@
             </div>
           </div>
         </div>
-        ` : profile.engagement.score >= 50 ? `
+        `
+            : profile.engagement.score >= 2500
+            ? `
         <div style="margin-top: 12px; padding: 8px; background: #fef3c7; border-radius: 6px; border: 1px solid #fbbf24;">
           <div style="font-size: 12px; color: #92400e;">
-            <strong>${100 - profile.engagement.score} points</strong> until qualified status
+            <strong>${
+              5000 - profile.engagement.score
+            } points</strong> until qualified status
           </div>
         </div>
-        ` : ''}
+        `
+            : ""
+        }
 
         <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e5e7eb; display: flex; gap: 8px;">
           <button
@@ -941,9 +1329,63 @@
   // Add method to show widget
   window.WithSeismicTracker.showWidget = () => {
     CONFIG.debugMode = true;
-    if (!document.getElementById('withseismic-engagement-widget')) {
+    if (!document.getElementById("withseismic-engagement-widget")) {
       createEngagementWidget();
     }
+  };
+
+  // Toast methods for testing
+  window.WithSeismicTracker.showToast = (
+    message,
+    level = "warm",
+    duration = 5000
+  ) => {
+    ToastManager.show(message, level, duration);
+  };
+
+  window.WithSeismicTracker.testToasts = () => {
+    // Hard-coded messages matching the actual toast suggestions
+    const messages = [
+      {
+        text: "Getting warmer! Check out: Why Productize Your Services",
+        level: "cold",
+        delay: 0,
+        link: "/services/why-productize"
+      },
+      {
+        text: "Curious about these toasts? See How I'm Tracking You Right Now",
+        level: "warm",
+        delay: 2000,
+        link: "/case-studies/lead-qualifier"
+      },
+      {
+        text: "Things are heating up! Ready for: Our Discovery Process?",
+        level: "hot",
+        delay: 4000,
+        link: "/approach/discovery-process"
+      },
+      {
+        text: "You're qualified! Let's talk: Book Your Consultation",
+        level: "qualified",
+        delay: 6000,
+        link: "/contact/book-consultation"
+      }
+    ];
+
+    // Show all messages with delays
+    messages.forEach(({ text, level, delay, link }) => {
+      setTimeout(() => {
+        if (link) {
+          ToastManager.showWithLink(text, level, link, 8000);
+        } else {
+          ToastManager.show(text, level, 8000);
+        }
+      }, delay);
+    });
+
+    console.log(
+      "🍞 Testing toasts with engagement level notifications!"
+    );
   };
 
   // Initialize everything
