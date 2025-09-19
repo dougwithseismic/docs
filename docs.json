@@ -93,10 +93,11 @@
         ]
       },
       {
-        "tab": "Resources",
+        "tab": "Resources",        
         "groups": [
           {
             "group": "Getting Started",
+            "hidden": true,
             "pages": [
               "resources/productization-guide",
               "resources/assessment-framework",
