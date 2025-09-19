@@ -10,21 +10,21 @@ export const VisitorProfile = () => {
   const [topPages, setTopPages] = useState([]);
   const [mostPopularPage, setMostPopularPage] = useState(null);
 
-  useEffect(() => {
-    const loadProfile = () => {
-      if (typeof window !== 'undefined' && window.WithSeismicTracker) {
-        const data = window.WithSeismicTracker.getProfile();
-        const pages = window.WithSeismicTracker.getTopPages(5);
-        setProfile(data);
-        setTopPages(pages);
-        if (pages && pages.length > 0) {
-          setMostPopularPage(pages[0]);
-        }
-        setIsLoading(false);
-      } else {
-        setTimeout(loadProfile, 100);
-      }
-    };
+useEffect(() => {
+const loadProfile = () => {
+if (typeof window !== 'undefined' && window.WithSeismicTracker) {
+const data = window.WithSeismicTracker.getProfile();
+const pages = window.WithSeismicTracker.getTopPages(5);
+setProfile(data);
+setTopPages(pages);
+if (pages && pages.length > 0) {
+setMostPopularPage(pages[0]);
+}
+setIsLoading(false);
+} else {
+setTimeout(loadProfile, 100);
+}
+};
 
     loadProfile();
 
@@ -42,43 +42,44 @@ export const VisitorProfile = () => {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
 
-  if (isLoading || !profile) {
-    return (
-      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 my-6 animate-pulse">
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
-        <div className="space-y-3">
-          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
-        </div>
-      </div>
-    );
-  }
+}, []);
 
-  const getEngagementColor = (level) => {
-    switch(level) {
-      case 'qualified': return 'text-purple-600 dark:text-purple-400';
-      case 'hot': return 'text-red-600 dark:text-red-400';
-      case 'warm': return 'text-orange-600 dark:text-orange-400';
-      default: return 'text-blue-600 dark:text-blue-400';
-    }
-  };
+if (isLoading || !profile) {
+return (
 
-  const getEngagementEmoji = (level) => {
-    switch(level) {
-      case 'qualified': return '🎯';
-      case 'hot': return '🔥';
-      case 'warm': return '☀️';
-      default: return '❄️';
-    }
-  };
+<div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 my-6 animate-pulse">
+  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
+  <div className="space-y-3">
+    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+  </div>
+</div>
+); }
 
-  const formatTime = (seconds) => {
-    if (!seconds) return '0s';
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+const getEngagementColor = (level) => {
+switch(level) {
+case 'qualified': return 'text-green-600 dark:text-green-400';
+case 'hot': return 'text-green-500 dark:text-green-400';
+case 'warm': return 'text-yellow-600 dark:text-yellow-400';
+default: return 'text-gray-500 dark:text-gray-400';
+}
+};
+
+const getEngagementEmoji = (level) => {
+switch(level) {
+case 'qualified': return '🎯';
+case 'hot': return '🔥';
+case 'warm': return '☀️';
+default: return '❄️';
+}
+};
+
+const formatTime = (seconds) => {
+if (!seconds) return '0s';
+const hours = Math.floor(seconds / 3600);
+const minutes = Math.floor((seconds % 3600) / 60);
+const secs = seconds % 60;
 
     if (hours > 0) {
       return `${hours}h ${minutes}m`;
@@ -86,17 +87,18 @@ export const VisitorProfile = () => {
       return `${minutes}m ${secs}s`;
     }
     return `${secs}s`;
-  };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return 'Never';
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffSecs = Math.floor(diffMs / 1000);
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+};
+
+const formatDate = (dateString) => {
+if (!dateString) return 'Never';
+const date = new Date(dateString);
+const now = new Date();
+const diffMs = now - date;
+const diffSecs = Math.floor(diffMs / 1000);
+const diffMins = Math.floor(diffMs / 60000);
+const diffHours = Math.floor(diffMs / 3600000);
+const diffDays = Math.floor(diffMs / 86400000);
 
     if (diffSecs < 10) return '🔴 Just now';
     if (diffSecs < 60) return `🔴 ${diffSecs} seconds ago`;
@@ -107,27 +109,28 @@ export const VisitorProfile = () => {
     if (diffDays < 7) return `${diffDays} days ago`;
     if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? 's' : ''} ago`;
     return date.toLocaleDateString();
-  };
 
-  const getPageStats = () => {
-    if (!profile.behavior?.pages) return {
-      deepPages: 0,
-      totalLinks: 0,
-      returnVisits: 0,
-      bouncePages: 0,
-      engagedPages: 0
-    };
-    const pages = Object.values(profile.behavior.pages);
-    const deepPages = pages.filter(p => p.maxScrollDepth >= 75).length;
-    const totalLinks = profile.behavior.globalLinksClicked?.length || 0;
-    const returnVisits = pages.filter(p => p.visitCount > 1).length;
-    const bouncePages = pages.filter(p => p.totalTimeSpent < 10).length;
-    const engagedPages = pages.filter(p => p.totalTimeSpent >= 60).length;
-    return { deepPages, totalLinks, returnVisits, bouncePages, engagedPages };
-  };
+};
 
-  const getInterestingStats = () => {
-    if (!profile) return {};
+const getPageStats = () => {
+if (!profile.behavior?.pages) return {
+deepPages: 0,
+totalLinks: 0,
+returnVisits: 0,
+bouncePages: 0,
+engagedPages: 0
+};
+const pages = Object.values(profile.behavior.pages);
+const deepPages = pages.filter(p => p.maxScrollDepth >= 75).length;
+const totalLinks = profile.behavior.globalLinksClicked?.length || 0;
+const returnVisits = pages.filter(p => p.visitCount > 1).length;
+const bouncePages = pages.filter(p => p.totalTimeSpent < 10).length;
+const engagedPages = pages.filter(p => p.totalTimeSpent >= 60).length;
+return { deepPages, totalLinks, returnVisits, bouncePages, engagedPages };
+};
+
+const getInterestingStats = () => {
+if (!profile) return {};
 
     // Calculate session length
     const sessionLength = profile.currentSession?.startTime
@@ -145,31 +148,34 @@ export const VisitorProfile = () => {
       : null;
 
     return { sessionLength, mostUsedTool, contentPreference };
-  };
 
-  const { deepPages, totalLinks, returnVisits, bouncePages, engagedPages } = getPageStats();
-  const { sessionLength, mostUsedTool, contentPreference } = getInterestingStats();
+};
 
-  return (
-    <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-lg p-6 my-6 border border-gray-200 dark:border-gray-700">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-          Your Live Engagement Profile
-        </h3>
-        <div className="flex items-center gap-3">
-          <span className={`text-3xl font-bold ${getEngagementColor(profile.engagement?.level)}`}>
-            {profile.engagement?.score || 0}
-          </span>
-          <span className={`text-2xl ${getEngagementColor(profile.engagement?.level)}`}>
-            {getEngagementEmoji(profile.engagement?.level)}
-          </span>
-        </div>
-      </div>
+const { deepPages, totalLinks, returnVisits, bouncePages, engagedPages } = getPageStats();
+const { sessionLength, mostUsedTool, contentPreference } = getInterestingStats();
+
+return (
+
+<div className="bg-background rounded-lg p-6 my-6 border border-neutral-500/20 shadow-sm">
+<div className="flex items-end justify-between mb-4">
+<h3 className="text-lg my-0 font-semibold text-gray-900 dark:text-gray-100">
+Your Live Engagement Profile
+</h3>
+<div className="flex items-end gap-3">
+<span className={`text-xs ${getEngagementColor(profile.engagement?.level)}`}>
+score:
+</span>
+<span className={`text-3xl font-bold ${getEngagementColor(profile.engagement?.level)}`}>
+{profile.engagement?.score || 0}
+</span>
+
+</div>
+</div>
 
       {/* Most Popular Page Highlight */}
       {mostPopularPage && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border border-green-200 dark:border-green-700">
-          <div className="text-xs text-green-600 dark:text-green-400 mb-1">⭐ Your Favorite Page</div>
+        <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/10 rounded-lg border border-green-200 dark:border-green-800">
+          <div className="text-xs text-green-700 dark:text-green-400 mb-1 font-medium">⭐ Your Favorite Page</div>
           <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             {mostPopularPage.title || mostPopularPage.path}
           </div>
@@ -190,10 +196,10 @@ export const VisitorProfile = () => {
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
           <div
             className={`h-3 rounded-full transition-all duration-500 ${
-              profile.engagement?.level === 'qualified' ? 'bg-purple-600' :
-              profile.engagement?.level === 'hot' ? 'bg-red-600' :
-              profile.engagement?.level === 'warm' ? 'bg-orange-600' :
-              'bg-blue-600'
+              profile.engagement?.level === 'qualified' ? 'bg-green-600' :
+              profile.engagement?.level === 'hot' ? 'bg-green-500' :
+              profile.engagement?.level === 'warm' ? 'bg-yellow-500' :
+              'bg-gray-400'
             }`}
             style={{ width: `${Math.min((profile.engagement?.score || 0), 100)}%` }}
           />
@@ -202,7 +208,7 @@ export const VisitorProfile = () => {
 
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <div className="bg-white dark:bg-gray-800 p-3 rounded">
+        <div className="bg-neutral-500/5 p-3 rounded">
           <div className="text-xs text-gray-600 dark:text-gray-400">Page Views</div>
           <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             {profile.behavior?.totalPageViews || 0}
@@ -212,7 +218,7 @@ export const VisitorProfile = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-3 rounded">
+        <div className="bg-neutral-500/5 p-3 rounded">
           <div className="text-xs text-gray-600 dark:text-gray-400">Total Time</div>
           <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             {formatTime(profile.behavior?.totalTimeSpent || 0)}
@@ -222,7 +228,7 @@ export const VisitorProfile = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-3 rounded">
+        <div className="bg-neutral-500/5 p-3 rounded">
           <div className="text-xs text-gray-600 dark:text-gray-400">Deep Reads</div>
           <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             {deepPages}
@@ -232,7 +238,7 @@ export const VisitorProfile = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-3 rounded">
+        <div className="bg-neutral-500/5 p-3 rounded">
           <div className="text-xs text-gray-600 dark:text-gray-400">Return Visits</div>
           <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             {returnVisits}
@@ -245,16 +251,16 @@ export const VisitorProfile = () => {
 
       {/* Interesting Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-3 rounded">
-          <div className="text-xs text-blue-600 dark:text-blue-400">Current Session</div>
+        <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+          <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Current Session</div>
           <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             {formatTime(sessionLength)} active
           </div>
         </div>
 
         {mostUsedTool && (
-          <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-3 rounded">
-            <div className="text-xs text-purple-600 dark:text-purple-400">Tool Used</div>
+          <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Tool Used</div>
             <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
               {mostUsedTool}
             </div>
@@ -262,8 +268,8 @@ export const VisitorProfile = () => {
         )}
 
         {contentPreference && (
-          <div className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-3 rounded">
-            <div className="text-xs text-orange-600 dark:text-orange-400">Content Interest</div>
+          <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Content Interest</div>
             <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 capitalize">
               {contentPreference}
             </div>
@@ -272,7 +278,7 @@ export const VisitorProfile = () => {
       </div>
 
       {/* Visit Timeline */}
-      <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 mb-6">
+      <div className="bg-neutral-500/5/50 rounded-lg p-4 mb-6 border border-neutral-500/10">
         <div className="text-xs text-gray-600 dark:text-gray-400 mb-3">📅 Visitor Timeline</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -305,7 +311,7 @@ export const VisitorProfile = () => {
               const maxTime = topPages[0].totalTimeSpent;
               const percentage = (page.totalTimeSpent / maxTime) * 100;
               return (
-                <div key={i} className="bg-white dark:bg-gray-800 p-3 rounded">
+                <div key={i} className="bg-neutral-500/5 p-3 rounded">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-gray-700 dark:text-gray-300 truncate flex-1">
                       {i === 0 && '🥇'} {i === 1 && '🥈'} {i === 2 && '🥉'} {page.title || page.path}
@@ -315,10 +321,10 @@ export const VisitorProfile = () => {
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                    <div className="bg-green-500 h-1.5 rounded-full" style={{ width: `${percentage}%` }} />
+                    <div className="bg-green-600 h-1.5 rounded-full" style={{ width: `${percentage}%` }} />
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                    {page.visitCount} visit{page.visitCount > 1 ? 's' : ''} · {page.maxScrollDepth}% scroll depth
+                    {page.visitCount} visit{page.visitCount > 1 ? 's' : ''} · {page.maxScrollDepth}{'%'} scroll depth
                   </div>
                 </div>
               );
@@ -333,7 +339,7 @@ export const VisitorProfile = () => {
           <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Behavioral Signals Detected</div>
           <div className="flex flex-wrap gap-2">
             {profile.engagement.signals.map((signal, i) => (
-              <span key={i} className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded">
+              <span key={i} className="text-xs bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-1 rounded border border-green-200 dark:border-green-800">
                 ✓ {signal.replace(/_/g, ' ')}
               </span>
             ))}
@@ -354,7 +360,8 @@ export const VisitorProfile = () => {
         </div>
       </div>
     </div>
-  );
+
+);
 };
 
 ## Did You Know You're Being Scored Right Now?
@@ -402,6 +409,7 @@ Every action you take has a value:
 Beyond points, I track behavioral patterns that indicate real interest:
 
 ### Content Patterns
+
 - **Multi-page visitor**: You're exploring beyond the landing page
 - **Deep explorer**: 5+ unique pages viewed
 - **Deep content consumer**: Reading to the bottom of multiple articles
@@ -409,10 +417,12 @@ Beyond points, I track behavioral patterns that indicate real interest:
 - **Tool user**: Actually trying the solutions
 
 ### Time Investment
+
 - **Engaged reader**: Averaging 60+ seconds per page
 - **High time investment**: 5+ minutes total on site
 
 ### Intent Signals
+
 - **Contact visitor**: Checked out how to reach me
 - **Booking intent**: Clicked on consultation links
 - **Company info provided**: Shared who you are
@@ -421,12 +431,14 @@ Beyond points, I track behavioral patterns that indicate real interest:
 ## Why This Matters
 
 ### For You
+
 - No time wasted on calls that won't go anywhere
 - I already understand your level of interest
 - Our first conversation can skip the basics
 - You're not just another "lead" in a CRM
 
 ### For Me
+
 - I can prioritize high-intent prospects
 - I understand what content resonates
 - I know which problems you're trying to solve
@@ -443,6 +455,7 @@ This system is built with:
 - **Page-centric data**: Detailed engagement per page
 
 Every page visit creates a session record with:
+
 - Time spent
 - Scroll depth
 - Links clicked
@@ -460,6 +473,7 @@ When you hit 100 points (qualified lead), I get a notification with:
 - Your overall journey through the site
 
 This isn't about surveillance - it's about preparation. When we do connect, I'll already understand:
+
 - What you're looking for
 - Which solutions resonate
 - Where you're spending time
