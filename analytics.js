@@ -305,13 +305,22 @@
     trackTimeOnPage() {
       const now = Date.now();
       const deltaTime = Math.floor((now - this.lastUpdateTime) / 1000);
+
+      // Only track time if it's reasonable (less than 5 minutes gap)
+      // This prevents counting time when tab was inactive
+      if (deltaTime > 300) {
+        log(`Skipping excessive time delta: ${deltaTime}s`);
+        this.lastUpdateTime = now;
+        return;
+      }
+
       this.lastUpdateTime = now;
       this.totalTrackedTime += deltaTime;
 
       const profile = StorageManager.getVisitorProfile();
       const pageData = profile.behavior.pages[this.pagePath];
 
-      if (pageData && deltaTime > 0) {
+      if (pageData && deltaTime > 0 && deltaTime <= 300) {
         // Update page-specific time with ONLY the delta
         pageData.totalTimeSpent += deltaTime;
         pageData.averageTimeSpent = Math.floor(
@@ -328,7 +337,7 @@
         );
 
         StorageManager.saveVisitorProfile(profile);
-        log(`Time on ${this.pagePath}: +${deltaTime}s (total: ${this.totalTrackedTime}s)`);
+        log(`Time on ${this.pagePath}: +${deltaTime}s (session: ${this.totalTrackedTime}s, page total: ${pageData.totalTimeSpent}s)`);
       }
     }
 
@@ -547,12 +556,24 @@
 
       // Clear timeouts
       this.timeouts.forEach((timeout) => clearTimeout(timeout));
+
+      // Clear time tracking interval
+      if (this.timeTrackingInterval) {
+        clearInterval(this.timeTrackingInterval);
+      }
     }
 
     init() {
       this.initializePage();
       this.setupScrollTracking();
       this.setupTimeTracking();
+
+      // Track time every 10 seconds for accurate measurement
+      this.timeTrackingInterval = setInterval(() => {
+        if (!document.hidden) {
+          this.trackTimeOnPage();
+        }
+      }, 10000);
 
       // Track time when leaving page
       window.addEventListener("beforeunload", () => {
@@ -666,6 +687,23 @@
       log("Tracker data reset");
     },
 
+    resetTimeData: () => {
+      const profile = StorageManager.getVisitorProfile();
+      // Reset global time
+      profile.behavior.totalTimeSpent = 0;
+      profile.behavior.averageTimePerPage = 0;
+
+      // Reset time for all pages
+      Object.keys(profile.behavior.pages).forEach(path => {
+        profile.behavior.pages[path].totalTimeSpent = 0;
+        profile.behavior.pages[path].averageTimeSpent = 0;
+        profile.behavior.pages[path].sessions = [];
+      });
+
+      StorageManager.saveVisitorProfile(profile);
+      log("Time tracking data reset");
+    },
+
     enableDebug: () => {
       CONFIG.debugMode = true;
       log("Debug mode enabled");
@@ -776,16 +814,125 @@
     };
   };
 
+  // Engagement Profile Widget
+  const createEngagementWidget = () => {
+    // Only create in development/debug mode
+    if (!CONFIG.debugMode) return;
+
+    const widget = document.createElement('div');
+    widget.id = 'withseismic-engagement-widget';
+    widget.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 320px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      z-index: 9999;
+      max-height: 400px;
+      overflow-y: auto;
+    `;
+
+    const updateWidget = () => {
+      const profile = StorageManager.getVisitorProfile();
+      const currentPage = profile.behavior.pages[window.location.pathname];
+
+      widget.innerHTML = `
+        <div style="margin-bottom: 12px; font-weight: bold; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">
+          Visitor Analytics
+        </div>
+
+        <div style="margin-bottom: 8px;">
+          <strong>Engagement:</strong> ${profile.engagement.level} (${profile.engagement.score} pts)
+        </div>
+
+        <div style="margin-bottom: 8px;">
+          <strong>Pages Viewed:</strong> ${profile.behavior.uniquePagesViewed} unique / ${profile.behavior.totalPageViews} total
+        </div>
+
+        <div style="margin-bottom: 8px;">
+          <strong>Total Time:</strong> ${Math.floor(profile.behavior.totalTimeSpent / 60)}m ${profile.behavior.totalTimeSpent % 60}s
+        </div>
+
+        <div style="margin-bottom: 8px;">
+          <strong>Avg Time/Page:</strong> ${profile.behavior.averageTimePerPage}s
+        </div>
+
+        ${currentPage ? `
+        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+          <div style="font-weight: bold; margin-bottom: 4px;">Current Page</div>
+          <div style="font-size: 12px; color: #666;">
+            <div>Visits: ${currentPage.visitCount}</div>
+            <div>Total Time: ${currentPage.totalTimeSpent}s</div>
+            <div>Avg Time: ${currentPage.averageTimeSpent}s</div>
+          </div>
+        </div>
+        ` : ''}
+
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e5e7eb; display: flex; gap: 8px;">
+          <button
+            onclick="WithSeismicTracker.resetTimeData(); location.reload();"
+            style="flex: 1; padding: 6px 12px; background: #fbbf24; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;"
+            onmouseover="this.style.background='#f59e0b'"
+            onmouseout="this.style.background='#fbbf24'"
+          >
+            Reset Time Data
+          </button>
+          <button
+            onclick="WithSeismicTracker.reset(); location.reload();"
+            style="flex: 1; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;"
+            onmouseover="this.style.background='#dc2626'"
+            onmouseout="this.style.background='#ef4444'"
+          >
+            Reset All Data
+          </button>
+        </div>
+
+        <div style="margin-top: 8px;">
+          <button
+            onclick="document.getElementById('withseismic-engagement-widget').remove();"
+            style="width: 100%; padding: 6px 12px; background: #6b7280; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;"
+            onmouseover="this.style.background='#4b5563'"
+            onmouseout="this.style.background='#6b7280'"
+          >
+            Close Widget
+          </button>
+        </div>
+      `;
+    };
+
+    document.body.appendChild(widget);
+    updateWidget();
+
+    // Update widget every 5 seconds
+    setInterval(updateWidget, 5000);
+  };
+
+  // Add method to show widget
+  window.WithSeismicTracker.showWidget = () => {
+    CONFIG.debugMode = true;
+    if (!document.getElementById('withseismic-engagement-widget')) {
+      createEngagementWidget();
+    }
+  };
+
   // Initialize everything
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       setupGlobalListeners();
       init();
       setupNavigationTracking();
+      if (CONFIG.debugMode) createEngagementWidget();
     });
   } else {
     setupGlobalListeners();
     init();
     setupNavigationTracking();
+    if (CONFIG.debugMode) createEngagementWidget();
   }
 })();
