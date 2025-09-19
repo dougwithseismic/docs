@@ -874,6 +874,31 @@
         </div>
         ` : ''}
 
+        ${profile.engagement.level === 'qualified' ? `
+        <div style="margin-top: 12px; padding: 12px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 6px; color: white;">
+          <div style="font-weight: bold; margin-bottom: 8px;">🎯 You're a Qualified Lead!</div>
+          <div style="font-size: 12px; line-height: 1.5;">
+            Here's what happens next:
+            <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+              <li>I've been notified of your interest</li>
+              <li>You might see a "Let's talk" modal soon</li>
+              <li>My content may appear in your Reddit & LinkedIn feeds</li>
+              <li>I might send you a connection request</li>
+              <li>You'll see me engaging with people you follow</li>
+            </ul>
+            <div style="margin-top: 8px; font-style: italic;">
+              Just subtle ways to stay top of mind - because clearly, you're curious about what I have to say.
+            </div>
+          </div>
+        </div>
+        ` : profile.engagement.score >= 50 ? `
+        <div style="margin-top: 12px; padding: 8px; background: #fef3c7; border-radius: 6px; border: 1px solid #fbbf24;">
+          <div style="font-size: 12px; color: #92400e;">
+            <strong>${100 - profile.engagement.score} points</strong> until qualified status
+          </div>
+        </div>
+        ` : ''}
+
         <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e5e7eb; display: flex; gap: 8px;">
           <button
             onclick="WithSeismicTracker.resetTimeData(); location.reload();"
