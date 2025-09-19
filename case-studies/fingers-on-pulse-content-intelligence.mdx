@@ -3,6 +3,8 @@ title: "Fingers On The Pulse"
 description: "How we built an automated content intelligence system that processes 800+ YouTube channels, transforming months of manual research into minutes of automated insights"
 ---
 
+<img src="/images/finger-m0.png" alt="Fingers On The Pulse Content Intelligence System" className="rounded-lg" />
+
 <Note>
 [Read the full technical deep-dive on our blog →](https://blog.withseismic.com/fingers-on-the-pulse-how-we-ate-thousands-of-hours-of-youtube-to-shape-the-zeitgeist-with-trigger-dev/)
 </Note>
@@ -40,6 +42,10 @@ The system uses a multi-level batch processing pipeline:
 ```
 Channel Discovery → Video Processing → Content Analysis → Insight Storage → Trend Analysis
 ```
+
+### Content Discovery Flow
+
+<img src="/images/finger-m1.png" alt="Content Discovery Flow Diagram" className="rounded-lg" />
 
 ### Tech Stack
 
@@ -116,6 +122,10 @@ const response = await generateObject({
 });
 ```
 
+### Content Analysis Flow
+
+<img src="/images/finger-m2.png" alt="Content Analysis Flow Diagram" className="rounded-lg" />
+
 ### Universal Content Adapter Pattern
 
 Designed for expansion beyond YouTube:
@@ -143,6 +153,14 @@ The one-week POC allowed the client to:
 - Determine ROI before full investment
 
 ## Results & Impact
+
+### Manual vs Automated Research Comparison
+
+<img src="/images/finger-m3.png" alt="Before: Cumbersome, desystematised, dirty" className="rounded-lg" />
+<p className="text-center text-sm text-gray-600 mt-2">Before: Cumbersome, desystematised, dirty</p>
+
+<img src="/images/finger-m4.png" alt="After: Automation utopia with a 200x increase" className="rounded-lg mt-6" />
+<p className="text-center text-sm text-gray-600 mt-2">After: Automation utopia with a 200x increase</p>
 
 ### Before Automation
 - Content research: 60% of creators' time
