@@ -1,0 +1,318 @@
+---
+title: "Automated Lead Magnets & Deliverables"
+description: "Build tools that create personalized value for prospects before your first conversation"
+---
+
+## The Value-First Approach
+
+Instead of "Hey, I helped someone like you" emails, imagine sending "Hey, I already did this analysis for you - here's what I found." These tools automatically create personalized deliverables that demonstrate your expertise and provide immediate value.
+
+<Note>
+The key: Once you build the system to generate one high-quality deliverable, you can create hundreds personalized for each prospect with zero additional effort.
+</Note>
+
+## Analytics & Tracking Audits
+
+<CardGroup cols={2}>
+  <Card title="Analytics Health Check" icon="chart-line">
+    Use Puppeteer/Playwright to crawl prospect sites, simulate user journeys, detect tracking issues, identify missing events, and generate a comprehensive audit report.
+  </Card>
+
+  <Card title="Event Tracking Mapper" icon="diagram-project">
+    Map all analytics events firing on a site. Identify gaps in conversion tracking. Show discrepancies between platforms. Suggest missing tracking points.
+  </Card>
+
+  <Card title="Privacy Compliance Scanner" icon="shield-halved">
+    Check for GDPR/CCPA compliance issues. Identify third-party trackers. Suggest first-party domain setup. Flag potential privacy risks.
+  </Card>
+
+  <Card title="Tag Manager Auditor" icon="tags">
+    Analyze GTM/Segment setups. Find broken tags, redundant tracking, performance issues. Generate optimization recommendations.
+  </Card>
+</CardGroup>
+
+## Technical SEO Deliverables
+
+<AccordionGroup>
+  <Accordion title="Automated Site Crawl Reports">
+    **What it does**: Generate personalized SEO audits for prospects
+
+    **How it works**:
+    - Crawl prospect's website automatically
+    - Identify technical SEO issues
+    - Compare to competitors
+    - Generate branded PDF with specific recommendations
+    - Include "after working with us" projections
+
+    **Deliverable**: 20-page personalized SEO audit
+
+    **Example email**: "I noticed you're ranking #8 for [keyword]. Here's a custom analysis showing exactly why competitors outrank you and what to fix."
+  </Accordion>
+
+  <Accordion title="Core Web Vitals Analysis">
+    **What it does**: Performance analysis with visual comparisons
+
+    **How it works**:
+    - Run Lighthouse on key pages
+    - Generate before/after mockups
+    - Calculate potential ranking improvements
+    - Show load time improvements
+    - Create video of current vs optimized experience
+
+    **Deliverable**: Interactive performance report with videos
+
+    **Example email**: "Your site takes 8.2 seconds to load on mobile. Here's a video showing your site vs. how fast it could be."
+  </Accordion>
+
+  <Accordion title="Competitor Gap Analysis">
+    **What it does**: Show exactly what competitors do better
+
+    **How it works**:
+    - Analyze top 3 competitors automatically
+    - Identify content gaps
+    - Show ranking opportunities
+    - Calculate traffic potential
+    - Generate action plan
+
+    **Deliverable**: Competitive analysis with traffic projections
+
+    **Example email**: "Your competitors rank for 2,847 keywords you don't. Here's the top 20 that could drive 10K+ visits/month."
+  </Accordion>
+</AccordionGroup>
+
+## PPC & Paid Media Audits
+
+<Tabs>
+  <Tab title="Google Ads Waste Finder">
+    Connect to Google Ads API (with public data or estimates). Identify likely wasted spend based on industry benchmarks. Show potential savings. Generate optimization checklist.
+  </Tab>
+
+  <Tab title="Landing Page Optimizer">
+    Analyze landing pages for conversion issues. Generate A/B test recommendations. Create mockups of optimized versions. Calculate potential conversion lift.
+  </Tab>
+
+  <Tab title="Competitor Ad Spy Report">
+    Track competitor ads across platforms. Show their messaging and creative. Identify gaps in their strategy. Suggest angles they're missing.
+  </Tab>
+</Tabs>
+
+## Content & Copy Analysis
+
+<Steps>
+  <Step title="Content Quality Scorer">
+    Analyze existing content for:
+    - Readability issues
+    - SEO optimization gaps
+    - Engagement potential
+    - Brand voice consistency
+
+    Generate specific improvement recommendations.
+  </Step>
+
+  <Step title="Messaging Consistency Audit">
+    Check messaging across:
+    - Website copy
+    - Social media
+    - Ad copy
+    - Email campaigns
+
+    Identify inconsistencies and mixed messages.
+  </Step>
+
+  <Step title="Conversion Copy Optimizer">
+    Analyze key pages for:
+    - Value proposition clarity
+    - CTA effectiveness
+    - Trust signals
+    - Urgency/scarcity usage
+
+    Provide rewritten versions that convert better.
+  </Step>
+</Steps>
+
+## Social Media Opportunities
+
+<Info>
+Show prospects exactly what they're missing on social media with concrete examples.
+</Info>
+
+<Card title="Engagement Opportunity Finder">
+  Analyze competitor social media. Identify content types that work. Show gaps in posting schedule. Generate 30-day content calendar. Include example posts.
+</Card>
+
+<Card title="Influencer Match Report">
+  Find influencers in their space. Show who competitors work with. Calculate potential reach. Include outreach templates. Price estimates included.
+</Card>
+
+<Card title="Hashtag Performance Analyzer">
+  Analyze current hashtag usage. Show better alternatives. Calculate reach improvements. Generate hashtag sets. Track competitor hashtags.
+</Card>
+
+## Lead Generation Audits
+
+### Website Conversion Audit
+- **Heatmap simulation**: Show where users likely click
+- **Form analysis**: Identify friction points
+- **Exit intent opportunities**: Where to add lead capture
+- **Chat implementation**: Show where chat would help
+- **Lead magnet suggestions**: What would work for their audience
+
+### Email Capture Optimizer
+- **Current capture rate estimate**: Based on traffic and form placement
+- **Optimization suggestions**: Specific changes to increase captures
+- **A/B test recommendations**: What to test first
+- **Lead magnet ideas**: Specific to their industry
+- **Nurture sequence outline**: What to send new subscribers
+
+## Technical Implementation
+
+<Tip>
+Here's how to build these automated audit systems using modern tools.
+</Tip>
+
+**Using Playwright/Puppeteer**:
+```javascript
+// Example: Automated analytics audit
+async function auditAnalytics(url) {
+  const browser = await playwright.chromium.launch();
+  const page = await browser.newPage();
+
+  // Track network requests
+  const analytics = [];
+  page.on('request', request => {
+    if (request.url().includes('google-analytics') ||
+        request.url().includes('segment') ||
+        request.url().includes('mixpanel')) {
+      analytics.push(request.url());
+    }
+  });
+
+  // Navigate and interact
+  await page.goto(url);
+  await page.click('[data-test="cta"]');
+
+  // Generate report
+  return generateReport(analytics);
+}
+```
+
+**Tech Stack Detection**:
+```javascript
+// Detect what tools they use
+function detectTechStack(url) {
+  return {
+    analytics: checkForGA(), // Google Analytics
+    heatmaps: checkForHotjar(), // Hotjar
+    email: checkForMailchimp(), // Email platform
+    chat: checkForIntercom(), // Chat tool
+    cms: checkForWordPress(), // CMS
+  };
+}
+```
+
+## Deliverable Formats
+
+<Note>
+The format matters as much as the content. Make it easy to consume and share internally.
+</Note>
+
+**Interactive Web Reports**:
+- Hosted on your domain
+- Shareable link
+- Interactive elements
+- Video walkthroughs
+- Expires after 30 days (urgency)
+
+**Branded PDFs**:
+- Professional design
+- Executive summary
+- Detailed findings
+- Clear action items
+- ROI projections
+
+**Video Audits**:
+- Loom-style walkthroughs
+- Screen recordings with commentary
+- Before/after comparisons
+- Personalized recommendations
+- Under 5 minutes
+
+**Chrome Extension Overlays**:
+- Install extension
+- See issues directly on their site
+- Real-time recommendations
+- Share with their team
+- Limited-time access
+
+## Outreach Templates Using Deliverables
+
+### Email Example 1: Analytics Audit
+```
+Subject: Found 3 tracking issues on [company].com
+
+Hi [Name],
+
+I was researching [company] and noticed you might be missing out on valuable visitor data.
+
+I ran a quick audit and found:
+- Cart abandonment events aren't firing
+- Cross-domain tracking is broken between shop and main site
+- Mobile conversions aren't being tracked
+
+I put together a quick report showing exactly what's broken and how to fix it: [link]
+
+Worth a quick call to discuss? These fixes could improve your conversion tracking by 40%.
+```
+
+### Email Example 2: SEO Opportunities
+```
+Subject: [Company] could rank #1 for "[keyword]" - here's how
+
+Hi [Name],
+
+You're currently #8 for "[keyword]" - so close to the top!
+
+I analyzed why the top 3 sites outrank you and created a roadmap showing exactly what changes would push you to #1.
+
+The analysis is here: [link] (expires in 7 days)
+
+Implementing these changes could add ~5,000 visitors/month. Interested in discussing?
+```
+
+## ROI of Automated Deliverables
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableCell>Metric</TableCell>
+      <TableCell>Traditional Outreach</TableCell>
+      <TableCell>With Automated Deliverables</TableCell>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>Response Rate</TableCell>
+      <TableCell>2-3%</TableCell>
+      <TableCell>15-25%</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Meeting Book Rate</TableCell>
+      <TableCell>0.5%</TableCell>
+      <TableCell>5-8%</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Time per Prospect</TableCell>
+      <TableCell>5 minutes</TableCell>
+      <TableCell>0 minutes (after automation)</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Close Rate from Meeting</TableCell>
+      <TableCell>10%</TableCell>
+      <TableCell>25-30%</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+---
+
+Remember: The goal isn't to give away all your value for free. It's to demonstrate expertise and create urgency by showing prospects exactly what they're missing. The deliverable should make them think "If they found this in 5 minutes, imagine what they could do as our agency."

@@ -1,0 +1,106 @@
+<div id="company-calculator" style="padding: 24px; border-radius: 8px; border: 1px solid #e5e7eb; background-color: #f9fafb; margin: 16px 0;">
+  <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">
+    Find Your Perfect Productization Path
+  </h3>
+
+  <div style="margin-bottom: 16px;">
+    <label style="display: block; margin-bottom: 8px; font-weight: 500;">
+      Company Size (employees)
+    </label>
+    <input
+      id="company-size"
+      type="number"
+      placeholder="e.g., 15"
+      style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;"
+    />
+  </div>
+
+  <div style="margin-bottom: 16px;">
+    <label style="display: block; margin-bottom: 8px; font-weight: 500;">
+      Industry
+    </label>
+    <select
+      id="company-industry"
+      style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;"
+    >
+      <option value="">Select industry...</option>
+      <option value="marketing">Marketing Agency</option>
+      <option value="development">Development Agency</option>
+      <option value="consulting">Consulting</option>
+      <option value="creative">Creative Agency</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+
+  <button
+    id="calculate-btn"
+    onclick="calculateRecommendation()"
+    style="width: 100%; padding: 12px; background-color: #7C3AED; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;"
+  >
+    Get My Recommendation
+  </button>
+
+  <div id="result" style="display: none; margin-top: 24px; padding: 16px; background-color: white; border-radius: 6px; border: 1px solid #7C3AED;">
+  </div>
+</div>
+
+<script>
+function calculateRecommendation() {
+  const size = document.getElementById('company-size').value;
+  const industry = document.getElementById('company-industry').value;
+
+  if (!size || !industry) {
+    alert('Please fill in all fields');
+    return;
+  }
+
+  const recommendations = {
+    small: {
+      title: "Starter Productization Package",
+      description: "Perfect for agencies under 10 people looking to automate their first processes"
+    },
+    medium: {
+      title: "Growth Acceleration Package",
+      description: "Ideal for scaling agencies ready to 10x their capacity"
+    },
+    large: {
+      title: "Enterprise Transformation",
+      description: "Complete digital transformation for established agencies"
+    }
+  };
+
+  const sizeKey = parseInt(size) < 10 ? 'small' :
+                  parseInt(size) < 50 ? 'medium' : 'large';
+
+  const result = recommendations[sizeKey];
+
+  // Track with global tracker
+  if (window.WithSeismicTracker) {
+    window.WithSeismicTracker.captureCompany({
+      size: size,
+      industry: industry
+    });
+    window.WithSeismicTracker.trackCalculation({
+      tool: 'company-size-calculator',
+      companySize: size,
+      industry: industry,
+      recommendation: result.title
+    });
+  }
+
+  // Show result
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = `
+    <h4 style="color: #7C3AED; font-weight: 600; margin-bottom: 8px;">
+      ${result.title}
+    </h4>
+    <p style="color: #6b7280;">${result.description}</p>
+  `;
+  resultDiv.style.display = 'block';
+}
+
+// Track tool view
+if (window.WithSeismicTracker) {
+  window.WithSeismicTracker.trackTool('company-size-calculator', { action: 'viewed' });
+}
+</script>

@@ -1,0 +1,68 @@
+<div id="email-capture" style="padding: 20px; background-color: #f3f4f6; border-radius: 8px; margin: 16px 0;">
+  <p style="font-weight: 500; margin-bottom: 12px;">
+    Want our exclusive productization playbook?
+  </p>
+
+  <form id="email-form" onsubmit="handleEmailSubmit(event)">
+    <input
+      id="email-input"
+      type="email"
+      placeholder="your@email.com"
+      required
+      style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; margin-bottom: 12px;"
+    />
+
+    <input
+      id="name-input"
+      type="text"
+      placeholder="Your name (optional)"
+      style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; margin-bottom: 12px; display: none;"
+    />
+
+    <button
+      type="submit"
+      style="width: 100%; padding: 10px; background-color: #7C3AED; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;"
+    >
+      Get My Playbook
+    </button>
+  </form>
+
+  <div id="success-message" style="display: none; padding: 16px; background-color: #dcfce7; border-radius: 6px;">
+    <p style="color: #166534; font-weight: 500;">
+      ✓ Thanks! Check your email for exclusive insights.
+    </p>
+  </div>
+</div>
+
+<script>
+let emailStep = 1;
+
+function handleEmailSubmit(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('email-input').value;
+  const name = document.getElementById('name-input').value;
+
+  if (emailStep === 1) {
+    // Show name field after email
+    document.getElementById('name-input').style.display = 'block';
+    document.querySelector('#email-form button').textContent = 'Complete Signup';
+    emailStep = 2;
+
+    if (window.WithSeismicTracker) {
+      window.WithSeismicTracker.trackAction({ type: 'form_started', formName: 'email-capture' });
+    }
+  } else {
+    // Capture email and complete
+    if (window.WithSeismicTracker) {
+      window.WithSeismicTracker.captureEmail(email, name || 'Unknown');
+    }
+
+    // Show success
+    document.getElementById('email-form').style.display = 'none';
+    document.getElementById('success-message').style.display = 'block';
+  }
+
+  return false;
+}
+</script>

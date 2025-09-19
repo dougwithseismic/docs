@@ -26,9 +26,6 @@
           {
             "group": "What We Build",
             "pages": [
-              "build/assessment-tools",
-              "build/roi-calculators",
-              "build/client-dashboards",
               "build/internal-tools"
             ]
           },
@@ -59,33 +56,27 @@
         ]
       },
       {
-        "tab": "Tool Examples",
+        "tab": "Tool Ideas",
         "groups": [
           {
-            "group": "Growth Tools",
+            "group": "By Agency Type",
             "pages": [
-              "examples/conversion-calculators",
-              "examples/roi-demonstrators",
-              "examples/competitive-analyzers",
-              "examples/opportunity-assessments"
+              "tool-ideas/outbound-agencies",
+              "tool-ideas/ppc-agencies",
+              "tool-ideas/seo-agencies",
+              "tool-ideas/content-agencies",
+              "tool-ideas/social-media-agencies",
+              "tool-ideas/video-agencies",
+              "tool-ideas/design-agencies",
+              "tool-ideas/freelancers"
             ]
           },
           {
-            "group": "Operational Tools",
+            "group": "Lead Generation Tools",
             "pages": [
-              "examples/project-estimators",
-              "examples/resource-planners",
-              "examples/quality-checkers",
-              "examples/workflow-automation"
-            ]
-          },
-          {
-            "group": "Client Success Tools",
-            "pages": [
-              "examples/onboarding-portals",
-              "examples/progress-trackers",
-              "examples/report-generators",
-              "examples/feedback-systems"
+              "tool-ideas/automated-lead-magnets",
+              "tool-ideas/instant-value-generators",
+              "tool-ideas/prospect-qualification-tools"
             ]
           }
         ]
@@ -100,9 +91,14 @@
               "resources/assessment-framework",
               "resources/pricing-your-products"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "Work With Us",
+        "groups": [
           {
-            "group": "Work With Us",
+            "group": "Get Started",
             "pages": [
               "contact/book-consultation",
               "contact/project-requirements",
@@ -116,18 +112,18 @@
       "anchors": [
         {
           "anchor": "Book Discovery Call",
-          "href": "https://calendly.com/withseismic/discovery",
+          "href": "https://withseismic.com/contact",
           "icon": "phone"
         },
         {
-          "anchor": "View Portfolio",
-          "href": "https://portfolio.withseismic.com",
-          "icon": "briefcase"
+          "anchor": "YouTube",
+          "href": "https://www.youtube.com/@dougsilkstone",
+          "icon": "youtube"
         },
         {
-          "anchor": "Blog",
-          "href": "https://withseismic.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitHub",
+          "href": "https://github.com/dougwithseismic",
+          "icon": "GitHub"
         }
       ]
     }
@@ -146,7 +142,7 @@
     "primary": {
       "type": "button",
       "label": "Get Started",
-      "href": "https://calendly.com/withseismic/discovery"
+      "href": "https://withseismic.com/contact"
     }
   },
   "contextual": {
@@ -163,9 +159,15 @@
   },
   "footer": {
     "socials": {
+      "youtube": "https://www.youtube.com/@dougsilkstone",
       "x": "https://x.com/withseismic",
-      "github": "https://github.com/withseismic",
+      "github": "https://github.com/dougwithseismic",
       "linkedin": "https://linkedin.com/company/withseismic"
     }
+  },
+  "custom": {
+    "js": [
+      "/tracking/tracker.js"
+    ]
   }
 }

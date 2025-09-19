@@ -1,0 +1,84 @@
+export const CalButton = ({
+  calLink = "dougwithseismic/30min",
+  namespace = "30min",
+  layout = "month_view",
+  hideEventTypeDetails = false,
+  buttonText = "Book a Call",
+  buttonStyle = {}
+}) => {
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && !window.Cal) {
+      const script = document.createElement('script');
+      script.src = 'https://app.cal.com/embed/embed.js';
+      script.async = true;
+      document.head.appendChild(script);
+
+      window.Cal = window.Cal || function() {
+        const cal = window.Cal;
+        const args = arguments;
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          cal.loaded = true;
+        }
+        if (args[0] === "init") {
+          const api = function() {
+            api.q = api.q || [];
+            api.q.push(arguments);
+          };
+          const ns = args[1];
+          api.q = api.q || [];
+          if (typeof ns === "string") {
+            cal.ns[ns] = cal.ns[ns] || api;
+            cal.q.push(args);
+          }
+        } else {
+          cal.q.push(args);
+        }
+      };
+    }
+
+    if (window.Cal) {
+      window.Cal("init", namespace, { origin: "https://app.cal.com" });
+      window.Cal.ns[namespace]("ui", {
+        hideEventTypeDetails,
+        layout
+      });
+    }
+  }, [namespace, layout, hideEventTypeDetails]);
+
+  const defaultButtonStyle = {
+    display: 'inline-block',
+    padding: '12px 28px',
+    backgroundColor: '#7C3AED',
+    color: 'white',
+    borderRadius: '8px',
+    textDecoration: 'none',
+    fontWeight: '600',
+    fontSize: '16px',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    boxShadow: '0 2px 4px rgba(124, 58, 237, 0.2)',
+    ...buttonStyle
+  };
+
+  return (
+    <button
+      data-cal-link={calLink}
+      data-cal-namespace={namespace}
+      data-cal-config={JSON.stringify({ layout })}
+      style={defaultButtonStyle}
+      onMouseOver={(e) => {
+        e.target.style.transform = 'translateY(-2px)';
+        e.target.style.boxShadow = '0 4px 8px rgba(124, 58, 237, 0.3)';
+      }}
+      onMouseOut={(e) => {
+        e.target.style.transform = 'translateY(0)';
+        e.target.style.boxShadow = '0 2px 4px rgba(124, 58, 237, 0.2)';
+      }}
+    >
+      {buttonText}
+    </button>
+  );
+};
