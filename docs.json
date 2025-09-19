@@ -46,12 +46,12 @@
           {
             "group": "Success Stories",
             "pages": [
-              "case-studies/lead-qualifier",
               "case-studies/contra-linkedin-automation",
               "case-studies/vouchernaut-programmatic-ppc",
               "case-studies/growthrunner-devtools",
               "case-studies/fingers-on-pulse-content-intelligence",
-              "case-studies/snacker-ai-video-platform"
+              "case-studies/snacker-ai-video-platform",
+              "case-studies/lead-qualifier"
             ]
           }
         ]
