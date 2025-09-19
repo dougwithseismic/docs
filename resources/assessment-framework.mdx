@@ -4,11 +4,45 @@ description: "A systematic framework for evaluating and prioritizing productizat
 icon: "chart-line"
 ---
 
+import { InteractiveAssessmentWizard } from "/snippets/assessment-wizard-interactive.jsx";
+
 <Card title="📊 Interactive Assessment Tool" icon="calculator" color="#16A34A">
-  Transform your services into scalable products with this data-driven framework. Score opportunities across 5 key dimensions to identify your highest-value productization targets.
+  Transform your services into scalable products with this data-driven
+  framework. Score opportunities across 5 key dimensions to identify your
+  highest-value productization targets.
 </Card>
 
 ## 🎯 Interactive Assessment Wizard
+
+<InteractiveAssessmentWizard />
+
+## How This Assessment Works
+
+<Info>
+  **Before You Start:** Have the following information ready: - Service
+  description and current pricing model - Annual revenue from this service -
+  Number of times you've delivered this service in the past year - Team members
+  involved and time requirements - Understanding of your target market size
+</Info>
+
+### How to Complete Your Assessment
+
+### Understanding the Scoring Scale
+
+| Score | Rating        | Description                   | Performance Level            |
+| ----- | ------------- | ----------------------------- | ---------------------------- |
+| **1** | Very Poor     | Bottom 20% of opportunities   | 🔴 Critical weaknesses       |
+| **2** | Below Average | Needs significant improvement | 🟠 Major gaps to address     |
+| **3** | Average       | Acceptable baseline           | 🟡 Meet minimum requirements |
+| **4** | Above Average | Strong competitive position   | 🟢 Clear advantages          |
+| **5** | Excellent     | Top 20% of opportunities      | 🟢 Exceptional strength      |
+
+<Warning>
+  **Important:** Rate based on TODAY'S reality, not future potential.
+  Overestimating scores leads to poor investment decisions.
+</Warning>
+
+### Complete Your Assessment Below
 
 <Tabs>
   <Tab title="Start Here">
@@ -25,6 +59,7 @@ icon: "chart-line"
 
       Navigate through each tab to complete your assessment.
     </Card>
+
   </Tab>
 
   <Tab title="Service Info">
@@ -47,6 +82,7 @@ icon: "chart-line"
       _____________________________________________
       _____________________________________________
     </Card>
+
   </Tab>
 
   <Tab title="Scoring">
@@ -83,6 +119,7 @@ icon: "chart-line"
       - Expansion: ___
       Average: ___
     </Card>
+
   </Tab>
 
   <Tab title="Calculate">
@@ -102,12 +139,316 @@ icon: "chart-line"
 
       **Your Priority:**
       - Score ≥3.5 + Fit ≥3.5 = 🟢 Build Now
-      - Score ≥3.5 + Fit <3.5 = 🟡 Evaluate
-      - Score <3.5 + Fit ≥3.5 = 🔵 Monitor
-      - Score <3.5 + Fit <3.5 = 🔴 Avoid
+      - Score ≥3.5 + Fit &lt;3.5 = 🟡 Evaluate
+      - Score &lt;3.5 + Fit ≥3.5 = 🔵 Monitor
+      - Score &lt;3.5 + Fit &lt;3.5 = 🔴 Avoid
     </Card>
+
   </Tab>
 </Tabs>
+
+## Detailed Scoring Guide
+
+<AccordionGroup>
+  <Accordion title="📈 Market Demand - How to Score" icon="chart-line">
+    **Frequency Score:**
+    - Count actual client requests in the past 12 months
+    - Include both won and lost opportunities
+    - Score 1 if under 2, Score 5 if over 20
+
+    **Market Size Score:**
+    - Research your total addressable market (TAM)
+    - Use industry reports, LinkedIn searches, directories
+    - Consider geographic and industry constraints
+
+    **Urgency Score:**
+    - Evaluate how quickly clients need solutions
+    - Look at typical sales cycle length
+    - Consider consequence of not having solution
+
+    **Example:** A web design agency evaluating their "Website Performance Audit" service:
+    - Frequency: 15 requests last year = Score 4
+    - Market Size: 5,000 potential clients = Score 3
+    - Urgency: Clients need it for conversions = Score 4
+    - **Average: 3.67**
+
+  </Accordion>
+
+  <Accordion title="🎯 Differentiation - How to Score" icon="sparkles">
+    **Uniqueness Score:**
+    - Compare your methodology to competitors
+    - Identify proprietary processes or tools
+    - Consider your unique insights or data
+
+    **Competition Score:**
+    - Search for similar services online
+    - Check competitor websites and offerings
+    - Review industry directories and marketplaces
+
+    **IP Protection Score:**
+    - Evaluate what can be trademarked or patented
+    - Consider trade secrets and proprietary methods
+    - Assess difficulty for others to copy
+
+    **Example:** Same agency's performance audit:
+    - Uniqueness: Proprietary testing framework = Score 4
+    - Competition: Few offer same depth = Score 4
+    - IP Protection: Can protect methodology = Score 3
+    - **Average: 3.67**
+
+  </Accordion>
+
+  <Accordion title="🚀 Scalability - How to Score" icon="rocket">
+    **Automation Score:**
+    - List all tasks in your current process
+    - Identify which can be automated with tools
+    - Calculate percentage of time saved
+
+    **Standardization Score:**
+    - Document process variations across clients
+    - Identify common vs. custom elements
+    - Assess ability to use templates
+
+    **Resource Requirements Score:**
+    - Calculate ongoing costs per delivery
+    - Consider support and maintenance needs
+    - Evaluate infrastructure requirements
+
+    **Example:** Performance audit service:
+    - Automation: 70% can be automated = Score 4
+    - Standardization: Same process for all = Score 5
+    - Resources: Minimal ongoing needs = Score 4
+    - **Average: 4.33**
+
+  </Accordion>
+
+  <Accordion title="⚙️ Technical Feasibility - How to Score" icon="gear">
+    **Complexity Score:**
+    - Break down technical requirements
+    - Identify unknown or risky elements
+    - Compare to past projects
+
+    **Team Capabilities Score:**
+    - Audit current team skills
+    - Identify skill gaps
+    - Consider training or hiring needs
+
+    **Time to Market Score:**
+    - Create realistic development timeline
+    - Factor in testing and iteration
+    - Consider MVP vs. full product
+
+    **Example:** Building the audit tool:
+    - Complexity: Moderate technical challenge = Score 3
+    - Capabilities: Team has most skills = Score 4
+    - Time to Market: 2 months to MVP = Score 4
+    - **Average: 3.67**
+
+  </Accordion>
+
+  <Accordion title="💰 Revenue Potential - How to Score" icon="money-bills">
+    **Pricing Power Score:**
+    - Research competitor pricing
+    - Test price points with clients
+    - Calculate value delivered vs. cost
+
+    **Revenue Model Score:**
+    - Evaluate subscription potential
+    - Consider upsell opportunities
+    - Assess customer lifetime value
+
+    **Expansion Score:**
+    - Size new market segments
+    - Evaluate geographic expansion
+    - Consider adjacent offerings
+
+    **Example:** Audit tool pricing:
+    - Pricing Power: Can charge premium = Score 4
+    - Revenue Model: Monthly subscription = Score 5
+    - Expansion: Large untapped market = Score 4
+    - **Average: 4.33**
+
+  </Accordion>
+
+  <Accordion title="🎯 Strategic Fit - How to Score" icon="bullseye">
+    Rate each factor 1-5 based on alignment:
+
+    **Vision Alignment:**
+    - Does this move you toward your 5-year vision?
+    - Is it consistent with company values?
+    - Will it position you where you want to be?
+
+    **Team Expertise:**
+    - Is your team passionate about this area?
+    - Do you have deep domain knowledge?
+    - Can you become the best at this?
+
+    **Client Impact:**
+    - Will this transform client businesses?
+    - Does it solve a critical pain point?
+    - Will clients champion your solution?
+
+    **Brand Fit:**
+    - Does this strengthen your positioning?
+    - Is it consistent with your reputation?
+    - Will it attract your ideal clients?
+
+    **Example:** Strategic fit for audit tool:
+    - Vision: Becoming performance experts = Score 5
+    - Expertise: Team loves optimization = Score 4
+    - Impact: Drives real client results = Score 5
+    - Brand: Reinforces technical prowess = Score 4
+    - **Average: 4.50**
+
+  </Accordion>
+</AccordionGroup>
+
+## Calculating Your Final Score
+
+<Card title="Example Calculation" icon="calculator">
+  Using our web agency example:
+
+| Dimension       | Average | Weight | Weighted Score |
+| --------------- | ------- | ------ | -------------- |
+| Market Demand   | 3.67    | 25%    | 0.92           |
+| Differentiation | 3.67    | 20%    | 0.73           |
+| Scalability     | 4.33    | 25%    | 1.08           |
+| Technical       | 3.67    | 15%    | 0.55           |
+| Revenue         | 4.33    | 15%    | 0.65           |
+| **TOTAL**       |         | 100%   | **3.93**       |
+
+**Strategic Fit:** 4.50
+
+**Result:** Composite Score (3.93) + Strategic Fit (4.50) = **Priority 1: Build Now! 🟢**
+
+</Card>
+
+## Action Plans by Priority
+
+<Tabs>
+  <Tab title="🟢 Priority 1">
+    ### Build Now Action Plan
+
+    **Week 1:**
+    - Validate with 10 target customers
+    - Create detailed project specification
+    - Assign dedicated team members
+    - Set up project tracking
+
+    **Week 2-4:**
+    - Build MVP/prototype
+    - Get early user feedback
+    - Iterate based on learning
+    - Begin pre-selling
+
+    **Week 5-8:**
+    - Launch beta version
+    - Onboard first customers
+    - Gather testimonials
+    - Refine pricing
+
+    **Success Metrics:**
+    - 5+ paying customers in 60 days
+    - 50% time reduction vs. manual
+    - NPS score above 8
+
+  </Tab>
+
+  <Tab title="🟡 Priority 2">
+    ### Evaluate Action Plan
+
+    **Month 1:**
+    - Deep competitive analysis
+    - Identify partnership opportunities
+    - Define capability gaps
+    - Create learning plan
+
+    **Month 2:**
+    - Run pilot program (3-5 clients)
+    - Test key assumptions
+    - Measure actual vs. expected
+    - Gather detailed feedback
+
+    **Month 3:**
+    - Make go/no-go decision
+    - If go: Move to Priority 1 plan
+    - If no-go: Document learnings
+    - Reassess strategic fit
+
+    **Decision Criteria:**
+    - Pilot success rate >70%
+    - Clear path to improve fit
+    - Resources available
+
+  </Tab>
+
+  <Tab title="🔵 Priority 3">
+    ### Monitor Action Plan
+
+    **Quarterly Reviews:**
+    - Track market indicators
+    - Monitor competitor moves
+    - Update scoring dimensions
+    - Interview potential customers
+
+    **Improvement Focus:**
+    - Identify lowest scoring areas
+    - Create improvement roadmap
+    - Test small experiments
+    - Build capabilities slowly
+
+    **Trigger Events to Watch:**
+    - Market size expansion
+    - Technology enablers
+    - Competitor exits
+    - Regulatory changes
+
+    **Reassessment:**
+    - Full re-score every 6 months
+    - Move to Priority 1 if score >3.5
+
+  </Tab>
+
+  <Tab title="🔴 Priority 4">
+    ### Avoid/Pivot Plan
+
+    **Immediate Actions:**
+    - Stop all investment
+    - Document key learnings
+    - Communicate to team
+    - Archive materials
+
+    **Alternative Paths:**
+    - Can you pivot the concept?
+    - Is there a simpler version?
+    - Could you partner instead?
+    - Should you acquire solution?
+
+    **Reallocation:**
+    - Redirect resources to Priority 1
+    - Focus on core strengths
+    - Explore adjacent opportunities
+    - Strengthen existing products
+
+    **Future Review:**
+    - Annual check only
+    - Only if major market shift
+
+  </Tab>
+</Tabs>
+
+## Common Mistakes to Avoid
+
+<Warning>
+  **Top 5 Assessment Pitfalls:**
+
+1. **Optimism Bias** - Rating potential instead of reality
+2. **Ignoring Competition** - Underestimating existing solutions
+3. **Skipping Validation** - Not testing with real customers
+4. **Poor Strategic Fit** - Chasing shiny objects outside your zone
+5. **Resource Dilution** - Trying to build everything at once
+
+</Warning>
 
 ## Overview
 
@@ -160,6 +501,7 @@ This assessment framework helps agencies systematically evaluate their services 
         - Costs it reduces for clients
       </Accordion>
     </AccordionGroup>
+
   </Tab>
 
   <Tab title="⭐ Phase 2: Opportunity Scoring">
@@ -382,6 +724,7 @@ This assessment framework helps agencies systematically evaluate their services 
         - Focus elsewhere
       </Card>
     </CardGroup>
+
   </Tab>
 </Tabs>
 
@@ -419,6 +762,7 @@ This assessment framework helps agencies systematically evaluate their services 
       - Client impact: ___
       - Brand fit: ___
     </Card>
+
   </Tab>
 
   <Tab title="Priority Result">
@@ -454,6 +798,7 @@ This assessment framework helps agencies systematically evaluate their services 
         - What would a superior solution look like?
       </Accordion>
     </AccordionGroup>
+
   </Tab>
 
   <Tab title="✅ Customer Validation">
@@ -479,6 +824,7 @@ This assessment framework helps agencies systematically evaluate their services 
         - Measure WTP
       </Card>
     </CardGroup>
+
   </Tab>
 
   <Tab title="💵 Financial Modeling">
@@ -511,6 +857,7 @@ This assessment framework helps agencies systematically evaluate their services 
         - Sensitivity analysis
       </Card>
     </CardGroup>
+
   </Tab>
 </Tabs>
 
@@ -525,21 +872,19 @@ This assessment framework helps agencies systematically evaluate their services 
     - Aggressive timelines
   </Card>
 
-  <Card title="🟡 Score 3.0-3.9" icon="medal" color="#EAB308">
-    **Second-Tier Actions**
-    - Competitive analysis
-    - Validate assumptions
-    - Consider pilots
-    - Future planning
-  </Card>
+{" "}
 
-  <Card title="🔵 Score 2.0-2.9" icon="clock" color="#3B82F6">
-    **Third-Tier Actions**
-    - Monitor markets
-    - Gather feedback
-    - Improve scores
-    - Future options
-  </Card>
+<Card title="🟡 Score 3.0-3.9" icon="medal" color="#EAB308">
+  **Second-Tier Actions** - Competitive analysis - Validate assumptions -
+  Consider pilots - Future planning
+</Card>
+
+{" "}
+
+<Card title="🔵 Score 2.0-2.9" icon="clock" color="#3B82F6">
+  **Third-Tier Actions** - Monitor markets - Gather feedback - Improve scores -
+  Future options
+</Card>
 
   <Card title="🔴 Score < 2.0" icon="pause" color="#EF4444">
     **Low Priority Actions**
@@ -587,7 +932,8 @@ This assessment framework helps agencies systematically evaluate their services 
 ## 🏁 Next Steps
 
 <Warning>
-  Scores are relative rankings, not absolutes. Customize this framework to your agency's unique situation and strategic objectives.
+  Scores are relative rankings, not absolutes. Customize this framework to your
+  agency's unique situation and strategic objectives.
 </Warning>
 
 <CardGroup cols={3}>
@@ -602,14 +948,20 @@ This assessment framework helps agencies systematically evaluate their services 
   </Card>
 </CardGroup>
 
-<Card title="🚀 Ready to Productize? Get Expert Guidance" icon="rocket" href="/quickstart" color="#16A34A">
-  **Doug's Sprint Options:**
-  - **2-Week Sprint:** $6K - Perfect for single tool development
-  - **4-Week Sprint:** $12K - Build multiple tools or complex platforms
-  - **4-Hour Response:** Get immediate strategic guidance
-  - **Proven Framework:** Apply this assessment with expert support
+<Card
+  title="🚀 Ready to Productize? Get Expert Guidance"
+  icon="rocket"
+  href="/quickstart"
+  color="#16A34A"
+>
+  **Doug's Sprint Options:** - **2-Week Sprint:** $6K - Perfect for single tool
+  development - **4-Week Sprint:** $12K - Build multiple tools or complex
+  platforms - **4-Hour Response:** Get immediate strategic guidance - **Proven
+  Framework:** Apply this assessment with expert support
 </Card>
 
 <Tip>
-  The best productization opportunities combine strong quantitative scores with compelling qualitative factors. Trust your market intuition alongside the data.
+  The best productization opportunities combine strong quantitative scores with
+  compelling qualitative factors. Trust your market intuition alongside the
+  data.
 </Tip>

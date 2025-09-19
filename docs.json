@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "WithSeismic - Agency Productization Services",
   "colors": {
-    "primary": "#5B21B6",
-    "light": "#7C3AED",
-    "dark": "#4C1D95"
+    "primary": "#FF8000",
+    "light": "#FFA040",
+    "dark": "#CC6600"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -18,7 +18,6 @@
             "pages": [
               "index",
               "services/why-productize",
-              "services/our-process",
               "development",
               "quickstart"
             ]
@@ -116,6 +115,29 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Articles",
+        "groups": [
+          {
+            "group": "Insights",
+            "pages": [
+              "articles/fingers-on-the-pulse"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Careers",
+        "groups": [
+          {
+            "group": "Join Our Team",
+            "pages": [
+              "careers/working-at-withseismic",
+              "careers/open-positions"
+            ]
+          }
+        ]
       }
     ],
     "global": {
@@ -186,6 +208,7 @@
     ]
   },
   "custom": {
-    "js": []
+    "js": [],
+    "css": ["custom.css"]
   }
 }

@@ -34,7 +34,7 @@
   </div>
 </div>
 
-<script>
+<script dangerouslySetInnerHTML={{__html: `
 let emailStep = 1;
 
 function handleEmailSubmit(event) {
@@ -65,4 +65,4 @@ function handleEmailSubmit(event) {
 
   return false;
 }
-</script>
+`}} />

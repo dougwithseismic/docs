@@ -8,8 +8,8 @@
 
   // Configuration
   const CONFIG = {
-    storageKey: "withseismic_visitor_v2",
-    sessionKey: "withseismic_session_v2",
+    storageKey: "withseismic_visitor",
+    sessionKey: "withseismic_session",
     debugMode: false,
     trackingEvents: {
       pageView: 5,
@@ -179,7 +179,7 @@
 
       // Migrate old pagesViewed array to new pages object if needed
       if (Array.isArray(profile.behavior.pagesViewed)) {
-        profile.behavior.pagesViewed.forEach(page => {
+        profile.behavior.pagesViewed.forEach((page) => {
           if (!profile.behavior.pages[page.path]) {
             profile.behavior.pages[page.path] = {
               path: page.path,
@@ -191,7 +191,7 @@
               totalTimeSpent: page.totalTime || 0,
               averageTimeSpent: 0,
               maxScrollDepth: 0,
-              sessions: []
+              sessions: [],
             };
           }
         });
@@ -199,11 +199,13 @@
       }
 
       // Ensure all required fields exist
-      if (typeof profile.behavior.totalPageViews === 'undefined') {
+      if (typeof profile.behavior.totalPageViews === "undefined") {
         profile.behavior.totalPageViews = 0;
       }
-      if (typeof profile.behavior.uniquePagesViewed === 'undefined') {
-        profile.behavior.uniquePagesViewed = Object.keys(profile.behavior.pages).length;
+      if (typeof profile.behavior.uniquePagesViewed === "undefined") {
+        profile.behavior.uniquePagesViewed = Object.keys(
+          profile.behavior.pages
+        ).length;
       }
       if (!Array.isArray(profile.behavior.toolsUsed)) {
         profile.behavior.toolsUsed = [];
@@ -216,7 +218,7 @@
           score: 0,
           level: "cold",
           signals: [],
-          lastEngagement: null
+          lastEngagement: null,
         };
       }
     }
@@ -237,7 +239,7 @@
         timeSpent: 0,
         scrollDepth: 0,
         linksClicked: [],
-        actions: []
+        actions: [],
       };
     }
 
@@ -268,12 +270,13 @@
           totalTimeSpent: 0,
           averageTimeSpent: 0,
           maxScrollDepth: 0,
-          sessions: []
+          sessions: [],
         };
         profile.behavior.uniquePagesViewed++;
       } else {
         profile.behavior.pages[this.pagePath].visitCount++;
-        profile.behavior.pages[this.pagePath].lastVisit = new Date().toISOString();
+        profile.behavior.pages[this.pagePath].lastVisit =
+          new Date().toISOString();
         profile.behavior.pages[this.pagePath].title = this.pageTitle; // Update in case it changed
       }
 
@@ -329,7 +332,9 @@
 
       if (pageData) {
         // Save this session's data
-        this.sessionData.timeSpent = Math.floor((Date.now() - this.startTime) / 1000);
+        this.sessionData.timeSpent = Math.floor(
+          (Date.now() - this.startTime) / 1000
+        );
         this.sessionData.scrollDepth = this.scrollDepth;
 
         // Add session to page's session history
@@ -356,7 +361,8 @@
       const updateScrollProgress = () => {
         const windowHeight = window.innerHeight;
         const documentHeight = document.documentElement.scrollHeight;
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const scrollPercent = Math.round(
           (scrollTop / (documentHeight - windowHeight)) * 100
         );
@@ -366,11 +372,14 @@
 
           // Track milestones
           [25, 50, 75, 100].forEach((milestone) => {
-            if (scrollPercent >= milestone && this.scrollDepth < milestone + 25) {
+            if (
+              scrollPercent >= milestone &&
+              this.scrollDepth < milestone + 25
+            ) {
               this.updateEngagement(null, `scroll${milestone}`);
               this.sessionData.actions.push({
                 type: `scroll_${milestone}`,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
               });
               log(`Scroll depth ${milestone}% reached on ${this.pagePath}`);
             }
@@ -396,7 +405,7 @@
           this.updateEngagement(null, `timeOnPage${seconds}s`);
           this.sessionData.actions.push({
             type: `time_${seconds}s`,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
           log(`Time milestone ${seconds}s reached on ${this.pagePath}`);
         }, seconds * 1000);
@@ -408,7 +417,7 @@
       this.sessionData.linksClicked.push({
         href,
         text: text.substring(0, 50),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       // Also add to global links
@@ -417,7 +426,7 @@
         href,
         text: text.substring(0, 50),
         fromPage: this.pagePath,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       StorageManager.saveVisitorProfile(profile);
     }
@@ -426,7 +435,7 @@
       this.sessionData.actions.push({
         type: actionType,
         data,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
@@ -438,7 +447,7 @@
           score: 0,
           level: "cold",
           signals: [],
-          lastEngagement: null
+          lastEngagement: null,
         };
       }
 
@@ -467,27 +476,33 @@
       const signals = [];
 
       // Page engagement
-      if (profile.behavior.uniquePagesViewed >= 3) signals.push("multi_page_visitor");
-      if (profile.behavior.uniquePagesViewed >= 5) signals.push("deep_explorer");
+      if (profile.behavior.uniquePagesViewed >= 3)
+        signals.push("multi_page_visitor");
+      if (profile.behavior.uniquePagesViewed >= 5)
+        signals.push("deep_explorer");
 
       // Time engagement
-      if (profile.behavior.averageTimePerPage >= 60) signals.push("engaged_reader");
-      if (profile.behavior.totalTimeSpent >= 300) signals.push("high_time_investment");
+      if (profile.behavior.averageTimePerPage >= 60)
+        signals.push("engaged_reader");
+      if (profile.behavior.totalTimeSpent >= 300)
+        signals.push("high_time_investment");
 
       // Content engagement
       const pageKeys = Object.keys(profile.behavior.pages);
-      const deepPages = pageKeys.filter(key =>
-        profile.behavior.pages[key].maxScrollDepth >= 75
+      const deepPages = pageKeys.filter(
+        (key) => profile.behavior.pages[key].maxScrollDepth >= 75
       );
       if (deepPages.length >= 3) signals.push("deep_content_consumer");
 
       // Tool usage
       if (profile.behavior.toolsUsed.length > 0) signals.push("tool_user");
-      if (profile.behavior.contentCategories.includes("case-studies")) signals.push("case_study_reader");
-      if (profile.behavior.contentCategories.includes("contact")) signals.push("contact_visitor");
+      if (profile.behavior.contentCategories.includes("case-studies"))
+        signals.push("case_study_reader");
+      if (profile.behavior.contentCategories.includes("contact"))
+        signals.push("contact_visitor");
 
       // Add new signals
-      signals.forEach(signal => {
+      signals.forEach((signal) => {
         if (!profile.engagement.signals.includes(signal)) {
           profile.engagement.signals.push(signal);
         }
@@ -505,16 +520,16 @@
         topPages: Object.values(profile.behavior.pages)
           .sort((a, b) => b.totalTimeSpent - a.totalTimeSpent)
           .slice(0, 3)
-          .map(p => ({ path: p.path, time: p.totalTimeSpent })),
+          .map((p) => ({ path: p.path, time: p.totalTimeSpent })),
         company: profile.company,
-        contact: profile.contact
+        contact: profile.contact,
       });
 
       if (window.gtag) {
         window.gtag("event", "qualified_lead", {
           value: profile.engagement.score,
           engagement_level: profile.engagement.level,
-          signals: profile.engagement.signals.join(",")
+          signals: profile.engagement.signals.join(","),
         });
       }
     }
@@ -527,7 +542,7 @@
       this.trackTimeOnPage();
 
       // Clear timeouts
-      this.timeouts.forEach(timeout => clearTimeout(timeout));
+      this.timeouts.forEach((timeout) => clearTimeout(timeout));
     }
 
     init() {
@@ -576,7 +591,9 @@
     },
 
     captureCompany: (companyData) => {
-      const profile = StorageManager.updateVisitorProfile({ company: companyData });
+      const profile = StorageManager.updateVisitorProfile({
+        company: companyData,
+      });
       if (currentTracker) {
         currentTracker.updateEngagement(profile, "companyInfoProvided");
         currentTracker.trackAction("company_captured", companyData);
@@ -585,7 +602,9 @@
     },
 
     captureContact: (contactData) => {
-      const profile = StorageManager.updateVisitorProfile({ contact: contactData });
+      const profile = StorageManager.updateVisitorProfile({
+        contact: contactData,
+      });
       if (currentTracker) {
         currentTracker.updateEngagement(profile, "emailProvided");
         currentTracker.trackAction("contact_captured", contactData);
@@ -622,7 +641,7 @@
       const profile = StorageManager.getVisitorProfile();
       profile.behavior.calculationsPerformed.push({
         ...data,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       if (currentTracker) {
         currentTracker.updateEngagement(profile, "calculationPerformed");
@@ -642,7 +661,7 @@
       CONFIG.debugMode = true;
       log("Debug mode enabled");
       log("Current profile:", StorageManager.getVisitorProfile());
-    }
+    },
   };
 
   // Initialize tracking
@@ -683,11 +702,12 @@
     document.addEventListener("copy", () => {
       const selection = window.getSelection();
       if (selection && selection.anchorNode && currentTracker) {
-        const codeBlock = selection.anchorNode.parentElement?.closest("pre, code");
+        const codeBlock =
+          selection.anchorNode.parentElement?.closest("pre, code");
         if (codeBlock) {
           currentTracker.updateEngagement(null, "codeBlockCopy");
           currentTracker.trackAction("code_copied", {
-            snippet: selection.toString().substring(0, 100)
+            snippet: selection.toString().substring(0, 100),
           });
           log("Code block copied");
         }
@@ -730,7 +750,7 @@
     const originalPushState = history.pushState;
     const originalReplaceState = history.replaceState;
 
-    history.pushState = function() {
+    history.pushState = function () {
       originalPushState.apply(history, arguments);
       setTimeout(() => {
         log("PushState navigation detected");
@@ -738,7 +758,7 @@
       }, 0);
     };
 
-    history.replaceState = function() {
+    history.replaceState = function () {
       originalReplaceState.apply(history, arguments);
       setTimeout(() => {
         log("ReplaceState navigation detected");

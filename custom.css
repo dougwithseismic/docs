@@ -1,0 +1,17 @@
+:root {
+  --background-dark: 8 8 8;
+}
+
+[data-theme="dark"] {
+  --background: 8 8 8;
+  --background-dark: 8 8 8;
+}
+
+/* Additional dark mode background customization */
+[data-theme="dark"] body {
+  background-color: rgb(8, 8, 8);
+}
+
+[data-theme="dark"] .bg-background {
+  background-color: rgb(8, 8, 8);
+}

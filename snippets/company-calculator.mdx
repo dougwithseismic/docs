@@ -44,7 +44,7 @@
   </div>
 </div>
 
-<script>
+<script dangerouslySetInnerHTML={{__html: `
 function calculateRecommendation() {
   const size = document.getElementById('company-size').value;
   const industry = document.getElementById('company-industry').value;
@@ -90,12 +90,12 @@ function calculateRecommendation() {
 
   // Show result
   const resultDiv = document.getElementById('result');
-  resultDiv.innerHTML = `
+  resultDiv.innerHTML = \`
     <h4 style="color: #7C3AED; font-weight: 600; margin-bottom: 8px;">
-      ${result.title}
+      \${result.title}
     </h4>
-    <p style="color: #6b7280;">${result.description}</p>
-  `;
+    <p style="color: #6b7280;">\${result.description}</p>
+  \`;
   resultDiv.style.display = 'block';
 }
 
@@ -103,4 +103,4 @@ function calculateRecommendation() {
 if (window.WithSeismicTracker) {
   window.WithSeismicTracker.trackTool('company-size-calculator', { action: 'viewed' });
 }
-</script>
+`}} />
