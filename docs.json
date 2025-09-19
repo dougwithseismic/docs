@@ -46,6 +46,7 @@
           {
             "group": "Success Stories",
             "pages": [
+              "case-studies/lead-qualifier",
               "case-studies/contra-linkedin-automation",
               "case-studies/vouchernaut-programmatic-ppc",
               "case-studies/growthrunner-devtools",
@@ -56,7 +57,7 @@
         ]
       },
       {
-        "tab": "Tool Ideas",
+        "tab": "Automation Tools",
         "groups": [
           {
             "group": "By Team Type",

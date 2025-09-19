@@ -1,0 +1,495 @@
+---
+title: "The WithSeismic Lead Qualifier"
+description: "How I'm scoring your engagement right now (yes, you) to identify high-value prospects without wasting anyone's time"
+icon: "target"
+---
+
+export const VisitorProfile = () => {
+  const [profile, setProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [topPages, setTopPages] = useState([]);
+  const [mostPopularPage, setMostPopularPage] = useState(null);
+
+  useEffect(() => {
+    const loadProfile = () => {
+      if (typeof window !== 'undefined' && window.WithSeismicTracker) {
+        const data = window.WithSeismicTracker.getProfile();
+        const pages = window.WithSeismicTracker.getTopPages(5);
+        setProfile(data);
+        setTopPages(pages);
+        if (pages && pages.length > 0) {
+          setMostPopularPage(pages[0]);
+        }
+        setIsLoading(false);
+      } else {
+        setTimeout(loadProfile, 100);
+      }
+    };
+
+    loadProfile();
+
+    // Update every 2 seconds to show real-time changes
+    const interval = setInterval(() => {
+      if (window.WithSeismicTracker) {
+        const data = window.WithSeismicTracker.getProfile();
+        const pages = window.WithSeismicTracker.getTopPages(5);
+        setProfile(data);
+        setTopPages(pages);
+        if (pages && pages.length > 0) {
+          setMostPopularPage(pages[0]);
+        }
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  if (isLoading || !profile) {
+    return (
+      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 my-6 animate-pulse">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
+        <div className="space-y-3">
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+        </div>
+      </div>
+    );
+  }
+
+  const getEngagementColor = (level) => {
+    switch(level) {
+      case 'qualified': return 'text-purple-600 dark:text-purple-400';
+      case 'hot': return 'text-red-600 dark:text-red-400';
+      case 'warm': return 'text-orange-600 dark:text-orange-400';
+      default: return 'text-blue-600 dark:text-blue-400';
+    }
+  };
+
+  const getEngagementEmoji = (level) => {
+    switch(level) {
+      case 'qualified': return '🎯';
+      case 'hot': return '🔥';
+      case 'warm': return '☀️';
+      default: return '❄️';
+    }
+  };
+
+  const formatTime = (seconds) => {
+    if (!seconds) return '0s';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${secs}s`;
+    }
+    return `${secs}s`;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Never';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffSecs < 10) return '🔴 Just now';
+    if (diffSecs < 60) return `🔴 ${diffSecs} seconds ago`;
+    if (diffMins < 5) return `🟡 ${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? 's' : ''} ago`;
+    return date.toLocaleDateString();
+  };
+
+  const getPageStats = () => {
+    if (!profile.behavior?.pages) return {
+      deepPages: 0,
+      totalLinks: 0,
+      returnVisits: 0,
+      bouncePages: 0,
+      engagedPages: 0
+    };
+    const pages = Object.values(profile.behavior.pages);
+    const deepPages = pages.filter(p => p.maxScrollDepth >= 75).length;
+    const totalLinks = profile.behavior.globalLinksClicked?.length || 0;
+    const returnVisits = pages.filter(p => p.visitCount > 1).length;
+    const bouncePages = pages.filter(p => p.totalTimeSpent < 10).length;
+    const engagedPages = pages.filter(p => p.totalTimeSpent >= 60).length;
+    return { deepPages, totalLinks, returnVisits, bouncePages, engagedPages };
+  };
+
+  const getInterestingStats = () => {
+    if (!profile) return {};
+
+    // Calculate session length
+    const sessionLength = profile.currentSession?.startTime
+      ? Math.floor((Date.now() - profile.currentSession.startTime) / 1000)
+      : 0;
+
+    // Get most used tool
+    const mostUsedTool = profile.behavior?.toolsUsed?.length > 0
+      ? profile.behavior.toolsUsed[profile.behavior.toolsUsed.length - 1]
+      : null;
+
+    // Get content preference
+    const contentPreference = profile.behavior?.contentCategories?.length > 0
+      ? profile.behavior.contentCategories[0]
+      : null;
+
+    return { sessionLength, mostUsedTool, contentPreference };
+  };
+
+  const { deepPages, totalLinks, returnVisits, bouncePages, engagedPages } = getPageStats();
+  const { sessionLength, mostUsedTool, contentPreference } = getInterestingStats();
+
+  return (
+    <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-lg p-6 my-6 border border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          Your Live Engagement Profile
+        </h3>
+        <div className="flex items-center gap-3">
+          <span className={`text-3xl font-bold ${getEngagementColor(profile.engagement?.level)}`}>
+            {profile.engagement?.score || 0}
+          </span>
+          <span className={`text-2xl ${getEngagementColor(profile.engagement?.level)}`}>
+            {getEngagementEmoji(profile.engagement?.level)}
+          </span>
+        </div>
+      </div>
+
+      {/* Most Popular Page Highlight */}
+      {mostPopularPage && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border border-green-200 dark:border-green-700">
+          <div className="text-xs text-green-600 dark:text-green-400 mb-1">⭐ Your Favorite Page</div>
+          <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {mostPopularPage.title || mostPopularPage.path}
+          </div>
+          <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+            {formatTime(mostPopularPage.totalTimeSpent)} spent · {mostPopularPage.visitCount} visit{mostPopularPage.visitCount > 1 ? 's' : ''}
+          </div>
+        </div>
+      )}
+
+      {/* Engagement Status Bar */}
+      <div className="mb-6">
+        <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
+          <span>Cold (0)</span>
+          <span>Warm (25)</span>
+          <span>Hot (50)</span>
+          <span>Qualified (100+)</span>
+        </div>
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+          <div
+            className={`h-3 rounded-full transition-all duration-500 ${
+              profile.engagement?.level === 'qualified' ? 'bg-purple-600' :
+              profile.engagement?.level === 'hot' ? 'bg-red-600' :
+              profile.engagement?.level === 'warm' ? 'bg-orange-600' :
+              'bg-blue-600'
+            }`}
+            style={{ width: `${Math.min((profile.engagement?.score || 0), 100)}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Key Metrics Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="bg-white dark:bg-gray-800 p-3 rounded">
+          <div className="text-xs text-gray-600 dark:text-gray-400">Page Views</div>
+          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {profile.behavior?.totalPageViews || 0}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            {profile.behavior?.uniquePagesViewed || 0} unique
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 p-3 rounded">
+          <div className="text-xs text-gray-600 dark:text-gray-400">Total Time</div>
+          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {formatTime(profile.behavior?.totalTimeSpent || 0)}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            {formatTime(profile.behavior?.averageTimePerPage || 0)}/page
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 p-3 rounded">
+          <div className="text-xs text-gray-600 dark:text-gray-400">Deep Reads</div>
+          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {deepPages}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            {engagedPages} engaged
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 p-3 rounded">
+          <div className="text-xs text-gray-600 dark:text-gray-400">Return Visits</div>
+          <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {returnVisits}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            pages revisited
+          </div>
+        </div>
+      </div>
+
+      {/* Interesting Stats Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-3 rounded">
+          <div className="text-xs text-blue-600 dark:text-blue-400">Current Session</div>
+          <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {formatTime(sessionLength)} active
+          </div>
+        </div>
+
+        {mostUsedTool && (
+          <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-3 rounded">
+            <div className="text-xs text-purple-600 dark:text-purple-400">Tool Used</div>
+            <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              {mostUsedTool}
+            </div>
+          </div>
+        )}
+
+        {contentPreference && (
+          <div className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-3 rounded">
+            <div className="text-xs text-orange-600 dark:text-orange-400">Content Interest</div>
+            <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 capitalize">
+              {contentPreference}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Visit Timeline */}
+      <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 mb-6">
+        <div className="text-xs text-gray-600 dark:text-gray-400 mb-3">📅 Visitor Timeline</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <div className="text-xs text-gray-500 dark:text-gray-500">First Seen</div>
+            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {formatDate(profile.firstVisit)}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-500 dark:text-gray-500">Last Active</div>
+            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {formatDate(profile.lastVisit)}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-500 dark:text-gray-500">Traffic Source</div>
+            <div className="text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">
+              {profile.source?.value || profile.source?.type || 'Direct'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Top Pages */}
+      {topPages && topPages.length > 1 && (
+        <div className="mb-6">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">📊 Page Engagement Ranking</div>
+          <div className="space-y-2">
+            {topPages.slice(0, 4).map((page, i) => {
+              const maxTime = topPages[0].totalTimeSpent;
+              const percentage = (page.totalTimeSpent / maxTime) * 100;
+              return (
+                <div key={i} className="bg-white dark:bg-gray-800 p-3 rounded">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-gray-700 dark:text-gray-300 truncate flex-1">
+                      {i === 0 && '🥇'} {i === 1 && '🥈'} {i === 2 && '🥉'} {page.title || page.path}
+                    </span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100 ml-2">
+                      {formatTime(page.totalTimeSpent)}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                    <div className="bg-green-500 h-1.5 rounded-full" style={{ width: `${percentage}%` }} />
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                    {page.visitCount} visit{page.visitCount > 1 ? 's' : ''} · {page.maxScrollDepth}% scroll depth
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Engagement Signals */}
+      {profile.engagement?.signals && profile.engagement.signals.length > 0 && (
+        <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Behavioral Signals Detected</div>
+          <div className="flex flex-wrap gap-2">
+            {profile.engagement.signals.map((signal, i) => (
+              <span key={i} className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded">
+                ✓ {signal.replace(/_/g, ' ')}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Current Session */}
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Current Session</div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-gray-700 dark:text-gray-300">
+            Viewing: <span className="font-medium">{profile.currentSession?.currentPage || 'Unknown'}</span>
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-500">
+            Session ID: {profile.currentSession?.sessionId?.slice(-6) || 'N/A'}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+## Did You Know You're Being Scored Right Now?
+
+Yes, you. As you read this sentence, I'm tracking your engagement. Not in a creepy way - in a smart, efficient way that respects both our time.
+
+<VisitorProfile />
+
+## Why I Built This
+
+Here's the thing: I've spent years in MarTech and engineering, building tools that qualify leads for enterprise companies. But when it came to my own consultancy, I was flying blind. I'd get inquiries, hop on calls, and often realize 10 minutes in that we weren't a fit.
+
+That's a waste of everyone's time.
+
+So I built what I know - a lead qualification system that runs silently in the background, scoring visitors based on genuine engagement signals. If you're reading this, exploring my tools, and spending real time understanding what I offer, I want to know about it. If you're just bouncing through, that's cool too - but neither of us needs to pretend it's more than that.
+
+## How The Scoring Works
+
+### The Point System
+
+Every action you take has a value:
+
+- **Page View**: 5 points (you showed up)
+- **Scroll to 25%**: 2 points (you started reading)
+- **Scroll to 50%**: 3 points (you're interested)
+- **Scroll to 75%**: 5 points (you're engaged)
+- **Scroll to 100%**: 7 points (you're thorough)
+- **30 seconds on page**: 3 points (not a bounce)
+- **60 seconds on page**: 5 points (actually reading)
+- **2+ minutes on page**: 10 points (deep engagement)
+- **Copy code block**: 10 points (hands-on interest)
+- **Use a tool**: 15 points (practical engagement)
+- **Perform calculation**: 20 points (solving real problems)
+- **Visit contact page**: 50 points (high intent)
+
+### Engagement Levels
+
+- **Cold** (0-24 points): Just browsing
+- **Warm** (25-49 points): Showing interest
+- **Hot** (50-99 points): Actively engaged
+- **Qualified** (100+ points): Ready for a conversation
+
+## The Smart Signals
+
+Beyond points, I track behavioral patterns that indicate real interest:
+
+### Content Patterns
+- **Multi-page visitor**: You're exploring beyond the landing page
+- **Deep explorer**: 5+ unique pages viewed
+- **Deep content consumer**: Reading to the bottom of multiple articles
+- **Case study reader**: Looking at real examples
+- **Tool user**: Actually trying the solutions
+
+### Time Investment
+- **Engaged reader**: Averaging 60+ seconds per page
+- **High time investment**: 5+ minutes total on site
+
+### Intent Signals
+- **Contact visitor**: Checked out how to reach me
+- **Booking intent**: Clicked on consultation links
+- **Company info provided**: Shared who you are
+- **Email provided**: Opened a direct line
+
+## Why This Matters
+
+### For You
+- No time wasted on calls that won't go anywhere
+- I already understand your level of interest
+- Our first conversation can skip the basics
+- You're not just another "lead" in a CRM
+
+### For Me
+- I can prioritize high-intent prospects
+- I understand what content resonates
+- I know which problems you're trying to solve
+- I can prepare for our conversation properly
+
+## The Technical Implementation
+
+This system is built with:
+
+- **Pure JavaScript**: No heavy analytics platforms
+- **LocalStorage**: Your data stays in your browser
+- **Real-time tracking**: Updates as you browse
+- **Session awareness**: Handles tab switches and returns
+- **Page-centric data**: Detailed engagement per page
+
+Every page visit creates a session record with:
+- Time spent
+- Scroll depth
+- Links clicked
+- Actions taken
+- Content categories viewed
+
+## What Happens When You're Qualified
+
+When you hit 100 points (qualified lead), I get a notification with:
+
+- Your engagement score and signals
+- Top pages you've spent time on
+- Tools you've used
+- Content categories that interest you
+- Your overall journey through the site
+
+This isn't about surveillance - it's about preparation. When we do connect, I'll already understand:
+- What you're looking for
+- Which solutions resonate
+- Where you're spending time
+- What problems you're solving
+
+## The Philosophy
+
+This is the same approach I help companies implement:
+
+1. **Respect the visitor's time**: Don't make them fill out forms for basic content
+2. **Measure real engagement**: Not just pageviews, but meaningful interaction
+3. **Qualify through behavior**: Actions speak louder than form fields
+4. **Focus on fit**: Not every visitor needs to be a lead
+5. **Prepare for success**: When someone is ready, be ready for them
+
+## Try It Yourself
+
+Want to see your scoring in action? Here's what to do:
+
+1. Open your browser console (F12)
+2. Type: `WithSeismicTracker.enableDebug()`
+3. Browse around and watch your score update
+4. Type: `WithSeismicTracker.getProfile()` to see your full profile
+
+Or just keep reading, exploring, and using the tools. If what I'm building resonates with you, your score will reflect that. And when you're ready to talk, I'll be ready too.
+
+## The Bottom Line
+
+This lead qualifier is exactly what I build for clients - intelligent, behavioral tracking that identifies real interest without being intrusive. It's the difference between "spray and pray" marketing and actually understanding who's interested in what you offer.
+
+If you've made it this far, you're already at "warm" or higher. That tells me this approach resonates with you. Maybe you're thinking about your own lead qualification challenges. Maybe you're wondering how this could work for your business.
+
+Either way, your behavior is telling a story. And I'm listening.

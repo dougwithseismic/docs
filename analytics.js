@@ -228,6 +228,8 @@
   class PageTracker {
     constructor() {
       this.startTime = Date.now();
+      this.lastUpdateTime = Date.now(); // Track last time update
+      this.totalTrackedTime = 0; // Track cumulative time
       this.pagePath = window.location.pathname;
       this.pageTitle = document.title;
       this.category = this.detectCategory();
@@ -301,28 +303,32 @@
     }
 
     trackTimeOnPage() {
-      const timeSpent = Math.floor((Date.now() - this.startTime) / 1000);
+      const now = Date.now();
+      const deltaTime = Math.floor((now - this.lastUpdateTime) / 1000);
+      this.lastUpdateTime = now;
+      this.totalTrackedTime += deltaTime;
+
       const profile = StorageManager.getVisitorProfile();
       const pageData = profile.behavior.pages[this.pagePath];
 
-      if (pageData) {
-        // Update page-specific time
-        pageData.totalTimeSpent += timeSpent;
+      if (pageData && deltaTime > 0) {
+        // Update page-specific time with ONLY the delta
+        pageData.totalTimeSpent += deltaTime;
         pageData.averageTimeSpent = Math.floor(
           pageData.totalTimeSpent / pageData.visitCount
         );
 
-        // Update session data
-        this.sessionData.timeSpent = timeSpent;
+        // Update session data with total time for this session
+        this.sessionData.timeSpent = this.totalTrackedTime;
 
-        // Update global time
-        profile.behavior.totalTimeSpent += timeSpent;
+        // Update global time with ONLY the delta
+        profile.behavior.totalTimeSpent += deltaTime;
         profile.behavior.averageTimePerPage = Math.floor(
           profile.behavior.totalTimeSpent / profile.behavior.totalPageViews
         );
 
         StorageManager.saveVisitorProfile(profile);
-        log(`Time on ${this.pagePath}: ${timeSpent}s`);
+        log(`Time on ${this.pagePath}: +${deltaTime}s (total: ${this.totalTrackedTime}s)`);
       }
     }
 
@@ -331,10 +337,8 @@
       const pageData = profile.behavior.pages[this.pagePath];
 
       if (pageData) {
-        // Save this session's data
-        this.sessionData.timeSpent = Math.floor(
-          (Date.now() - this.startTime) / 1000
-        );
+        // Save this session's data with the tracked time
+        this.sessionData.timeSpent = this.totalTrackedTime;
         this.sessionData.scrollDepth = this.scrollDepth;
 
         // Add session to page's session history
@@ -555,10 +559,15 @@
         this.cleanup();
       });
 
-      // Track when tab becomes hidden
+      // Track when tab becomes hidden/visible
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
+          // Save time when tab loses focus
           this.trackTimeOnPage();
+        } else {
+          // Reset the last update time when tab regains focus
+          // This prevents counting the time while the tab was hidden
+          this.lastUpdateTime = Date.now();
         }
       });
     }
