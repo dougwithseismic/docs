@@ -111,6 +111,7 @@
           {
             "group": "Get Started",
             "pages": [
+              "contact",
               "contact/book-consultation",
               "contact/project-requirements",
               "contact/faq"
@@ -150,8 +151,8 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Book Discovery Call",
-          "href": "/contact/book-consultation",
+          "anchor": "Contact",
+          "href": "https://withseismic.com/contact",
           "icon": "phone"
         },
         {
@@ -177,12 +178,8 @@
         "label": "Support",
         "href": "mailto:hello@withseismic.com"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Get Started",
-      "href": "https://withseismic.com/contact"
-    }
+    ]
+
   },
   "contextual": {
     "options": [
