@@ -354,6 +354,17 @@
       qualifier: (profile) => {
         return profile.behavior?.toolsUsed?.includes('pricing_calculator');
       }
+    },
+    {
+      id: "localhost_hero",
+      name: "There's No Place Like 127.0.0.1",
+      icon: "🏠",
+      description: "Browse from localhost - a true developer",
+      qualifier: (profile) => {
+        return window.location.hostname === 'localhost' ||
+               window.location.hostname === '127.0.0.1' ||
+               window.location.hostname.includes('.local');
+      }
     }
   ];
 
