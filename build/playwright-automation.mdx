@@ -1,0 +1,440 @@
+---
+title: "Playwright Automation"
+description: "Browser automation that handles complex web interactions, data extraction, and testing workflows that manual processes or simple scrapers can't touch"
+---
+
+## Automate Any Web Workflow That Requires a Human
+
+Your team logs into 20 different platforms daily. Downloading reports. Updating listings. Checking competitors. Managing campaigns. Extracting data. These aren't API-friendly tasks—they require clicking through complex UIs, handling dynamic content, and navigating multi-step processes.
+
+Playwright automation eliminates this manual browser work, turning hours of clicking into seconds of execution.
+
+## What Is Playwright Automation?
+
+Playwright is Microsoft's browser automation framework that controls real browsers programmatically. Unlike basic web scrapers that break when a site updates, Playwright automation:
+
+- **Controls real browsers**: Chrome, Firefox, Safari, Edge
+- **Handles modern web apps**: React, Vue, Angular, SPAs
+- **Manages authentication**: Login flows, 2FA, sessions
+- **Processes dynamic content**: Wait for AJAX, handle popups
+- **Captures everything**: Screenshots, videos, network traffic
+- **Runs headless or visible**: Debug visually or run at scale
+
+## The Problems Only Playwright Can Solve
+
+### Sites Without APIs
+Most B2B platforms don't offer APIs. Playwright becomes your API:
+- Download reports from analytics platforms
+- Update product listings on marketplaces
+- Extract data from competitor sites
+- Manage PPC campaigns across platforms
+- Submit forms and applications at scale
+
+### Complex Authentication
+Multi-step login flows that block traditional scrapers:
+- Handle OAuth flows
+- Manage cookie-based sessions
+- Navigate 2FA challenges
+- Maintain persistent authentication
+- Switch between multiple accounts
+
+### Dynamic JavaScript Sites
+Modern web apps that render content client-side:
+- Wait for React components to load
+- Handle infinite scroll pagination
+- Interact with dynamic dropdowns
+- Process AJAX-loaded content
+- Navigate single-page applications
+
+## Playwright Automation We Build
+
+### Competitive Intelligence Automation
+
+Monitor competitors automatically:
+
+```javascript
+// Production system monitoring competitor pricing
+async function trackCompetitorPrices(competitors) {
+  const browser = await playwright.chromium.launch();
+
+  for (const competitor of competitors) {
+    const page = await browser.newPage();
+
+    // Navigate to competitor site
+    await page.goto(competitor.url);
+
+    // Handle cookie banners, popups
+    await dismissOverlays(page);
+
+    // Extract product data
+    const products = await page.evaluate(() => {
+      return Array.from(document.querySelectorAll('.product')).map(el => ({
+        name: el.querySelector('.name')?.textContent,
+        price: parseFloat(el.querySelector('.price')?.textContent.replace(/[^0-9.]/g, '')),
+        availability: el.querySelector('.stock')?.textContent,
+        image: el.querySelector('img')?.src
+      }));
+    });
+
+    // Store in database with timestamp
+    await saveCompetitorData(competitor.name, products);
+  }
+
+  await browser.close();
+}
+```
+
+**Real Results**:
+- Track 500+ competitor products daily
+- Price changes detected within minutes
+- Automatic alerts for undercuts
+- 95% reduction in manual checking
+
+### Lead Generation & Outreach
+
+Extract prospects from any platform:
+
+**LinkedIn Prospecting System**
+- Search for ideal customer profiles
+- Extract contact information
+- Enrich with company data
+- Personalize outreach messages
+- Track engagement automatically
+
+**Marketplace Vendor Discovery**
+- Find new suppliers on B2B platforms
+- Extract vendor capabilities
+- Compare pricing and terms
+- Generate vendor scorecards
+- Automate RFQ submissions
+
+### Report Automation
+
+Download reports from any platform:
+
+```typescript
+// Download reports from multiple analytics platforms
+async function consolidateAnalytics() {
+  const reports = await Promise.all([
+    downloadGoogleAnalytics(dateRange),
+    downloadFacebookAds(dateRange),
+    downloadShopifyReports(dateRange),
+    downloadStripeMetrics(dateRange)
+  ]);
+
+  return consolidateIntoMasterReport(reports);
+}
+
+async function downloadGoogleAnalytics(dateRange) {
+  const page = await authenticatedPage('google-analytics');
+
+  // Navigate to reports section
+  await page.click('[data-testid="reports-nav"]');
+
+  // Set date range
+  await page.fill('#date-start', dateRange.start);
+  await page.fill('#date-end', dateRange.end);
+
+  // Download CSV
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.click('[data-action="export-csv"]')
+  ]);
+
+  return await processCSV(download.path());
+}
+```
+
+### E-commerce Operations
+
+Manage products across platforms:
+
+**Multi-Platform Listing Manager**
+- Update inventory across 10+ marketplaces
+- Sync pricing in real-time
+- Upload product images
+- Manage descriptions and specs
+- Track listing performance
+
+**Review Aggregation System**
+- Collect reviews from all platforms
+- Respond to feedback automatically
+- Track sentiment trends
+- Generate review reports
+- Flag urgent issues
+
+### Testing & Quality Assurance
+
+Ensure your web app works perfectly:
+
+**End-to-End Test Automation**
+- Test complete user journeys
+- Verify checkout flows
+- Check cross-browser compatibility
+- Validate form submissions
+- Monitor site performance
+
+**Visual Regression Testing**
+- Capture screenshots of every page
+- Compare against baseline
+- Detect UI breaking changes
+- Track design consistency
+- Alert on visual bugs
+
+## Advanced Playwright Capabilities
+
+### Parallel Execution
+Run hundreds of browser instances simultaneously:
+
+```javascript
+// Process 100 sites in parallel
+async function parallelScraping(urls) {
+  const cluster = await Cluster.launch({
+    concurrency: Cluster.CONCURRENCY_BROWSER,
+    maxConcurrency: 20,
+    playwrightOptions: {
+      headless: true
+    }
+  });
+
+  await cluster.task(async ({ page, data }) => {
+    await scrapeSite(page, data.url);
+  });
+
+  for (const url of urls) {
+    cluster.queue({ url });
+  }
+
+  await cluster.idle();
+  await cluster.close();
+}
+```
+
+### Smart Wait Strategies
+Handle any loading scenario:
+
+```javascript
+// Wait for complex conditions
+await page.waitForFunction(() => {
+  const products = document.querySelectorAll('.product');
+  const prices = document.querySelectorAll('.price:not(.loading)');
+  return products.length > 0 && prices.length === products.length;
+});
+```
+
+### Network Interception
+Capture and modify network traffic:
+
+```javascript
+// Block ads and track API calls
+await page.route('**/*', route => {
+  const url = route.request().url();
+
+  if (url.includes('doubleclick.net')) {
+    route.abort(); // Block ads
+  } else if (url.includes('/api/')) {
+    captureAPICall(route.request()); // Log API traffic
+    route.continue();
+  } else {
+    route.continue();
+  }
+});
+```
+
+### Browser Context Isolation
+Manage multiple sessions:
+
+```javascript
+// Run multiple accounts simultaneously
+const contexts = await Promise.all(
+  accounts.map(async account => {
+    const context = await browser.newContext({
+      storageState: `sessions/${account.id}.json`
+    });
+    return { account, context };
+  })
+);
+```
+
+## Real Implementation: Vouchernaut's PPC Automation
+
+Our Vouchernaut system automated PPC campaign creation across platforms:
+
+### The Challenge
+- Creating one campaign manually: 3-5 minutes
+- Managing 100,000+ brands
+- Multiple platforms (Google, Facebook)
+- Constant updates needed
+
+### The Solution
+```javascript
+async function createPPCCampaign(brand) {
+  // Google Ads
+  const googlePage = await googleAdsContext.newPage();
+  await googlePage.goto('https://ads.google.com/campaigns/new');
+
+  // Fill campaign details
+  await googlePage.fill('#campaign-name', `${brand.name} - Voucher Codes`);
+  await googlePage.selectOption('#budget', brand.budgetTier);
+
+  // Add keywords
+  for (const keyword of brand.keywords) {
+    await googlePage.click('[data-action="add-keyword"]');
+    await googlePage.fill('.keyword-input:last-child', keyword);
+  }
+
+  // Submit campaign
+  await googlePage.click('[type="submit"]');
+
+  // Facebook Ads (parallel)
+  const fbPage = await facebookAdsContext.newPage();
+  // ... similar process
+
+  return {
+    google: await extractCampaignId(googlePage),
+    facebook: await extractCampaignId(fbPage),
+    created: new Date()
+  };
+}
+```
+
+### The Results
+- **3-5 minutes → 10 seconds** per campaign
+- **60% of revenue** driven by automated campaigns
+- **Company acquired** by Groupon
+- **Zero manual intervention** required
+
+## Common Playwright Use Cases
+
+### Data Extraction
+- **Price Monitoring**: Track competitor pricing
+- **Inventory Tracking**: Monitor stock levels
+- **News Aggregation**: Collect industry updates
+- **Social Listening**: Extract mentions and sentiment
+- **Research Automation**: Gather market intelligence
+
+### Process Automation
+- **Form Submission**: Apply to programs at scale
+- **Account Management**: Update profiles across platforms
+- **Content Publishing**: Post to multiple sites
+- **Order Processing**: Automate fulfillment workflows
+- **Document Generation**: Create PDFs from web data
+
+### Testing & Monitoring
+- **Functional Testing**: Verify features work correctly
+- **Performance Testing**: Measure page load times
+- **Uptime Monitoring**: Check site availability
+- **Security Testing**: Validate authentication flows
+- **Accessibility Testing**: Ensure compliance
+
+### Integration & Migration
+- **Data Migration**: Move between platforms
+- **System Integration**: Connect incompatible systems
+- **API Substitution**: Create APIs for sites without them
+- **Legacy Modernization**: Bridge old and new systems
+
+## Playwright vs. Other Solutions
+
+### Playwright vs. Selenium
+- **3x faster** execution
+- **More reliable** wait strategies
+- **Better** modern web support
+- **Auto-wait** for elements
+- **Superior** debugging tools
+
+### Playwright vs. Puppeteer
+- **Multi-browser** support (not just Chrome)
+- **Better** performance
+- **More** features out-of-box
+- **Stronger** community
+- **Microsoft** backing
+
+### Playwright vs. Basic Scrapers
+- **Handles** JavaScript rendering
+- **Manages** authentication
+- **Processes** dynamic content
+- **Survives** site updates
+- **Captures** everything
+
+## Building Robust Playwright Systems
+
+### Error Handling
+```javascript
+// Retry with exponential backoff
+async function resilientScrape(url, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await scrapeWithTimeout(url, 30000);
+    } catch (error) {
+      console.log(`Attempt ${i + 1} failed: ${error.message}`);
+      if (i < maxRetries - 1) {
+        await sleep(Math.pow(2, i) * 1000); // Exponential backoff
+      }
+    }
+  }
+  throw new Error(`Failed after ${maxRetries} attempts`);
+}
+```
+
+### Session Management
+- Persist cookies and local storage
+- Rotate proxies and user agents
+- Handle rate limiting gracefully
+- Manage authentication tokens
+- Clear data between runs
+
+### Monitoring & Alerting
+- Track success rates
+- Monitor execution times
+- Alert on failures
+- Log all actions
+- Generate audit trails
+
+## ROI of Playwright Automation
+
+### Time Savings
+- **Manual task**: 10 minutes per site × 50 sites = 8 hours daily
+- **Playwright**: 50 sites processed in 5 minutes
+- **Savings**: 7.5 hours per day, 37.5 hours per week
+
+### Cost Reduction
+- **Manual labor**: $40/hour × 40 hours = $1,600/week
+- **Automation**: One-time build + $100/month hosting
+- **ROI**: Pays for itself in 2 weeks
+
+### Quality Improvement
+- **100% coverage**: Never miss a data point
+- **24/7 operation**: Run continuously
+- **Zero errors**: No manual mistakes
+- **Real-time updates**: Instant notifications
+
+## Why WithSeismic for Playwright Automation
+
+We've built Playwright systems that:
+- Process millions of pages monthly
+- Handle authentication for 50+ platforms
+- Run 24/7 with 99.9% uptime
+- Scale to thousands of concurrent browsers
+- Survive constant site updates
+
+Our expertise includes:
+- Complex authentication flows
+- Anti-bot detection bypassing
+- Distributed browser orchestration
+- Cloud deployment and scaling
+- Maintenance and monitoring
+
+## Getting Started with Playwright
+
+Every business has manual web tasks perfect for automation:
+- Downloading reports from platforms
+- Checking competitor websites
+- Managing listings and content
+- Extracting data from portals
+- Testing application workflows
+
+WithSeismic builds Playwright automation that eliminates these manual tasks forever. Our systems are resilient, scalable, and maintainable—turning browser-based busywork into automated intelligence.
+
+<Card title="Automate Your Web Workflows" icon="browser" href="/quickstart">
+  Book Doug's sprint to build Playwright automation that handles your complex web tasks. Stop clicking through the same sites every day—let automation do it in seconds.
+</Card>
