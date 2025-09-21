@@ -4,213 +4,255 @@ description: "Transparent pricing for WithSeismic's development services and int
 icon: "dollar-sign"
 ---
 
-## Transparent Sprint-Based Pricing
+## Simple, Transparent Pricing
 
 <Table>
   <TableHeader>
     <TableRow>
       <TableCell>Service</TableCell>
       <TableCell>Duration</TableCell>
-      <TableCell>Price</TableCell>
+      <TableCell>Price (USD)</TableCell>
       <TableCell>What You Get</TableCell>
     </TableRow>
   </TableHeader>
   <TableBody>
     <TableRow>
-      <TableCell>**Discovery Sprint**</TableCell>
-      <TableCell>1 week</TableCell>
-      <TableCell>$3,000</TableCell>
-      <TableCell>Requirements gathering, technical architecture, roadmap creation, feasibility analysis</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>**Standard Sprint**</TableCell>
+      <TableCell>**2-Week Sprint**</TableCell>
       <TableCell>2 weeks</TableCell>
       <TableCell>$6,000</TableCell>
-      <TableCell>Full development cycle, 80 hours of dedicated engineering, working prototype/tool</TableCell>
+      <TableCell>Working prototype, automation tool, or Chrome extension MVP. 80 hours of dedicated engineering.</TableCell>
     </TableRow>
     <TableRow>
-      <TableCell>**Extended Sprint**</TableCell>
+      <TableCell>**4-Week Sprint**</TableCell>
       <TableCell>4 weeks</TableCell>
       <TableCell>$12,000</TableCell>
-      <TableCell>Complex feature development, 160 hours of engineering, production-ready system</TableCell>
+      <TableCell>Production-ready system, complex automation, or full-featured tool. 160 hours of engineering.</TableCell>
     </TableRow>
     <TableRow>
-      <TableCell>**Launch Sprint**</TableCell>
-      <TableCell>1 week</TableCell>
-      <TableCell>$3,000</TableCell>
-      <TableCell>Deployment, monitoring setup, performance optimization, documentation</TableCell>
+      <TableCell>**MVP Development**</TableCell>
+      <TableCell>4 weeks</TableCell>
+      <TableCell>$12,000</TableCell>
+      <TableCell>Minimum viable product with core features, deployment, and initial user testing.</TableCell>
     </TableRow>
     <TableRow>
-      <TableCell className="bg-gray-50">**Basic Maintenance**</TableCell>
+      <TableCell className="bg-gray-50">**Maintenance & Support**</TableCell>
       <TableCell className="bg-gray-50">Monthly</TableCell>
-      <TableCell className="bg-gray-50">$1,500/mo</TableCell>
-      <TableCell className="bg-gray-50">Bug fixes, security updates, monthly health checks</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell className="bg-gray-50">**Active Support**</TableCell>
-      <TableCell className="bg-gray-50">Monthly</TableCell>
-      <TableCell className="bg-gray-50">$3,000/mo</TableCell>
-      <TableCell className="bg-gray-50">All Basic features + 20 hours of development, priority support</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell className="bg-gray-50">**Premium Partnership**</TableCell>
-      <TableCell className="bg-gray-50">Monthly</TableCell>
-      <TableCell className="bg-gray-50">$6,000/mo</TableCell>
-      <TableCell className="bg-gray-50">All Active features + 40 hours of development, dedicated Slack channel</TableCell>
+      <TableCell className="bg-gray-50">$3,000/month</TableCell>
+      <TableCell className="bg-gray-50">20 hours/month for updates, bug fixes, feature additions, and priority support.</TableCell>
     </TableRow>
   </TableBody>
 </Table>
 
 <Info>
-  **Payment Terms**: 50% upfront, 50% on completion for sprints. Monthly billing for ongoing support.
+  **Our Rate**: $3,000 USD per week of development. **Payment Terms**: 50% upfront, 50% on completion.
 </Info>
 
-## Common Project Types & Pricing
-
-### Automation Tools ($3,000 - $12,000)
-**2-4 week sprints** for tools that eliminate repetitive work:
-- Chrome extensions for sales intelligence
-- LLM workflows for content processing
-- Browser automation for report generation
-- Web scrapers and data collectors
-- Quality assurance automation
-
-### Internal Platforms ($12,000 - $30,000)
-**4-10 week projects** for comprehensive systems:
-- Multi-step workflow automation
-- Team collaboration platforms
-- Analytics and reporting dashboards
-- Customer intelligence systems
-- Campaign management tools
-
-### Enterprise Systems ($30,000+)
-**Custom engagements** for company-wide transformation:
-- Full MCP server implementations
-- Company-wide tool deployment
-- Multiple integrated modules
-- Advanced AI/ML capabilities
-- Extensive third-party integrations
-
 ## Why Our Pricing Makes Sense
+
+export const CostComparison = () => {
+  const [weeks, setWeeks] = React.useState(4);
+  const [hasInteracted, setHasInteracted] = React.useState(false);
+
+  const withSeismicCost = weeks * 3000;
+  const freelancerCost = weeks * 40 * 100; // $100/hr * 40hrs/week
+  const agencyCost = weeks * 40 * 200; // $200/hr * 40hrs/week
+  const fullTimeCost = Math.round((150000 / 52) * weeks); // $150k/year senior dev
+
+  const handleSliderChange = (value) => {
+    setWeeks(value);
+
+    // Track the first interaction with the pricing calculator
+    if (!hasInteracted && window.WithSeismicTracker) {
+      setHasInteracted(true);
+      window.WithSeismicTracker.trackTool('pricing_calculator', {
+        weeks: value,
+        withSeismicCost: value * 3000
+      });
+    }
+  };
+
+  return (
+    <div className="bg-background rounded-lg p-6 my-6 border border-neutral-500/20 shadow-sm">
+      <div className="mb-6">
+        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Project Duration Calculator
+        </label>
+        <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
+          <input
+            type="range"
+            min="1"
+            max="12"
+            value={weeks}
+            onChange={(e) => handleSliderChange(e.target.value)}
+            className="w-full"
+          />
+          <div className="text-center mt-3">
+            <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {weeks} {weeks === 1 ? 'week' : 'weeks'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-200 dark:border-green-800">
+          <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+            ${withSeismicCost.toLocaleString()}
+          </div>
+          <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-1">
+            WithSeismic
+          </div>
+          <div className="text-xs text-gray-600 dark:text-gray-400">
+            Fixed price, guaranteed
+          </div>
+        </div>
+
+        <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
+          <div className="text-2xl font-bold text-gray-700 dark:text-gray-300">
+            ${freelancerCost.toLocaleString()}
+          </div>
+          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mt-1">
+            Freelancer
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            ~$100/hr, variable
+          </div>
+        </div>
+
+        <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
+          <div className="text-2xl font-bold text-gray-700 dark:text-gray-300">
+            ${agencyCost.toLocaleString()}
+          </div>
+          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mt-1">
+            Agency
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            ~$200/hr + overhead
+          </div>
+        </div>
+
+        <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
+          <div className="text-2xl font-bold text-gray-700 dark:text-gray-300">
+            ${fullTimeCost.toLocaleString()}
+          </div>
+          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mt-1">
+            Full-Time Dev
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            $150k/yr + benefits
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+<CostComparison />
 
 ### The Math That Matters
 
 <Info>
   **Example: Lead Qualification Tool**
   - Manual process: 4 hours/day × 5 days × $50/hour = **$1,000/week cost**
-  - Our tool investment: $12,000 (4-week sprint)
+  - Our 4-week sprint: $12,000 investment
   - **Break-even: 12 weeks**
   - Year 1 savings: $52,000 - $12,000 = **$40,000 profit**
 </Info>
 
-### vs. Alternative Options
+## Common Project Types
 
-**Full-Time Developer**
-- Junior: $80-120K/year + benefits = ~$8-13K/month
-- Senior: $140-200K/year + benefits = ~$15-22K/month
-- Time to productivity: 3-6 months
-- Risk: Single point of failure, may lack specific skills
+### 2-Week Sprints ($6,000)
+- Chrome extension MVPs
+- Simple automation scripts
+- Web scrapers and data collectors
+- Basic LLM integrations
+- Proof of concepts
 
-**Traditional Agency**
-- Hourly rates: $150-300/hour
-- Typical project: $30-120K
-- Timeline: 3-6 months with scope creep
-- Hidden costs: Project management, meetings, revisions
+### 4-Week Sprints ($12,000)
+- Production-ready Chrome extensions
+- Complex browser automation (Playwright)
+- LLM workflow systems
+- MCP server implementations
+- Multi-step automation pipelines
 
-**Freelancers**
-- Rates: $75-150/hour
-- Availability: Inconsistent
-- Quality: Highly variable
-- Support: Often minimal post-launch
-
-**WithSeismic**
-- Fixed sprint pricing: Know exactly what you'll pay
-- 2-week delivery: Ship fast, iterate based on real usage
-- Senior expertise: 10+ years experience, production scale
-- Ongoing support: We maintain what we build
+### Custom Projects
+For larger initiatives, we combine multiple sprints with clear milestones. Every 2-4 weeks, you get working software to evaluate before continuing.
 
 ## What's Included in Every Sprint
 
 <CardGroup cols={2}>
   <Card icon="code" title="Full-Stack Development">
-    Frontend, backend, database design, API development, and integrations
+    Frontend, backend, API development, database design, and third-party integrations
   </Card>
   <Card icon="robot" title="AI & Automation">
-    LLM integration, workflow automation, process optimization, MCP servers
+    LLM integration, browser automation, web scraping, workflow optimization
   </Card>
-  <Card icon="gauge" title="Performance & Scale">
-    Speed improvements, resource efficiency, scalability planning, production deployment
+  <Card icon="rocket" title="Production Deployment">
+    Testing, deployment, monitoring, performance optimization, documentation
   </Card>
-  <Card icon="shield" title="Security & Quality">
-    Security best practices, automated testing, code review, documentation
+  <Card icon="headset" title="Direct Communication">
+    Slack access, daily updates, collaborative planning, knowledge transfer
   </Card>
 </CardGroup>
 
-## Real Results from Real Sprints
+## Real Results from Our Sprints
 
-### 2-Week Sprint: [GrowthRunner DevTools](/case-studies/growthrunner-devtools)
-- **Investment**: $6,000
-- **Result**: 90% reduction in audit time
-- **ROI**: 10x productivity increase
+### [GrowthRunner DevTools](/case-studies/growthrunner-devtools)
+Chrome DevTools extension that reduced analytics auditing from hours to minutes. **90% time savings** for their team.
 
-### 4-Week Sprint: [Fingers on Pulse](/case-studies/fingers-on-pulse-content-intelligence)
-- **Investment**: $12,000
-- **Result**: 200x faster content processing
-- **Impact**: Monitor 800+ YouTube channels automatically
+### [Fingers on Pulse](/case-studies/fingers-on-pulse-content-intelligence)
+LLM workflow system processing 800+ YouTube channels. **200x faster** than manual research.
 
-### 12-Week Project: [Indy.ai Chrome Extension](/case-studies/contra-linkedin-automation)
-- **Investment**: ~$36,000
-- **Result**: 20,000+ users, 5x marketplace inventory
-- **Value**: Created competitive moat
+### [Indy.ai Chrome Extension](/case-studies/contra-linkedin-automation)
+Crowdsourced discovery engine with **20,000+ users**, created **5x marketplace growth**.
 
 ## Frequently Asked Questions
 
 <AccordionGroup>
+  <Accordion title="Why $3,000 per week?">
+    This rate reflects senior engineering expertise (10+ years), proven track record (successful exits), and guaranteed delivery. You're not paying for time—you're paying for systems that transform your business.
+  </Accordion>
+
   <Accordion title="How do sprints work?">
-    We work in fixed time blocks with clear deliverables. Each sprint includes planning, development, testing, and deployment. You get working software at the end of each sprint, not just promises.
+    We start Monday, ship working software by sprint end. Daily updates via Slack. You can test and use the tool throughout development. No surprises, no scope creep.
   </Accordion>
 
-  <Accordion title="What if my project takes longer than expected?">
-    Our sprint model protects you. After each sprint, you have working software and can decide whether to continue. No open-ended billing or scope creep.
+  <Accordion title="What if my project needs more time?">
+    After each sprint, you have working software. Decide if you want to continue, pivot, or stop. You're never locked into anything beyond the current sprint.
   </Accordion>
 
-  <Accordion title="Do you offer discounts for startups?">
-    We don't offer standard discounts, but if you're working on something innovative, let's talk. We occasionally partner on compelling projects.
+  <Accordion title="Do you offer discounts?">
+    Our pricing is fixed to ensure consistent quality and dedication to every project. The value comes from ROI—most tools pay for themselves within 3 months.
   </Accordion>
 
-  <Accordion title="Can I switch between support plans?">
-    Yes. You can upgrade or downgrade your support plan with 30 days notice. Start with Basic and scale as needed.
+  <Accordion title="What about ongoing maintenance?">
+    $3,000/month gets you 20 hours for updates, fixes, and improvements. Many clients start with a sprint, then move to monthly support once the tool is proven.
   </Accordion>
 
-  <Accordion title="What if I need more than 40 hours per month?">
-    We can create custom packages for high-volume needs or add additional sprints as needed.
+  <Accordion title="Can you guarantee results?">
+    We guarantee working software that meets agreed specifications. We can't guarantee business outcomes (like user adoption), but our track record speaks for itself.
   </Accordion>
 
-  <Accordion title="Do you require long-term contracts?">
-    No. Our sprint-based model means you only commit to what you need. Support plans are month-to-month after an initial 3-month period.
+  <Accordion title="What technologies do you use?">
+    TypeScript, React, Node.js, Python, Chrome Extensions API, Playwright, LLMs (GPT-4, Claude), and whatever else makes sense for your needs.
   </Accordion>
 
-  <Accordion title="What technologies do you work with?">
-    We're technology-agnostic but specialize in TypeScript, React, Node.js, Python, Chrome Extensions, Playwright, and LLM integrations. We use whatever makes sense for your needs.
-  </Accordion>
-
-  <Accordion title="Who actually does the work?">
-    Doug Silkstone personally leads all development. Fullstack founding engineer with successful exits, 10+ years experience, and production systems handling millions of users.
+  <Accordion title="Who actually builds the tools?">
+    Doug Silkstone personally leads all development. Not outsourced, not junior developers. You get senior expertise on every line of code.
   </Accordion>
 </AccordionGroup>
 
-## Ready to Get Started?
+## Ready to Eliminate Repetitive Work?
 
 <CardGroup cols={2}>
-  <Card title="Book a Discovery Call" icon="phone" href="/quickstart">
-    Discuss your automation needs and get a custom quote
+  <Card title="Book a Call" icon="phone" href="/quickstart">
+    Discuss your bottlenecks and see if we're a fit
   </Card>
-  <Card title="Start with a Discovery Sprint" icon="rocket" href="/approach/discovery-process">
-    1-week sprint to define your project scope and roadmap
+  <Card title="Start This Week" icon="rocket" href="/contact">
+    Ready to move? Let's scope your first sprint
   </Card>
 </CardGroup>
 
 <Note>
-  **Questions about pricing?**
-  Email us at hello@withseismic.com or book a call to discuss your specific needs.
+  **Questions?** Email hello@withseismic.com or book a call. We typically respond within 4 hours during business hours.
 </Note>

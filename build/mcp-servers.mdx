@@ -5,7 +5,11 @@ description: "Custom Model Context Protocol servers that give AI assistants dire
 
 ## Connect AI Directly to Your Business Systems
 
-MCP (Model Context Protocol) is Anthropic's new standard for connecting LLMs to external tools and data sources. Instead of copy-pasting between ChatGPT and your systems, MCP servers enable AI assistants to directly interact with your databases, APIs, and business logic—transforming them from chat interfaces into automation powerhouses.
+<Info>
+  **The game changer**: MCP (Model Context Protocol) lets AI assistants directly access your business systems. No more copy-pasting. No more context switching. Just intelligent automation with full system access.
+</Info>
+
+MCP (Model Context Protocol) is Anthropic's new standard for connecting LLMs to external tools and data sources. Instead of copy-pasting between ChatGPT and your systems, MCP servers enable AI assistants to directly interact with your databases, APIs, and business logic -- transforming them from chat interfaces into automation powerhouses.
 
 ## What Are MCP Servers?
 
@@ -17,111 +21,98 @@ MCP servers are lightweight connectors that bridge AI assistants (like Claude De
 - **Real-Time Data**: Fresh data access without manual updates
 - **Secure Context**: Controlled access with proper authentication
 
-Think of it as giving your AI assistant API keys to your entire tech stack—but with guardrails, permissions, and audit trails.
+Think of it as giving your AI assistant API keys to your entire tech stack -- but with guardrails, permissions, and audit trails.
 
 ## Why MCP Changes Everything
 
-### Before MCP: Manual Context Switching
-- Copy data from your CRM into ChatGPT
-- Paste AI responses back into your systems
-- Manually trigger automations
-- Context lost between conversations
-- No real-time data access
-
-### After MCP: Direct AI Integration
-- AI queries your database directly
-- Writes updates back to your systems
-- Triggers workflows automatically
-- Maintains full context across sessions
-- Always working with live data
+<Tabs>
+  <Tab title="Before MCP">
+    <Icon icon="clipboard" />
+    - Copy data from CRM to ChatGPT
+    - Paste responses back to systems
+    - Manually trigger automations
+    - Context lost between sessions
+    - No real-time data access
+  </Tab>
+  <Tab title="After MCP">
+    <Icon icon="link" />
+    - AI queries database directly
+    - Writes updates automatically
+    - Triggers workflows instantly
+    - Maintains full context
+    - Always uses live data
+  </Tab>
+</Tabs>
 
 ## MCP Servers We Build
 
-### Customer Intelligence Server
-Connect AI to your CRM, support tickets, and analytics:
-- **Query customer data**: "Show me all enterprise customers who haven't engaged in 30 days"
-- **Generate insights**: "Analyze churn patterns for Q3"
-- **Update records**: "Add meeting notes to account"
-- **Trigger workflows**: "Start win-back campaign for at-risk accounts"
-
-### Content Operations Server
-Give AI control over your content pipeline:
-- **Content generation**: "Create 5 blog posts from this webinar transcript"
-- **SEO optimization**: "Update all product pages with new keywords"
-- **Publishing automation**: "Schedule this week's social posts"
-- **Performance analysis**: "Which content drove most conversions?"
-
-### Analytics & Reporting Server
-Transform AI into your data analyst:
-- **Custom queries**: "Compare MRR growth across customer segments"
-- **Report generation**: "Create investor deck with latest metrics"
-- **Anomaly detection**: "Alert me to unusual patterns"
-- **Forecasting**: "Project Q4 revenue based on pipeline"
-
-### Development Tools Server
-Turn AI into your coding assistant:
-- **Code search**: "Find all API endpoints that handle authentication"
-- **Deployment automation**: "Deploy staging branch after tests pass"
-- **Documentation**: "Update API docs with new endpoints"
-- **Monitoring**: "Show me errors from the last 24 hours"
-
-### Sales Operations Server
-AI becomes your sales ops team:
-- **Lead scoring**: "Score all new leads from this week's campaign"
-- **Outreach automation**: "Generate personalized emails for stalled deals"
-- **Pipeline analysis**: "Which deals need attention this week?"
-- **Proposal generation**: "Create proposal for Acme Corp opportunity"
+<AccordionGroup>
+  <Accordion title="Customer Intelligence Server">
+    Connect AI to your CRM, support tickets, and analytics:
+    <Check>Query customer data: "Show me all enterprise customers who haven't engaged in 30 days"</Check>
+    <Check>Generate insights: "Analyze churn patterns for Q3"</Check>
+    <Check>Update records: "Add meeting notes to account"</Check>
+    <Check>Trigger workflows: "Start win-back campaign for at-risk accounts"</Check>
+  </Accordion>
+  <Accordion title="Content Operations Server">
+    Give AI control over your content pipeline:
+    <Check>Content generation: "Create 5 blog posts from this webinar transcript"</Check>
+    <Check>SEO optimization: "Update all product pages with new keywords"</Check>
+    <Check>Publishing automation: "Schedule this week's social posts"</Check>
+    <Check>Performance analysis: "Which content drove most conversions?"</Check>
+  </Accordion>
+  <Accordion title="Analytics & Reporting Server">
+    Transform AI into your data analyst:
+    <Check>Custom queries: "Compare MRR growth across customer segments"</Check>
+    <Check>Report generation: "Create investor deck with latest metrics"</Check>
+    <Check>Anomaly detection: "Alert me to unusual patterns"</Check>
+    <Check>Forecasting: "Project Q4 revenue based on pipeline"</Check>
+  </Accordion>
+  <Accordion title="Development Tools Server">
+    Turn AI into your coding assistant:
+    <Check>Code search: "Find all API endpoints that handle authentication"</Check>
+    <Check>Deployment automation: "Deploy staging branch after tests pass"</Check>
+    <Check>Documentation: "Update API docs with new endpoints"</Check>
+    <Check>Monitoring: "Show me errors from the last 24 hours"</Check>
+  </Accordion>
+  <Accordion title="Sales Operations Server">
+    AI becomes your sales ops team:
+    <Check>Lead scoring: "Score all new leads from this week's campaign"</Check>
+    <Check>Outreach automation: "Generate personalized emails for stalled deals"</Check>
+    <Check>Pipeline analysis: "Which deals need attention this week?"</Check>
+    <Check>Proposal generation: "Create proposal for Acme Corp opportunity"</Check>
+  </Accordion>
+</AccordionGroup>
 
 ## Real Implementation Examples
 
-### E-commerce: Inventory Intelligence
-We built an MCP server connecting Claude to a Shopify store's entire backend:
+<CardGroup cols={3}>
+  <Card title="E-commerce Intelligence" icon="shopping-cart">
+    Connected Claude to Shopify backend. AI handles inventory forecasting, reordering, optimization.
 
-```javascript
-// Example MCP function exposed to AI
-async function updateInventoryForecast(params) {
-  const salesData = await db.query('SELECT * FROM sales WHERE...');
-  const forecast = await ml.predictDemand(salesData);
-  await shopify.updateInventoryLevels(forecast);
-  return { updated: true, changes: forecast.items.length };
-}
-```
+    **Result**: 10 hours/week automated
+  </Card>
+  <Card title="B2B Support Automation" icon="headset">
+    MCP server connecting Zendesk, Slack, product database. AI triages, suggests solutions, escalates.
 
-**Result**: AI now handles inventory forecasting, reordering, and optimization—tasks that took 10 hours weekly now run automatically.
+    **Impact**: 70% deflection, 90% faster
+  </Card>
+  <Card title="Agency Project AI" icon="tasks">
+    Integrated with Notion, Slack, time tracking. AI creates plans, assigns tasks, monitors progress.
 
-### B2B SaaS: Support Automation
-MCP server connecting AI to Zendesk, Slack, and product database:
-
-- AI triages tickets instantly
-- Suggests solutions from knowledge base
-- Escalates complex issues with context
-- Updates documentation from resolved tickets
-
-**Impact**: 70% ticket deflection, 90% faster response times
-
-### Agency: Project Management AI
-MCP server integrating with Notion, Slack, and time tracking:
-
-- AI creates project plans from briefs
-- Assigns tasks based on availability
-- Monitors progress and sends updates
-- Generates status reports automatically
-
-**Outcome**: 50% reduction in project management overhead
+    **Outcome**: 50% less PM overhead
+  </Card>
+</CardGroup>
 
 ## Technical Architecture
 
 ### Core Components
 
-```mermaid
-graph LR
-    A[AI Assistant] -->|MCP Protocol| B[MCP Server]
-    B --> C[Auth Layer]
-    C --> D[Business Logic]
-    D --> E[External APIs]
-    D --> F[Databases]
-    D --> G[Internal Tools]
-```
+The architecture includes:
+- AI Assistant connecting via MCP Protocol to MCP Server
+- Auth Layer for security and permissions
+- Business Logic layer for operations
+- Connections to External APIs, Databases, and Internal Tools
 
 ### Security & Control
 
@@ -133,43 +124,41 @@ graph LR
 
 ## MCP Development Process
 
-### Week 1: Discovery & Design
-- Map your key systems and workflows
-- Identify high-impact automation opportunities
-- Design MCP function interfaces
-- Plan security and permissions
+<Warning>
+  **4-week transformation**: From disconnected AI to fully integrated intelligent automation. Most teams see 10x productivity gains within the first week of deployment.
+</Warning>
 
-### Week 2: Core Development
-- Build MCP server framework
-- Implement authentication layer
-- Create core business functions
-- Set up logging and monitoring
-
-### Week 3: Integration & Testing
-- Connect to your systems
-- Test with AI assistants
-- Refine function behaviors
-- Implement safety controls
-
-### Week 4: Deployment & Training
-- Deploy to production
-- Train team on AI interactions
-- Document best practices
-- Monitor and optimize
+<Steps>
+  <Step title="Week 1: Discovery & Design">
+    Map systems and workflows. Identify automation opportunities. Design function interfaces. Plan security.
+  </Step>
+  <Step title="Week 2: Core Development">
+    Build MCP server framework. Implement authentication. Create business functions. Set up monitoring.
+  </Step>
+  <Step title="Week 3: Integration & Testing">
+    Connect to your systems. Test with AI assistants. Refine behaviors. Implement safety controls.
+  </Step>
+  <Step title="Week 4: Deployment & Training">
+    Deploy to production. Train team on AI interactions. Document best practices. Monitor and optimize.
+  </Step>
+</Steps>
 
 ## ROI of MCP Servers
 
-### Immediate Benefits
-- **80% reduction** in context switching
-- **10x faster** data analysis and reporting
-- **24/7 availability** of AI-powered operations
-- **Consistent execution** of complex workflows
-
-### Long-Term Value
-- Transform every employee into a power user
-- Eliminate repetitive data tasks entirely
-- Scale operations without hiring
-- Build competitive advantage through AI automation
+<CardGroup cols={2}>
+  <Card title="Immediate Benefits" icon="lightning-bolt" color="#16a34a">
+    <Check>80% less context switching</Check>
+    <Check>10x faster analysis</Check>
+    <Check>24/7 AI operations</Check>
+    <Check>Consistent execution</Check>
+  </Card>
+  <Card title="Long-Term Value" icon="trending-up" color="#0285c7">
+    <Check>Every employee becomes power user</Check>
+    <Check>Eliminate repetitive tasks</Check>
+    <Check>Scale without hiring</Check>
+    <Check>Build competitive advantage</Check>
+  </Card>
+</CardGroup>
 
 ## Why Build Custom MCP Servers?
 
@@ -187,29 +176,36 @@ graph LR
 
 ## Common Use Cases
 
-**Data Analysis & Reporting**
-- Financial analysis and forecasting
-- Customer behavior insights
-- Performance metrics tracking
-- Competitive intelligence gathering
-
-**Content & Marketing**
-- SEO optimization at scale
-- Social media management
-- Email campaign automation
-- Content performance analysis
-
-**Operations & Support**
-- Customer support automation
-- Inventory management
-- Quality assurance
-- Process optimization
-
-**Sales & Growth**
-- Lead qualification and scoring
-- Proposal generation
-- Pipeline management
-- Account intelligence
+<Tabs>
+  <Tab title="Data & Analytics">
+    <Icon icon="chart-bar" />
+    - Financial analysis and forecasting
+    - Customer behavior insights
+    - Performance metrics tracking
+    - Competitive intelligence gathering
+  </Tab>
+  <Tab title="Content & Marketing">
+    <Icon icon="bullhorn" />
+    - SEO optimization at scale
+    - Social media management
+    - Email campaign automation
+    - Content performance analysis
+  </Tab>
+  <Tab title="Operations & Support">
+    <Icon icon="cogs" />
+    - Customer support automation
+    - Inventory management
+    - Quality assurance
+    - Process optimization
+  </Tab>
+  <Tab title="Sales & Growth">
+    <Icon icon="rocket" />
+    - Lead qualification and scoring
+    - Proposal generation
+    - Pipeline management
+    - Account intelligence
+  </Tab>
+</Tabs>
 
 ## The Future of Work with MCP
 
@@ -220,20 +216,28 @@ MCP servers represent a fundamental shift in how we interact with AI. Instead of
 - Learn from your business patterns
 - Scale your expertise infinitely
 
-This isn't about replacing people—it's about amplifying their capabilities 100x.
+This amplifies human capabilities 100x rather than replacing people.
 
 ## Getting Started with MCP
 
-Building MCP servers requires deep understanding of:
-- Protocol implementation
-- System integration patterns
-- Security best practices
-- AI behavior management
-- Business process optimization
+<AccordionGroup>
+  <Accordion title="Assess Your Systems">
+    Identify which systems would benefit most from AI access. CRM? Analytics? Content management? Start with highest-impact integrations.
+  </Accordion>
+  <Accordion title="Define AI Capabilities">
+    Determine what actions AI should be able to take. Read-only access? Full CRUD operations? Workflow triggers?
+  </Accordion>
+  <Accordion title="Plan Security Model">
+    Design authentication, authorization, and audit logging. What can AI access? What requires human approval?
+  </Accordion>
+  <Accordion title="Build and Deploy">
+    Create MCP servers with proper error handling, rate limiting, and monitoring. Deploy with comprehensive team training.
+  </Accordion>
+</AccordionGroup>
 
-WithSeismic specializes in building MCP servers that transform how businesses operate. We've connected AI to everything from CRMs to code repositories, creating intelligent automation that feels like magic.
-
-Ready to connect AI directly to your business systems? Let's build MCP servers that turn your AI assistants into automation powerhouses.
+<Note>
+  WithSeismic specializes in building MCP servers that transform how businesses operate. We've connected AI to everything from CRMs to code repositories, creating intelligent automation that feels like magic.
+</Note>
 
 <Card title="Build Your MCP Server" icon="robot" href="/quickstart">
   Book Doug's 4-week sprint to build custom MCP servers that connect AI directly to your business systems. Transform ChatGPT from a chatbot into your most productive team member.

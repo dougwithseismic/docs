@@ -25,6 +25,7 @@
           {
             "group": "What We Build",
             "pages": [
+              "build/mvp",
               "build/internal-tools",
               "services/why-productize",
               "build/mcp-servers",

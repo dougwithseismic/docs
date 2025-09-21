@@ -180,6 +180,180 @@
       icon: "👑",
       description: "Become a qualified lead (5000 points)",
       qualifier: (profile) => profile.engagement?.score >= 5000
+    },
+    {
+      id: "week_warrior",
+      name: "Week Warrior",
+      icon: "⚔️",
+      description: "Visit 7 days in a row",
+      qualifier: (profile) => {
+        if (!profile.dailyVisits) return false;
+        const today = new Date().toDateString();
+        const dates = Object.keys(profile.dailyVisits || {})
+          .sort((a, b) => new Date(b) - new Date(a));
+
+        // Check for 7 consecutive days
+        let consecutive = 1;
+        for (let i = 1; i < dates.length; i++) {
+          const diff = (new Date(dates[i-1]) - new Date(dates[i])) / (1000 * 60 * 60 * 24);
+          if (diff === 1) {
+            consecutive++;
+            if (consecutive >= 7) return true;
+          } else {
+            consecutive = 1;
+          }
+        }
+        return false;
+      }
+    },
+    {
+      id: "month_milestone",
+      name: "Month Milestone",
+      icon: "📅",
+      description: "One month anniversary of first visit",
+      qualifier: (profile) => {
+        if (!profile.firstVisit) return false;
+        const firstVisit = new Date(profile.firstVisit);
+        const now = new Date();
+        const daysSinceFirst = (now - firstVisit) / (1000 * 60 * 60 * 24);
+        return daysSinceFirst >= 30;
+      }
+    },
+    {
+      id: "year_anniversary",
+      name: "Year Anniversary",
+      icon: "🎂",
+      description: "One year anniversary of first visit",
+      qualifier: (profile) => {
+        if (!profile.firstVisit) return false;
+        const firstVisit = new Date(profile.firstVisit);
+        const now = new Date();
+        const daysSinceFirst = (now - firstVisit) / (1000 * 60 * 60 * 24);
+        return daysSinceFirst >= 365;
+      }
+    },
+    {
+      id: "number_of_beast",
+      name: "Number of the Beast",
+      icon: "😈",
+      description: "Visit on day 666",
+      qualifier: (profile) => {
+        if (!profile.firstVisit) return false;
+        const firstVisit = new Date(profile.firstVisit);
+        const now = new Date();
+        const daysSinceFirst = Math.floor((now - firstVisit) / (1000 * 60 * 60 * 24));
+        return daysSinceFirst >= 666;
+      }
+    },
+    {
+      id: "fortnight_fanatic",
+      name: "Fortnight Fanatic",
+      icon: "🏰",
+      description: "Visit 14 different days",
+      qualifier: (profile) => {
+        const uniqueDays = Object.keys(profile.dailyVisits || {}).length;
+        return uniqueDays >= 14;
+      }
+    },
+    {
+      id: "habit_former",
+      name: "Habit Former",
+      icon: "🔥",
+      description: "Visit 30 different days",
+      qualifier: (profile) => {
+        const uniqueDays = Object.keys(profile.dailyVisits || {}).length;
+        return uniqueDays >= 30;
+      }
+    },
+    {
+      id: "weekend_warrior",
+      name: "Weekend Warrior",
+      icon: "🏖️",
+      description: "Visit on 5 different weekends",
+      qualifier: (profile) => {
+        if (!profile.weekendVisits) return false;
+        return profile.weekendVisits >= 5;
+      }
+    },
+    {
+      id: "century_club",
+      name: "Century Club",
+      icon: "💯",
+      description: "Reach 100 total page views",
+      qualifier: (profile) => profile.behavior?.totalPageViews >= 100
+    },
+    {
+      id: "vampire_hours",
+      name: "Vampire Hours",
+      icon: "🧛",
+      description: "Visit between midnight and 6 AM on 3 different nights",
+      qualifier: (profile) => {
+        if (!profile.vampireVisits) return false;
+        return profile.vampireVisits >= 3;
+      }
+    },
+    {
+      id: "loyal_follower",
+      name: "Loyal Follower",
+      icon: "💎",
+      description: "Visit at least once a week for 4 weeks",
+      qualifier: (profile) => {
+        if (!profile.weeklyStreak) return false;
+        return profile.weeklyStreak >= 4;
+      }
+    },
+    {
+      id: "article_appetizer",
+      name: "Article Appetizer",
+      icon: "📖",
+      description: "Read 5 articles",
+      qualifier: (profile) => {
+        const pages = Object.keys(profile.behavior?.pages || {});
+        const articles = pages.filter(p => p.includes('/articles/'));
+        return articles.length >= 5;
+      }
+    },
+    {
+      id: "article_enthusiast",
+      name: "Article Enthusiast",
+      icon: "📚",
+      description: "Read 10 articles",
+      qualifier: (profile) => {
+        const pages = Object.keys(profile.behavior?.pages || {});
+        const articles = pages.filter(p => p.includes('/articles/'));
+        return articles.length >= 10;
+      }
+    },
+    {
+      id: "article_scholar",
+      name: "Article Scholar",
+      icon: "🎓",
+      description: "Read 20 articles",
+      qualifier: (profile) => {
+        const pages = Object.keys(profile.behavior?.pages || {});
+        const articles = pages.filter(p => p.includes('/articles/'));
+        return articles.length >= 20;
+      }
+    },
+    {
+      id: "article_professor",
+      name: "Article Professor",
+      icon: "🏛️",
+      description: "Read 50 articles",
+      qualifier: (profile) => {
+        const pages = Object.keys(profile.behavior?.pages || {});
+        const articles = pages.filter(p => p.includes('/articles/'));
+        return articles.length >= 50;
+      }
+    },
+    {
+      id: "price_savvy",
+      name: "Price Savvy",
+      icon: "💰",
+      description: "Compare project costs using the pricing calculator",
+      qualifier: (profile) => {
+        return profile.behavior?.toolsUsed?.includes('pricing_calculator');
+      }
     }
   ];
 
@@ -285,7 +459,14 @@
         achievements: {
           unlocked: [],
           unlockedAt: {}
-        }
+        },
+
+        // Long-term tracking
+        dailyVisits: {}, // Object with date strings as keys
+        weekendVisits: 0,
+        vampireVisits: 0,
+        weeklyStreak: 0,
+        lastWeekVisit: null
       };
 
       this.saveVisitorProfile(profile);
@@ -397,6 +578,14 @@
           unlockedAt: {}
         };
       }
+
+      // Ensure long-term tracking fields exist
+      if (!profile.dailyVisits) profile.dailyVisits = {};
+      if (typeof profile.weekendVisits === "undefined") profile.weekendVisits = 0;
+      if (typeof profile.vampireVisits === "undefined") profile.vampireVisits = 0;
+      if (typeof profile.weeklyStreak === "undefined") profile.weeklyStreak = 0;
+      if (!profile.weekendDates) profile.weekendDates = {};
+      if (!profile.vampireDates) profile.vampireDates = {};
     }
 
     static checkAchievements(profile) {
@@ -468,6 +657,46 @@
 
     initializePage() {
       const profile = StorageManager.getVisitorProfile();
+
+      // Track daily visits
+      const now = new Date();
+      const today = now.toDateString();
+      if (!profile.dailyVisits) profile.dailyVisits = {};
+      if (!profile.dailyVisits[today]) {
+        profile.dailyVisits[today] = true;
+
+        // Check for weekly streak
+        const weekNumber = Math.floor((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+        if (profile.lastWeekVisit && profile.lastWeekVisit === weekNumber - 1) {
+          profile.weeklyStreak = (profile.weeklyStreak || 0) + 1;
+        } else if (!profile.lastWeekVisit || profile.lastWeekVisit < weekNumber - 1) {
+          profile.weeklyStreak = 1;
+        }
+        profile.lastWeekVisit = weekNumber;
+      }
+
+      // Track weekend visits
+      const dayOfWeek = now.getDay();
+      const weekNumber = Math.floor((now - new Date(now.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        if (!profile.weekendDates) profile.weekendDates = {};
+        const weekendKey = `${now.getFullYear()}-W${weekNumber}-Weekend`;
+        if (!profile.weekendDates[weekendKey]) {
+          profile.weekendDates[weekendKey] = true;
+          profile.weekendVisits = (profile.weekendVisits || 0) + 1;
+        }
+      }
+
+      // Track vampire hours (midnight to 6 AM)
+      const hour = new Date().getHours();
+      if (hour >= 0 && hour < 6) {
+        const vampireKey = `vampire_${today}`;
+        if (!profile.vampireDates) profile.vampireDates = {};
+        if (!profile.vampireDates[vampireKey]) {
+          profile.vampireDates[vampireKey] = true;
+          profile.vampireVisits = (profile.vampireVisits || 0) + 1;
+        }
+      }
 
       // Initialize or update page data
       if (!profile.behavior.pages[this.pagePath]) {
@@ -816,6 +1045,8 @@
         if (!profile.engagement.signals.includes("qualified_lead")) {
           profile.engagement.signals.push("qualified_lead");
           this.notifyHighValueLead(profile);
+          // Show Get in Touch widget for newly qualified leads
+          setTimeout(() => GetInTouchWidget.checkAndShow(), 2000);
         }
       } else if (profile.engagement.score >= 2500) {
         profile.engagement.level = "hot";
@@ -1437,6 +1668,206 @@
     },
   };
 
+  // Get in Touch Widget for Qualified Leads
+  const GetInTouchWidget = {
+    widget: null,
+    dismissedKey: 'withseismic_getintouch_dismissed',
+
+    init() {
+      const profile = StorageManager.getVisitorProfile();
+
+      // Only show for qualified leads
+      if (profile.engagement?.score < 5000) return;
+
+      // Check if dismissed recently (within 24 hours)
+      const dismissedAt = localStorage.getItem(this.dismissedKey);
+      if (dismissedAt) {
+        const dismissTime = new Date(dismissedAt);
+        const now = new Date();
+        const hoursSinceDismiss = (now - dismissTime) / (1000 * 60 * 60);
+        if (hoursSinceDismiss < 24) return;
+      }
+
+      this.createWidget();
+    },
+
+    createWidget() {
+      // Don't create if already exists
+      if (document.getElementById('withseismic-getintouch-widget')) return;
+
+      this.widget = document.createElement('div');
+      this.widget.id = 'withseismic-getintouch-widget';
+      // Detect if dark mode
+      const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      this.widget.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 320px;
+        background: ${isDarkMode ? '#1f2937' : '#ffffff'};
+        border: 1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, ${isDarkMode ? '0.3' : '0.1'});
+        padding: 20px;
+        font-family: system-ui, -apple-system, sans-serif;
+        z-index: 9998;
+        animation: slideInRight 0.5s ease-out;
+        cursor: default;
+      `;
+
+      this.widget.innerHTML = `
+        <button id="withseismic-getintouch-close" style="
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: transparent;
+          border: none;
+          color: ${isDarkMode ? '#9ca3af' : '#6b7280'};
+          font-size: 24px;
+          cursor: pointer;
+          padding: 0;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+          border-radius: 4px;
+        "
+        onmouseover="this.style.background='${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}'; this.style.color='${isDarkMode ? '#ffffff' : '#111827'}';"
+        onmouseout="this.style.background='transparent'; this.style.color='${isDarkMode ? '#9ca3af' : '#6b7280'}';"
+        title="Dismiss for 24 hours">×</button>
+
+        <div style="margin-bottom: 12px;">
+          <span style="
+            color: #FF8000;
+            font-weight: bold;
+            font-size: 18px;
+          ">Hey, I think we're a good fit!</span>
+        </div>
+
+        <p style="
+          color: ${isDarkMode ? '#e5e7eb' : '#6b7280'};
+          line-height: 1.6;
+          margin: 0 0 16px 0;
+          font-size: 14px;
+        ">
+          You've explored quite a bit of what we do, and it seems like there's real potential here.
+          Why don't you reach out and let me know how I can help?
+        </p>
+
+        <a href="/contact/book-consultation" style="
+          display: block;
+          background: linear-gradient(to right, #FF8000, #CC6600);
+          color: #ffffff;
+          text-align: center;
+          padding: 12px 20px;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 15px;
+          transition: all 0.3s;
+          box-shadow: 0 2px 10px rgba(255, 128, 0, 0.2);
+        "
+        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 20px rgba(255, 128, 0, 0.3)';"
+        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(255, 128, 0, 0.2)';">
+          Let's Talk →
+        </a>
+
+        <p style="
+          color: ${isDarkMode ? '#9ca3af' : '#6b7280'};
+          font-size: 11px;
+          margin: 12px 0 0 0;
+          text-align: center;
+          font-style: italic;
+        ">
+          Based on your engagement score of ${StorageManager.getVisitorProfile().engagement?.score || 0} points
+        </p>
+      `;
+
+      // Add styles for animations if not already added
+      if (!document.getElementById('withseismic-getintouch-styles')) {
+        const style = document.createElement('style');
+        style.id = 'withseismic-getintouch-styles';
+        style.textContent = `
+          @keyframes slideInRight {
+            from {
+              transform: translateX(120%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+          @media (max-width: 640px) {
+            #withseismic-getintouch-widget {
+              width: calc(100vw - 40px) !important;
+              left: 20px !important;
+              right: 20px !important;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      document.body.appendChild(this.widget);
+
+      // Add close handler
+      document.getElementById('withseismic-getintouch-close').addEventListener('click', () => {
+        this.dismiss();
+      });
+    },
+
+    dismiss() {
+      if (this.widget) {
+        // Store dismissal time
+        localStorage.setItem(this.dismissedKey, new Date().toISOString());
+
+        // Animate out
+        this.widget.style.animation = 'slideOutRight 0.3s ease-in';
+        this.widget.style.cssText += 'animation: slideOutRight 0.3s ease-in;';
+
+        // Add slide out animation if not present
+        if (!document.querySelector('#withseismic-getintouch-slideout')) {
+          const style = document.createElement('style');
+          style.id = 'withseismic-getintouch-slideout';
+          style.textContent = `
+            @keyframes slideOutRight {
+              from {
+                transform: translateX(0);
+                opacity: 1;
+              }
+              to {
+                transform: translateX(120%);
+                opacity: 0;
+              }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+
+        setTimeout(() => {
+          if (this.widget && this.widget.parentNode) {
+            this.widget.remove();
+            this.widget = null;
+          }
+        }, 300);
+
+        log("Get in Touch widget dismissed for 24 hours");
+      }
+    },
+
+    checkAndShow() {
+      // This can be called periodically to check if we should show the widget
+      // (e.g., after engagement score updates)
+      if (!this.widget) {
+        this.init();
+      }
+    }
+  };
+
   // Engagement Profile Widget
   const createEngagementWidget = () => {
     // Only create in development/debug mode
@@ -1669,6 +2100,45 @@
     console.log(`\nProgress: ${unlockedCount}/${achievements.length} achievements unlocked`);
   };
 
+  // Get in Touch widget controls
+  window.WithSeismicTracker.showGetInTouch = () => {
+    // Force show the widget regardless of score
+    const originalScore = StorageManager.getVisitorProfile().engagement?.score;
+    if (originalScore < 5000) {
+      // Temporarily set score to qualified
+      const profile = StorageManager.getVisitorProfile();
+      profile.engagement.score = 5000;
+      StorageManager.saveVisitorProfile(profile);
+    }
+
+    // Clear any dismissal
+    localStorage.removeItem('withseismic_getintouch_dismissed');
+
+    // Show the widget
+    GetInTouchWidget.init();
+
+    if (originalScore < 5000) {
+      // Restore original score after a moment
+      setTimeout(() => {
+        const profile = StorageManager.getVisitorProfile();
+        profile.engagement.score = originalScore;
+        StorageManager.saveVisitorProfile(profile);
+      }, 100);
+    }
+
+    console.log("📢 Get in Touch widget displayed");
+  };
+
+  window.WithSeismicTracker.hideGetInTouch = () => {
+    GetInTouchWidget.dismiss();
+    console.log("👋 Get in Touch widget dismissed");
+  };
+
+  window.WithSeismicTracker.clearGetInTouchDismissal = () => {
+    localStorage.removeItem('withseismic_getintouch_dismissed');
+    console.log("🔄 Get in Touch dismissal cleared - widget will show again for qualified leads");
+  };
+
   // Initialize everything
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
@@ -1676,11 +2146,15 @@
       init();
       setupNavigationTracking();
       if (CONFIG.debugMode) createEngagementWidget();
+      // Check if we should show Get in Touch widget
+      GetInTouchWidget.init();
     });
   } else {
     setupGlobalListeners();
     init();
     setupNavigationTracking();
     if (CONFIG.debugMode) createEngagementWidget();
+    // Check if we should show Get in Touch widget
+    GetInTouchWidget.init();
   }
 })();
