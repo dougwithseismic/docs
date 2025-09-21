@@ -1696,7 +1696,10 @@
         const dismissTime = new Date(dismissedAt);
         const now = new Date();
         const hoursSinceDismiss = (now - dismissTime) / (1000 * 60 * 60);
-        if (hoursSinceDismiss < 24) return;
+        if (hoursSinceDismiss < 24) {
+          log("Get in Touch widget suppressed - dismissed " + Math.round(hoursSinceDismiss) + " hours ago");
+          return;
+        }
       }
 
       this.createWidget();
