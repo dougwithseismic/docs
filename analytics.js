@@ -1716,10 +1716,10 @@
         bottom: 30px;
         right: 30px;
         width: 320px;
-        background: ${isDarkMode ? '#1f2937' : '#ffffff'};
-        border: 1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+        background: #080808;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, ${isDarkMode ? '0.3' : '0.1'});
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         padding: 20px;
         font-family: system-ui, -apple-system, sans-serif;
         z-index: 9998;
@@ -1734,7 +1734,7 @@
           right: 10px;
           background: transparent;
           border: none;
-          color: ${isDarkMode ? '#9ca3af' : '#6b7280'};
+          color: #9ca3af;
           font-size: 24px;
           cursor: pointer;
           padding: 0;
@@ -1746,8 +1746,8 @@
           transition: all 0.2s;
           border-radius: 4px;
         "
-        onmouseover="this.style.background='${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}'; this.style.color='${isDarkMode ? '#ffffff' : '#111827'}';"
-        onmouseout="this.style.background='transparent'; this.style.color='${isDarkMode ? '#9ca3af' : '#6b7280'}';"
+        onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.color='#ffffff';"
+        onmouseout="this.style.background='transparent'; this.style.color='#9ca3af';"
         title="Dismiss for 24 hours">×</button>
 
         <div style="margin-bottom: 12px;">
@@ -1759,7 +1759,7 @@
         </div>
 
         <p style="
-          color: ${isDarkMode ? '#e5e7eb' : '#6b7280'};
+          color: #e5e7eb;
           line-height: 1.6;
           margin: 0 0 16px 0;
           font-size: 14px;
@@ -1787,7 +1787,7 @@
         </a>
 
         <p style="
-          color: ${isDarkMode ? '#9ca3af' : '#6b7280'};
+          color: #9ca3af;
           font-size: 11px;
           margin: 12px 0 0 0;
           text-align: center;
