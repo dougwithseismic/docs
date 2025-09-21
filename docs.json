@@ -49,6 +49,12 @@
         "tab": "Case Studies",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "case-studies/introduction"
+            ]
+          },
+          {
             "group": "Success Stories",
             "pages": [
               "case-studies/contra-linkedin-automation",
@@ -64,6 +70,12 @@
       {
         "tab": "Automation Tools",
         "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "tool-ideas/introduction"
+            ]
+          },
           {
             "group": "By Team Type",
             "pages": [
