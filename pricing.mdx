@@ -19,133 +19,37 @@ icon: "dollar-sign"
     <TableRow>
       <TableCell>**2-Week Sprint**</TableCell>
       <TableCell>2 weeks</TableCell>
-      <TableCell>$6,000</TableCell>
-      <TableCell>Working prototype, automation tool, or Chrome extension MVP. 80 hours of dedicated engineering.</TableCell>
+      <TableCell>$10,000</TableCell>
+      <TableCell>Working prototype, automation tool, or Chrome extension MVP. Dedicated senior engineering expertise.</TableCell>
     </TableRow>
     <TableRow>
       <TableCell>**4-Week Sprint**</TableCell>
       <TableCell>4 weeks</TableCell>
-      <TableCell>$12,000</TableCell>
-      <TableCell>Production-ready system, complex automation, or full-featured tool. 160 hours of engineering.</TableCell>
+      <TableCell>$20,000</TableCell>
+      <TableCell>Production-ready system, complex automation, or full-featured internal tool.</TableCell>
     </TableRow>
     <TableRow>
       <TableCell>**MVP Development**</TableCell>
-      <TableCell>4 weeks</TableCell>
-      <TableCell>$12,000</TableCell>
-      <TableCell>Minimum viable product with core features, deployment, and initial user testing.</TableCell>
+      <TableCell>6 weeks</TableCell>
+      <TableCell>$30,000</TableCell>
+      <TableCell>Complete minimum viable product with core features, deployment, documentation, and handoff.</TableCell>
     </TableRow>
     <TableRow>
       <TableCell className="bg-gray-50">**Maintenance & Support**</TableCell>
       <TableCell className="bg-gray-50">Monthly</TableCell>
-      <TableCell className="bg-gray-50">$3,000/month</TableCell>
-      <TableCell className="bg-gray-50">20 hours/month for updates, bug fixes, feature additions, and priority support.</TableCell>
+      <TableCell className="bg-gray-50">$5,000/month</TableCell>
+      <TableCell className="bg-gray-50">Ongoing updates, bug fixes, feature additions, and priority support.</TableCell>
     </TableRow>
   </TableBody>
 </Table>
 
 <Info>
-  **Our Rate**: $3,000 USD per week of development. **Payment Terms**: 50% upfront, 50% on completion.
+  **Effective Rate**: $125/hour — significantly below the $200-300/hour charged by comparable boutique agencies for senior-level automation expertise.
 </Info>
 
 ## Why Our Pricing Makes Sense
 
-export const CostComparison = () => {
-  const [weeks, setWeeks] = React.useState(4);
-  const [hasInteracted, setHasInteracted] = React.useState(false);
-
-  const withSeismicCost = weeks * 3000;
-  const freelancerCost = weeks * 40 * 100; // $100/hr * 40hrs/week
-  const agencyCost = weeks * 40 * 200; // $200/hr * 40hrs/week
-  const fullTimeCost = Math.round((150000 / 52) * weeks); // $150k/year senior dev
-
-  const handleSliderChange = (value) => {
-    setWeeks(value);
-
-    // Track the first interaction with the pricing calculator
-    if (!hasInteracted && window.WithSeismicTracker) {
-      setHasInteracted(true);
-      window.WithSeismicTracker.trackTool('pricing_calculator', {
-        weeks: value,
-        withSeismicCost: value * 3000
-      });
-    }
-  };
-
-  return (
-    <div className="bg-background rounded-lg p-6 my-6 border border-neutral-500/20 shadow-sm">
-      <div className="mb-6">
-        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Project Duration Calculator
-        </label>
-        <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
-          <input
-            type="range"
-            min="1"
-            max="12"
-            value={weeks}
-            onChange={(e) => handleSliderChange(e.target.value)}
-            className="w-full"
-          />
-          <div className="text-center mt-3">
-            <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {weeks} {weeks === 1 ? 'week' : 'weeks'}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-200 dark:border-green-800">
-          <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-            ${withSeismicCost.toLocaleString()}
-          </div>
-          <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-1">
-            WithSeismic
-          </div>
-          <div className="text-xs text-gray-600 dark:text-gray-400">
-            Fixed price, guaranteed
-          </div>
-        </div>
-
-        <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
-          <div className="text-2xl font-bold text-gray-700 dark:text-gray-300">
-            ${freelancerCost.toLocaleString()}
-          </div>
-          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mt-1">
-            Freelancer
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-500">
-            ~$100/hr, variable
-          </div>
-        </div>
-
-        <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
-          <div className="text-2xl font-bold text-gray-700 dark:text-gray-300">
-            ${agencyCost.toLocaleString()}
-          </div>
-          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mt-1">
-            Agency
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-500">
-            ~$200/hr + overhead
-          </div>
-        </div>
-
-        <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
-          <div className="text-2xl font-bold text-gray-700 dark:text-gray-300">
-            ${fullTimeCost.toLocaleString()}
-          </div>
-          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mt-1">
-            Full-Time Dev
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-500">
-            $150k/yr + benefits
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import { CostComparison } from '/snippets/pricing-calculator.jsx';
 
 <CostComparison />
 
@@ -154,21 +58,22 @@ export const CostComparison = () => {
 <Info>
   **Example: Lead Qualification Tool**
   - Manual process: 4 hours/day × 5 days × $50/hour = **$1,000/week cost**
-  - Our 4-week sprint: $12,000 investment
-  - **Break-even: 12 weeks**
-  - Year 1 savings: $52,000 - $12,000 = **$40,000 profit**
+  - Our 4-week sprint: $20,000 investment
+  - **Break-even: 20 weeks**
+  - Year 1 savings: $52,000 - $20,000 = **$32,000 profit**
+  - Compared to hiring a developer at $150/hour: Save **$4,000** on the same project
 </Info>
 
 ## Common Project Types
 
-### 2-Week Sprints ($6,000)
+### 2-Week Sprints ($10,000)
 - Chrome extension MVPs
 - Simple automation scripts
 - Web scrapers and data collectors
 - Basic LLM integrations
 - Proof of concepts
 
-### 4-Week Sprints ($12,000)
+### 4-Week Sprints ($20,000)
 - Production-ready Chrome extensions
 - Complex browser automation (Playwright)
 - LLM workflow systems
@@ -209,8 +114,8 @@ Crowdsourced discovery engine with **20,000+ users**, created **5x marketplace g
 ## Frequently Asked Questions
 
 <AccordionGroup>
-  <Accordion title="Why $3,000 per week?">
-    This rate reflects senior engineering expertise (10+ years), proven track record (successful exits), and guaranteed delivery. You're not paying for time—you're paying for systems that transform your business.
+  <Accordion title="Why this pricing?">
+    Our $125/hour rate is 40-60% less than typical boutique agencies while delivering senior engineering expertise (10+ years), proven track record, and guaranteed delivery. You're investing in business transformation, not just development hours.
   </Accordion>
 
   <Accordion title="How do sprints work?">
@@ -226,7 +131,7 @@ Crowdsourced discovery engine with **20,000+ users**, created **5x marketplace g
   </Accordion>
 
   <Accordion title="What about ongoing maintenance?">
-    $3,000/month gets you 20 hours for updates, fixes, and improvements. Many clients start with a sprint, then move to monthly support once the tool is proven.
+    $5,000/month provides dedicated support for updates, fixes, and improvements. Most clients start with a sprint, then transition to monthly support once the tool proves its value.
   </Accordion>
 
   <Accordion title="Can you guarantee results?">
