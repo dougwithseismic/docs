@@ -68,12 +68,13 @@
         ]
       },
       {
-        "tab": "Automation Tools",
+        "tab": "Automation Ideas",
         "groups": [
           {
             "group": "Getting Started",
             "pages": [
-              "tool-ideas/introduction"
+              "tool-ideas/introduction",
+              "tool-ideas/ai-agent-tools"
             ]
           },
           {
@@ -110,7 +111,45 @@
         ]
       },
       {
-        "tab": "Resources",        
+        "tab": "Pre-built Tools For Sale",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "pre-built-tools/introduction"
+            ]
+          },
+          {
+            "group": "Automation & Workflow Tools",
+            "pages": [
+              "pre-built-tools/tools/n8n-ai-workflow-generator"
+            ]
+          },
+          {
+            "group": "Content & Media Tools",
+            "pages": [
+              "pre-built-tools/tools/content-research-generator",
+              "pre-built-tools/tools/ai-course-creation-platform"
+            ]
+          },
+          {
+            "group": "Analytics & Data Tools",
+            "pages": [
+              "pre-built-tools/tools/typescript-analytics-package",
+              "pre-built-tools/tools/analytics-proxy-server"
+            ]
+          },
+          {
+            "group": "SEO & Marketing Tools",
+            "pages": [
+              "pre-built-tools/tools/automated-site-crawler",
+              "pre-built-tools/tools/gamification-lead-scoring"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Resources",
         "groups": [
           {
             "group": "Getting Started",
@@ -133,6 +172,17 @@
               "contact/book-consultation",
               "contact/project-requirements",
               "contact/faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Interactive Tools",
+        "groups": [
+          {
+            "group": "Marketing Tools",
+            "pages": [
+              "interactive-tools/social-media-mockup"
             ]
           }
         ]

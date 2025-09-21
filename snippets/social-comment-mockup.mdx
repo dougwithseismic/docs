@@ -1,0 +1,802 @@
+export const SocialMediaMockup = () => {
+  const [activeTab, setActiveTab] = React.useState('reddit');
+
+const [redditContent, setRedditContent] = React.useState({
+subreddit: "r/marketing",
+author: "content_strategist_42",
+timestamp: "3 hours ago",
+title: "This interactive social media mockup tool just 2x'd my client pitch success rate",
+content: "Just discovered this social media mockup generator that lets you create platform-native content mockups in real-time. Game changer for presenting campaign ideas to clients.\n\nWhy it works so well:\n\n• Shows content in native platform format (Reddit, X, LinkedIn)\n• Everything is editable - click any text to change it\n• Demonstrates the 2x CTR that native ads achieve vs traditional\n• Perfect for A/B testing messaging before going live\n\nThe meta part? Native content gets 53% more views and 18% better purchase intent. By showing mockups that look real, clients finally 'get it'.\n\nAnyone else using mockup tools for pitches?",
+upvotes: "3.5K",
+comments: "126",
+voteStatus: "upvoted",
+awards: ["gold", "rocket", "helpful"]
+});
+
+const [xContent, setXContent] = React.useState({
+author: "Sarah Johnson",
+handle: "@sarahjohnson",
+timestamp: "2h",
+content: "Mind = blown 🤯\n\nJust found an interactive tool that creates platform-native social mockups. Native ads get 2x the CTR of traditional display ads (0.23% vs 0.12%).\n\nClick to edit ANYTHING - metrics, text, usernames. Perfect for testing content before going live.\n\nThe future of content marketing is here 🚀",
+likes: "1.2K",
+retweets: "289",
+replies: "67",
+views: "45.2K"
+});
+
+const [linkedinContent, setLinkedinContent] = React.useState({
+author: "Michael Chen",
+title: "Chief Marketing Officer at TechCorp",
+timestamp: "3h",
+content: "The Psychology of Platform-Native Content: Why It Outperforms Traditional Ads\n\nI've been testing an interactive social media mockup tool that revealed fascinating insights about content performance:\n\n📊 Key Statistics:\n• Native ads achieve 2x the CTR of display ads\n• Platform-native content is viewed 53% more frequently\n• Purchase intent increases by 18% with native formats\n• LinkedIn leads with 6.50% engagement rate\n\n🎯 The Tool's Genius:\nIt lets you create pixel-perfect mockups for Reddit, X, and LinkedIn - everything is clickable and editable in real-time. Perfect for:\n\n1. Testing messaging before launch\n2. Client presentations that convert\n3. A/B testing different approaches\n4. Creating social proof walls\n\n💡 The Meta Insight:\nBy matching each platform's unique voice and format, content gets processed as valuable information rather than advertising.\n\nReddit users spend 15 min 47 sec daily vs just 6 min on X. Understanding these platform differences is crucial.\n\nWhat's your experience with platform-native content strategies?",
+reactions: "2.8K",
+comments: "234",
+reposts: "89"
+});
+
+const TabButton = ({ label, isActive, onClick }) => (
+<button
+onClick={onClick}
+style={{
+        padding: '8px 16px',
+        background: isActive ? 'var(--primary)' : 'transparent',
+        color: isActive ? 'white' : 'var(--text)',
+        border: '1px solid var(--border)',
+        borderRadius: '8px 8px 0 0',
+        borderBottom: isActive ? 'none' : '1px solid var(--border)',
+        cursor: 'pointer',
+        fontWeight: '500',
+        transition: 'all 0.2s'
+      }} >
+{label}
+</button>
+);
+
+const RedditPost = () => (
+<div style={{
+      backgroundColor: 'var(--background)',
+      border: '1px solid var(--border)',
+      borderRadius: '8px',
+      padding: '12px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      maxWidth: '100%'
+    }}>
+<div style={{ display: 'flex', gap: '12px' }}>
+<div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: '8px 4px',
+          minWidth: '40px'
+        }}>
+<button
+onClick={() => setRedditContent({...redditContent, voteStatus: redditContent.voteStatus === 'upvoted' ? 'none' : 'upvoted'})}
+style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: redditContent.voteStatus === 'upvoted' ? '#ff4500' : 'var(--text-muted)',
+              padding: '2px',
+              transition: 'color 0.2s'
+            }} >
+<svg style={{ width: '24px', height: '24px' }} viewBox="0 0 24 24" fill="currentColor">
+<path d="M12 4l-8 8h6v8h4v-8h6z"/>
+</svg>
+</button>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setRedditContent({...redditContent, upvotes: e.currentTarget.textContent})}
+style={{
+              color: redditContent.voteStatus === 'upvoted' ? '#ff4500' :
+                     redditContent.voteStatus === 'downvoted' ? '#7193ff' : 'var(--text)',
+              fontWeight: 'bold',
+              fontSize: '13px',
+              margin: '4px 0',
+              outline: 'none',
+              cursor: 'text',
+              minWidth: '30px',
+              textAlign: 'center',
+              display: 'inline-block'
+            }} >
+{redditContent.upvotes}
+</span>
+<button
+onClick={() => setRedditContent({...redditContent, voteStatus: redditContent.voteStatus === 'downvoted' ? 'none' : 'downvoted'})}
+style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: redditContent.voteStatus === 'downvoted' ? '#7193ff' : 'var(--text-muted)',
+              padding: '2px',
+              transition: 'color 0.2s'
+            }} >
+<svg style={{ width: '24px', height: '24px' }} viewBox="0 0 24 24" fill="currentColor">
+<path d="M12 20l8-8h-6V4H10v8H4z"/>
+</svg>
+</button>
+</div>
+<div style={{ flex: 1, paddingRight: '8px' }}>
+<div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            marginBottom: '8px',
+            fontSize: '12px',
+            color: 'var(--text-muted)',
+            flexWrap: 'wrap'
+          }}>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setRedditContent({...redditContent, subreddit: e.currentTarget.textContent})}
+style={{
+                color: 'var(--text)',
+                fontWeight: '500',
+                outline: 'none',
+                cursor: 'text'
+              }} >
+{redditContent.subreddit}
+</span>
+<span>•</span>
+<span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+Posted by u/
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setRedditContent({...redditContent, author: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', color: 'inherit' }} >
+{redditContent.author}
+</span>
+</span>
+<span>•</span>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setRedditContent({...redditContent, timestamp: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', color: 'inherit' }} >
+{redditContent.timestamp}
+</span>
+{redditContent.awards.map((award, i) => (
+<span key={i} style={{ marginLeft: '4px' }}>
+{award === 'gold' && '🏆'}
+{award === 'rocket' && '🚀'}
+{award === 'helpful' && '🤝'}
+</span>
+))}
+</div>
+<h3
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setRedditContent({...redditContent, title: e.currentTarget.textContent})}
+style={{
+              fontSize: '18px',
+              fontWeight: '500',
+              margin: '0',
+              marginBottom: '12px',
+              color: 'var(--text)',
+              outline: 'none',
+              cursor: 'text'
+            }} >
+{redditContent.title}
+</h3>
+<div
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setRedditContent({...redditContent, content: e.currentTarget.textContent})}
+style={{
+              fontSize: '14px',
+              lineHeight: '21px',
+              color: 'var(--text-light)',
+              whiteSpace: 'pre-wrap',
+              outline: 'none',
+              cursor: 'text'
+            }} >
+{redditContent.content}
+</div>
+<div style={{
+            display: 'flex',
+            gap: '12px',
+            marginTop: '12px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            color: 'var(--text-muted)'
+          }}>
+<button style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              color: 'inherit',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              transition: 'background-color 0.2s'
+            }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+💬
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setRedditContent({...redditContent, comments: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', minWidth: '20px' }} >
+{redditContent.comments}
+</span>
+Comments
+</button>
+<button style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'inherit',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              transition: 'background-color 0.2s'
+            }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+↗️ Share
+</button>
+<button style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'inherit',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              transition: 'background-color 0.2s'
+            }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+🔖 Save
+</button>
+</div>
+</div>
+</div>
+</div>
+);
+
+const XPost = () => (
+<div style={{
+      backgroundColor: 'var(--background)',
+      border: '1px solid var(--border)',
+      borderRadius: '16px',
+      padding: '16px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      maxWidth: '100%'
+    }}>
+<div style={{ display: 'flex', gap: '12px' }}>
+<img
+src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${xContent.handle}`}
+alt="Avatar"
+style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: 'var(--background-secondary)',
+            marginTop: '0',
+            marginBottom: '0'
+          }}
+/>
+<div style={{ flex: 1 }}>
+<div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setXContent({...xContent, author: e.currentTarget.textContent})}
+style={{
+                fontWeight: 'bold',
+                fontSize: '15px',
+                color: 'var(--text)',
+                outline: 'none',
+                cursor: 'text'
+              }} >
+{xContent.author}
+</span>
+<svg style={{ width: '20px', height: '20px', color: '#1d9bf0' }} viewBox="0 0 24 24">
+<path fill="currentColor" d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.485zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z"/>
+</svg>
+</div>
+<div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setXContent({...xContent, handle: e.currentTarget.textContent})}
+style={{
+                color: 'var(--text-muted)',
+                fontSize: '15px',
+                outline: 'none',
+                cursor: 'text'
+              }} >
+{xContent.handle}
+</span>
+<span style={{ color: 'var(--text-muted)', fontSize: '15px' }}> · </span>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setXContent({...xContent, timestamp: e.currentTarget.textContent})}
+style={{
+                color: 'var(--text-muted)',
+                fontSize: '15px',
+                outline: 'none',
+                cursor: 'text'
+              }} >
+{xContent.timestamp}
+</span>
+</div>
+<div
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setXContent({...xContent, content: e.currentTarget.textContent})}
+style={{
+              fontSize: '15px',
+              lineHeight: '20px',
+              color: 'var(--text)',
+              marginTop: '12px',
+              whiteSpace: 'pre-wrap',
+              outline: 'none',
+              cursor: 'text'
+            }} >
+{xContent.content}
+</div>
+<div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '12px',
+            paddingTop: '4px',
+            maxWidth: '425px'
+          }}>
+<button style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'var(--text-muted)',
+              fontSize: '13px',
+              padding: '8px',
+              borderRadius: '999px',
+              transition: 'background-color 0.2s'
+            }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '18px', height: '18px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+</svg>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setXContent({...xContent, replies: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', minWidth: '20px' }} >
+{xContent.replies}
+</span>
+</button>
+<button style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'var(--text-muted)',
+              fontSize: '13px',
+              padding: '8px',
+              borderRadius: '999px',
+              transition: 'background-color 0.2s'
+            }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '18px', height: '18px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+</svg>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setXContent({...xContent, retweets: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', minWidth: '20px' }} >
+{xContent.retweets}
+</span>
+</button>
+<button style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'var(--text-muted)',
+              fontSize: '13px',
+              padding: '8px',
+              borderRadius: '999px',
+              transition: 'background-color 0.2s'
+            }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '18px', height: '18px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+</svg>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setXContent({...xContent, likes: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', minWidth: '20px' }} >
+{xContent.likes}
+</span>
+</button>
+<button style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'var(--text-muted)',
+              fontSize: '13px',
+              padding: '8px',
+              borderRadius: '999px',
+              transition: 'background-color 0.2s'
+            }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '18px', height: '18px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+</svg>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setXContent({...xContent, views: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', minWidth: '30px' }} >
+{xContent.views}
+</span>
+</button>
+<button style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'var(--text-muted)',
+              fontSize: '13px',
+              padding: '8px',
+              borderRadius: '999px',
+              transition: 'background-color 0.2s'
+            }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '18px', height: '18px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+);
+
+const LinkedInPost = () => (
+<div style={{
+      backgroundColor: 'var(--background)',
+      border: '1px solid var(--border)',
+      borderRadius: '8px',
+      padding: '16px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      maxWidth: '100%'
+    }}>
+<div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+<img
+src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${linkedinContent.author}`}
+alt="Avatar"
+style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: 'var(--background-secondary)',
+            marginTop: '0',
+            marginBottom: '0'
+          }}
+/>
+<div style={{ flex: 1 }}>
+<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setLinkedinContent({...linkedinContent, author: e.currentTarget.textContent})}
+style={{
+                fontWeight: '600',
+                fontSize: '14px',
+                color: 'var(--text)',
+                outline: 'none',
+                cursor: 'text'
+              }} >
+{linkedinContent.author}
+</span>
+<span style={{ color: 'var(--text-muted)', fontSize: '14px' }}>• 1st</span>
+</div>
+<div
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setLinkedinContent({...linkedinContent, title: e.currentTarget.textContent})}
+style={{
+              fontSize: '12px',
+              color: 'var(--text-muted)',
+              outline: 'none',
+              cursor: 'text'
+            }} >
+{linkedinContent.title}
+</div>
+<div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setLinkedinContent({...linkedinContent, timestamp: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text' }} >
+{linkedinContent.timestamp}
+</span>
+<span>•</span>
+<svg style={{ width: '12px', height: '12px' }} viewBox="0 0 24 24" fill="currentColor">
+<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+</svg>
+</div>
+</div>
+<button style={{
+          background: 'none',
+          border: '1px solid #0a66c2',
+          color: '#0a66c2',
+          borderRadius: '16px',
+          padding: '4px 16px',
+          fontSize: '14px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          height: '32px',
+          transition: 'all 0.2s'
+        }}
+onMouseEnter={(e) => {
+e.currentTarget.style.backgroundColor = '#0a66c2';
+e.currentTarget.style.color = 'white';
+}}
+onMouseLeave={(e) => {
+e.currentTarget.style.backgroundColor = 'transparent';
+e.currentTarget.style.color = '#0a66c2';
+}} > + Follow
+</button>
+</div>
+<div
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setLinkedinContent({...linkedinContent, content: e.currentTarget.textContent})}
+style={{
+          fontSize: '14px',
+          lineHeight: '20px',
+          color: 'var(--text)',
+          whiteSpace: 'pre-wrap',
+          marginBottom: '12px',
+          outline: 'none',
+          cursor: 'text'
+        }} >
+{linkedinContent.content}
+</div>
+<div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingTop: '8px',
+        borderTop: '1px solid var(--border)',
+        marginTop: '8px',
+        fontSize: '12px',
+        color: 'var(--text-muted)'
+      }}>
+<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+<div style={{ display: 'flex', marginLeft: '-4px' }}>
+<span style={{
+              backgroundColor: '#df704d',
+              borderRadius: '50%',
+              width: '16px',
+              height: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '10px',
+              border: '1px solid var(--background)'
+            }}>👍</span>
+<span style={{
+              backgroundColor: '#f79353',
+              borderRadius: '50%',
+              width: '16px',
+              height: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '10px',
+              marginLeft: '-4px',
+              border: '1px solid var(--background)'
+            }}>❤️</span>
+<span style={{
+              backgroundColor: '#6dae4f',
+              borderRadius: '50%',
+              width: '16px',
+              height: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '10px',
+              marginLeft: '-4px',
+              border: '1px solid var(--background)'
+            }}>👏</span>
+</div>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setLinkedinContent({...linkedinContent, reactions: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', minWidth: '30px' }} >
+{linkedinContent.reactions}
+</span>
+</div>
+<div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+<span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setLinkedinContent({...linkedinContent, comments: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', minWidth: '20px' }} >
+{linkedinContent.comments}
+</span>
+comments
+</span>
+<span>•</span>
+<span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+<span
+contentEditable
+suppressContentEditableWarning
+onBlur={(e) => setLinkedinContent({...linkedinContent, reposts: e.currentTarget.textContent})}
+style={{ outline: 'none', cursor: 'text', minWidth: '20px' }} >
+{linkedinContent.reposts}
+</span>
+reposts
+</span>
+</div>
+</div>
+<div style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        marginTop: '8px',
+        paddingTop: '8px',
+        borderTop: '1px solid var(--border)'
+      }}>
+<button style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'var(--text-muted)',
+          fontSize: '14px',
+          fontWeight: '600',
+          padding: '12px 8px',
+          borderRadius: '4px',
+          transition: 'background-color 0.2s'
+        }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '20px', height: '20px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
+</svg>
+Like
+</button>
+<button style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'var(--text-muted)',
+          fontSize: '14px',
+          fontWeight: '600',
+          padding: '12px 8px',
+          borderRadius: '4px',
+          transition: 'background-color 0.2s'
+        }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '20px', height: '20px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+</svg>
+Comment
+</button>
+<button style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'var(--text-muted)',
+          fontSize: '14px',
+          fontWeight: '600',
+          padding: '12px 8px',
+          borderRadius: '4px',
+          transition: 'background-color 0.2s'
+        }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '20px', height: '20px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+</svg>
+Repost
+</button>
+<button style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'var(--text-muted)',
+          fontSize: '14px',
+          fontWeight: '600',
+          padding: '12px 8px',
+          borderRadius: '4px',
+          transition: 'background-color 0.2s'
+        }}
+onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--background-secondary)'}
+onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'} >
+<svg style={{ width: '20px', height: '20px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+</svg>
+Send
+</button>
+</div>
+</div>
+);
+
+return (
+<div style={{
+      backgroundColor: 'var(--background-secondary)',
+      padding: '20px',
+      borderRadius: '12px',
+      marginTop: '20px',
+      marginBottom: '20px'
+    }}>
+
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid var(--border)', marginBottom: '16px' }}>
+          <TabButton
+            label="Reddit"
+            isActive={activeTab === 'reddit'}
+            onClick={() => setActiveTab('reddit')}
+          />
+          <TabButton
+            label="X (Twitter)"
+            isActive={activeTab === 'x'}
+            onClick={() => setActiveTab('x')}
+          />
+          <TabButton
+            label="LinkedIn"
+            isActive={activeTab === 'linkedin'}
+            onClick={() => setActiveTab('linkedin')}
+          />
+        </div>
+
+        <div style={{ padding: '16px 0' }}>
+          {activeTab === 'reddit' && <RedditPost />}
+          {activeTab === 'x' && <XPost />}
+          {activeTab === 'linkedin' && <LinkedInPost />}
+        </div>
+      </div>
+    </div>
+
+);
+};
+
+<SocialMediaMockup />

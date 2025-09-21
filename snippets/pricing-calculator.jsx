@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const CostComparison = () => {
   const [weeks, setWeeks] = React.useState(4);
   const [hasInteracted, setHasInteracted] = React.useState(false);

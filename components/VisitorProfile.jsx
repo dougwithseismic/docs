@@ -1,13 +1,11 @@
-import { useState, useEffect } from 'react';
-
 export const VisitorProfile = () => {
-  const [profile, setProfile] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [topPages, setTopPages] = useState([]);
-  const [mostPopularPage, setMostPopularPage] = useState(null);
-  const [achievements, setAchievements] = useState([]);
+  const [profile, setProfile] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [topPages, setTopPages] = React.useState([]);
+  const [mostPopularPage, setMostPopularPage] = React.useState(null);
+  const [achievements, setAchievements] = React.useState([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const loadProfile = () => {
       if (typeof window !== 'undefined' && window.WithSeismicTracker) {
         const data = window.WithSeismicTracker.getProfile();

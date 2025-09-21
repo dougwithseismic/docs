@@ -1,0 +1,376 @@
+---
+title: Analytics Proxy Server
+description: First-party data collection infrastructure that bypasses ad blockers and gives you complete ownership of your analytics data
+---
+
+## Analytics Proxy Server
+
+Take control of your analytics data with a first-party proxy server that ensures 100% data collection, bypasses ad blockers, and keeps your valuable user insights on your own infrastructure. Perfect for businesses serious about data ownership and accuracy.
+
+<Card title="Live Demo Coming Soon" icon="play" color="#16A34A">
+  A live demo of the Analytics Proxy Server will be available soon. See how it captures 100% of events, bypasses blockers, and manages your first-party data.
+</Card>
+
+## The Problem It Solves
+
+### Current Analytics Challenges
+- **30-50% of users** block Google Analytics and other third-party trackers
+- **Safari ITP** limits third-party cookies to 7 days
+- **Privacy regulations** make third-party data risky
+- **Data ownership** remains with analytics providers, not you
+- **Cross-domain tracking** becomes increasingly difficult
+
+### Our Solution
+Deploy analytics through your own subdomain (e.g., `analytics.yourdomain.com`) to achieve:
+- **100% data collection** - Ad blockers can't detect first-party requests
+- **Permanent cookies** - No ITP restrictions on your own domain
+- **Complete ownership** - Your data lives on your servers
+- **Privacy compliance** - Full control over data handling
+- **Enhanced accuracy** - No sampling or data limits
+
+## Key Features
+
+### First-Party Data Collection
+Transform third-party analytics into first-party data:
+
+<CardGroup cols={2}>
+  <Card title="Custom Subdomain" icon="globe">
+    Deploy at analytics.yourdomain.com for complete trust
+  </Card>
+
+  <Card title="Ad Blocker Bypass" icon="shield">
+    Invisible to uBlock, AdBlock, and browser privacy tools
+  </Card>
+
+  <Card title="Cookie Control" icon="cookie">
+    Set permanent first-party cookies with no restrictions
+  </Card>
+
+  <Card title="Data Ownership" icon="database">
+    All data stored on your infrastructure, not third-party servers
+  </Card>
+</CardGroup>
+
+### Supported Analytics Platforms
+
+<Info>
+  Proxy any analytics service while maintaining full compatibility with their dashboards and APIs.
+</Info>
+
+**Fully Supported:**
+- Google Analytics 4 & Universal Analytics
+- Google Tag Manager
+- Facebook Pixel & Conversions API
+- Mixpanel
+- Amplitude
+- Segment
+- Plausible Analytics
+- Matomo
+- PostHog
+- Custom analytics endpoints
+
+### Advanced Features
+
+<Tabs>
+  <Tab title="Data Processing">
+    - Real-time event streaming
+    - Data enrichment (IP geolocation, device detection)
+    - PII filtering and hashing
+    - Custom event transformation
+    - Duplicate detection
+    - Bot filtering
+  </Tab>
+
+  <Tab title="Performance">
+    - Edge deployment support (Cloudflare Workers)
+    - Global CDN distribution
+    - Request batching
+    - Compression (Brotli/Gzip)
+    - Response caching
+    - Failover handling
+  </Tab>
+
+  <Tab title="Privacy & Compliance">
+    - GDPR/CCPA compliant
+    - Consent management
+    - Data retention policies
+    - Right to deletion
+    - Audit logging
+    - Geographic routing
+  </Tab>
+</Tabs>
+
+## Technical Architecture
+
+### Infrastructure Options
+- **Cloud Deployment**: AWS, Google Cloud, Azure
+- **Edge Computing**: Cloudflare Workers, Vercel Edge
+- **Self-Hosted**: Docker containers on your servers
+- **Hybrid**: Mix of edge and origin servers
+
+### Performance Specifications
+- Handle 1M+ events per day
+- Less than 50ms latency globally
+- 99.99% uptime SLA capability
+- Automatic scaling
+- Zero data loss architecture
+
+### Security Features
+- End-to-end encryption (TLS 1.3)
+- DDoS protection
+- Rate limiting per client
+- IP allowlisting/blocklisting
+- Request signing
+- Certificate pinning support
+
+## Perfect For
+
+<CardGroup cols={2}>
+  <Card title="E-commerce Sites" icon="shopping-cart">
+    Track 100% of conversions and customer journeys
+  </Card>
+
+  <Card title="SaaS Companies" icon="cloud">
+    Get accurate product analytics without data gaps
+  </Card>
+
+  <Card title="Publishers" icon="newspaper">
+    Measure true audience size despite ad blockers
+  </Card>
+
+  <Card title="Enterprises" icon="building">
+    Maintain data sovereignty and compliance
+  </Card>
+</CardGroup>
+
+## Target Market
+
+### Primary Customers
+- **Data-Driven Companies** losing 30-50% of analytics data to blockers
+- **Privacy-Conscious Organizations** needing GDPR/CCPA compliance
+- **High-Traffic Sites** paying excessive analytics costs
+- **Regulated Industries** (finance, healthcare) requiring data control
+- **Multi-National Corporations** with data residency requirements
+
+### Use Cases by Industry
+- **E-commerce**: Recover lost conversion tracking
+- **Media**: Accurate audience measurement
+- **SaaS**: Complete user behavior tracking
+- **Finance**: Compliant analytics infrastructure
+- **Healthcare**: HIPAA-compatible analytics
+
+## Implementation Benefits
+
+### Before vs. After Comparison
+
+| Metric | Before (Third-Party) | After (Proxy Server) |
+|--------|---------------------|---------------------|
+| Data Collection Rate | 50-70% | 95-100% |
+| Cookie Duration | 7 days (Safari) | Unlimited |
+| Ad Blocker Impact | 30-50% loss | 0% loss |
+| Data Ownership | Analytics provider | You |
+| Compliance Control | Limited | Complete |
+| Monthly Cost | $500-5000 | Infrastructure only |
+
+## Pricing & Packages
+
+### Starter Package
+- Proxy server source code
+- Single analytics platform support
+- Basic deployment guide
+- 10K events/day capacity
+- 3 months support
+- **$5,997**
+
+### Professional Package
+- Everything in Starter
+- All analytics platforms
+- Multi-domain support
+- 1M events/day capacity
+- Edge deployment setup
+- 6 months support
+- **$14,997**
+
+### Enterprise Package
+- Everything in Professional
+- Custom integrations
+- Data warehouse connectors
+- Unlimited capacity
+- White-label option
+- 12 months support
+- **$29,997**
+
+## What's Included
+
+<Accordion title="Proxy Server Core">
+  - Complete source code (Node.js/Go)
+  - Docker containers
+  - Kubernetes manifests
+  - CI/CD pipelines
+  - Monitoring setup
+  - Load testing scripts
+</Accordion>
+
+<Accordion title="Analytics Integrations">
+  - Google Analytics proxy
+  - Facebook Pixel proxy
+  - GTM server-side container
+  - Custom endpoint support
+  - Webhook processors
+  - Data transformation rules
+</Accordion>
+
+<Accordion title="Management Tools">
+  - Admin dashboard
+  - Analytics overview
+  - Traffic monitoring
+  - Error tracking
+  - Performance metrics
+  - Cost analysis
+</Accordion>
+
+## ROI Calculator
+
+import ROICalculator from '/snippets/roi-calculator.jsx';
+
+<ROICalculator
+  defaultMonthlyPrice={0}
+  defaultCustomers={1}
+  toolCost={5997}
+  defaultHostingCost={200}
+  defaultApiCost={0}
+/>
+
+*Note: Set "Monthly Subscription Price" to your current analytics cost savings or value of recovered data*
+
+## Monetization Opportunities
+
+### Direct Revenue Streams
+- **Proxy as a Service** - $497-2,497/month for managed proxy infrastructure
+- **Data Recovery Service** - $2,000-10,000/month based on traffic volume
+- **Enterprise Solutions** - $25,000-100,000/year for multi-domain deployments
+- **Setup & Migration** - $5,000-15,000 one-time implementation fee
+- **Custom Integrations** - $2,500-7,500 per analytics platform
+
+### Productized Service Models
+- **Analytics Accuracy Audit** - $2,500-5,000 to identify data gaps
+- **GDPR Compliance Package** - $10,000-25,000 for compliant infrastructure
+- **First-Party Data Migration** - $15,000-50,000 for enterprise transitions
+- **Managed Analytics Service** - $1,500-5,000/month for full management
+
+### Scaling Strategies
+- **White-Label Platform** - License to agencies for $997-2,997/month
+- **Affiliate Program** - 20-30% commission for referrals
+- **Analytics Recovery Guarantee** - Performance-based pricing on recovered data
+- **Training & Certification** - $1,997-4,997 for implementation workshops
+- **SaaS Multi-Tenant Platform** - $97-497/month per site using shared infrastructure
+
+### Cost Savings Analysis
+- **Analytics platform fees**: Save $500-5000/month
+- **Recovered conversions**: 30-50% increase in tracked revenue
+- **Data accuracy**: Better decisions from complete data
+- **Compliance**: Avoid GDPR fines (up to 4% of revenue)
+
+## Success Metrics
+
+<CardGroup cols={2}>
+  <Card title="Data Recovery" icon="chart-line">
+    Typical 40-60% increase in tracked events
+  </Card>
+
+  <Card title="Cost Reduction" icon="dollar-sign">
+    Eliminate per-event pricing from analytics vendors
+  </Card>
+
+  <Card title="Page Speed" icon="gauge-high">
+    Faster loading with optimized first-party requests
+  </Card>
+
+  <Card title="Privacy Score" icon="shield-check">
+    100% compliance with data regulations
+  </Card>
+</CardGroup>
+
+## Implementation Timeline
+
+<Steps>
+  <Step title="Day 1: Setup">
+    Deploy proxy server and configure subdomain
+  </Step>
+
+  <Step title="Day 2: Integration">
+    Connect analytics platforms and test data flow
+  </Step>
+
+  <Step title="Day 3: Migration">
+    Update website tracking codes to use proxy
+  </Step>
+
+  <Step title="Day 4-5: Validation">
+    Verify data accuracy and completeness
+  </Step>
+</Steps>
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Will this affect my existing analytics dashboards?">
+    No, the proxy is transparent. Your Google Analytics, Facebook Ads, and other dashboards work exactly the same but with complete data.
+  </Accordion>
+
+  <Accordion title="Is this legal and compliant?">
+    Yes, first-party data collection is fully legal and actually improves compliance by giving you control over data handling.
+  </Accordion>
+
+  <Accordion title="What about analytics platform terms of service?">
+    First-party collection is explicitly allowed by major platforms including Google Analytics and Facebook.
+  </Accordion>
+
+  <Accordion title="How much infrastructure do I need?">
+    For most sites, a single $20-50/month server handles millions of events. Enterprise deployments can scale as needed.
+  </Accordion>
+
+  <Accordion title="Can I still use tag managers?">
+    Yes, Google Tag Manager and other tag managers work perfectly through the proxy.
+  </Accordion>
+
+  <Accordion title="What's the impact on page speed?">
+    First-party requests are often faster than third-party, improving Core Web Vitals scores.
+  </Accordion>
+</AccordionGroup>
+
+## Real-World Results
+
+### Case Studies
+- **E-commerce Platform**: 47% increase in tracked conversions
+- **SaaS Company**: Recovered $2.3M in "lost" attributed revenue
+- **News Publisher**: 62% increase in measured audience
+- **B2B Site**: 100% accurate lead attribution
+
+## Why First-Party Data Matters
+
+- **iOS 14.5+** and privacy changes make third-party data unreliable
+- **Chrome's cookie phase-out** will further limit tracking
+- **Regulatory pressure** increases globally (GDPR, CCPA, etc.)
+- **Customer expectations** demand transparent data handling
+- **Competitive advantage** from complete, accurate data
+
+## Ready to Own Your Analytics?
+
+Stop losing valuable data to ad blockers and privacy restrictions. Deploy your own analytics infrastructure and capture 100% of your user insights.
+
+<CardGroup cols={2}>
+  <Card title="Schedule Demo" icon="calendar" href="/contact/book-consultation">
+    See the proxy server in action with your analytics
+  </Card>
+
+  <Card title="Get Started" icon="rocket" href="/contact">
+    Deploy your analytics proxy server today
+  </Card>
+</CardGroup>
+
+---
+
+<Info>
+  **Special Offer**: Purchase this month and receive free migration assistance from your existing analytics setup (value $2,000).
+</Info>
