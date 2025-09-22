@@ -220,6 +220,12 @@
         "tab": "Articles",
         "groups": [
           {
+            "group": "Projects",
+            "pages": [
+              "articles/open-source-projects"
+            ]
+          },
+          {
             "group": "Insights",
             "pages": [
               "articles/fingers-on-the-pulse",
