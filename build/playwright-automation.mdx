@@ -15,13 +15,13 @@ Playwright automation eliminates this manual browser work, turning hours of clic
 
 ## What Is Playwright Automation?
 
-Playwright is Microsoft's browser automation framework that controls real browsers programmatically. Unlike basic web scrapers that break when a site updates, Playwright automation:
+Playwright is Microsoft's browser automation framework that controls real browsers programmatically. Unlike basic web scrapers that break when a site updates, Playwright automation acts as a user on behalf of users:
 
-- **Controls real browsers**: Chrome, Firefox, Safari, Edge
-- **Handles modern web apps**: React, Vue, Angular, SPAs
-- **Manages authentication**: Login flows, 2FA, sessions
-- **Processes dynamic content**: Wait for AJAX, handle popups
-- **Captures everything**: Screenshots, videos, network traffic
+- **Controls real browsers**: Chrome, Firefox, Safari, Edge - not just scraping
+- **Handles complex workflows**: Multi-step processes across different platforms
+- **Manages authentication**: Login flows, 2FA, sessions across affiliate platforms
+- **Processes dynamic content**: Wait for AJAX, handle popups, test live functionality
+- **API stitching**: Combines browser automation with API calls for complete solutions
 - **Runs headless or visible**: Debug visually or run at scale
 
 ## The Problems Only Playwright Can Solve
@@ -154,28 +154,38 @@ Manage multiple sessions:
 
 Browser context isolation enables running multiple accounts simultaneously, each with its own session state, cookies, and local storage -- perfect for managing multiple client accounts or testing different user scenarios.
 
-## Real Implementation: Vouchernaut's PPC Automation
+## Real Implementation: Vouchernaut's Complete Affiliate Automation
 
 <Info>
-  **Case Study**: Vouchernaut automated 100,000+ PPC campaigns, driving 60% of revenue through automation. The company was acquired by Groupon.
+  **Case Study**: Vouchernaut automated the entire affiliate management lifecycle across multiple platforms - from brand discovery to PPC campaign creation. Mix of Playwright, Puppeteer and API stitching. Acquired by Groupon.
 </Info>
 
 <CardGroup cols={2}>
   <Card title="The Challenge" icon="exclamation-triangle" color="#dc2626">
-    - Creating one campaign: 3-5 minutes
-    - Managing 100,000+ brands
-    - Multiple platforms needed
-    - Constant updates required
+    - Manual affiliate management across platforms
+    - Brand relationship building at scale
+    - Campaign creation and optimization
+    - Discount code verification
+    - Multi-platform coordination
   </Card>
-  <Card title="The Results" icon="trophy" color="#16a34a">
-    - 3-5 minutes to 10 seconds per campaign
-    - 60% of revenue from automation
-    - Company acquired by Groupon
-    - Zero manual intervention
+  <Card title="The Solution" icon="trophy" color="#16a34a">
+    - Automated brand discovery & outreach
+    - Personalized applications with database insights
+    - Automated page creation & FAQ generation
+    - Live discount code testing
+    - Google PPC campaign creation with best practices
   </Card>
 </CardGroup>
 
-**The Solution**: Our PPC automation creates campaigns across Google Ads and Facebook by navigating to campaign creation pages, filling in campaign details and budgets, adding keywords programmatically, submitting campaigns, and extracting campaign IDs for tracking -- all in parallel across platforms.
+**The Full Automation Stack**:
+- **Brand Discovery**: Scoped out new brands joining affiliate platforms automatically
+- **Relationship Management**: Sent tailored applications based on Vouchernaut's database stats
+- **Status Tracking**: Synced program status (approved/denied/accepted) with revenue tracking
+- **Content Creation**: Created site pages, database entries, brand FAQs
+- **Quality Assurance**: Tested discount codes to ensure they were live and working
+- **PPC Campaigns**: Created Google campaigns using proven boilerplate templates
+
+This wasn't just scraping - it was acting as a user on behalf of users across many different affiliate platforms, handling complex multi-step workflows that added value at every point.
 
 ## Common Playwright Use Cases
 
