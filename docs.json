@@ -57,13 +57,13 @@
           {
             "group": "Success Stories",
             "pages": [
+              "case-studies/getbenson-discount-extension-blocker",
+              "case-studies/snacker-ai-video-platform",
               "case-studies/contra-linkedin-automation",
               "case-studies/vouchernaut-programmatic-ppc",
               "case-studies/definitely-not-a-robot",
               "case-studies/growthrunner-devtools",
               "case-studies/fingers-on-pulse-content-intelligence",
-              "case-studies/snacker-ai-video-platform",
-              "case-studies/getbenson-discount-extension-blocker",
               "case-studies/lead-qualifier"
             ]
           }
