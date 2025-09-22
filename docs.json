@@ -8,6 +8,10 @@
     "dark": "#CC6600"
   },
   "favicon": "/favicon.svg",
+  "banner": {
+    "content": "🚀 WithSeismic helps booking clients from $6k/week sprint. [Get started →](/contact)",
+    "dismissible": true
+  },
   "navigation": {
     "tabs": [
       {
