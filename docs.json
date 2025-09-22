@@ -30,6 +30,7 @@
             "group": "What We Build",
             "pages": [
               "build/mvp",
+              "services/no-code-to-production",
               "build/internal-tools",
               "services/why-productize",
               "build/mcp-servers",
@@ -217,6 +218,18 @@
         ]
       },
       {
+        "tab": "Deals and Discounts",
+        "hidden": true,
+        "groups": [
+          {
+            "group": "Design Tools",
+            "pages": [
+              "deals/framer"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Articles",
         "groups": [
           {
@@ -246,6 +259,47 @@
             "pages": [
               "careers/working-at-withseismic",
               "careers/open-positions"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Universities",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "universities/overview",
+              "universities/how-it-works"
+            ]
+          },
+          {
+            "group": "Automation University",
+            "icon": "graduation-cap",
+            "pages": [
+              "universities/automation/introduction",
+              {
+                "group": "n8n Developer Course",
+                "pages": [
+                  "universities/automation/n8n-developer/overview",
+                  "universities/automation/n8n-developer/setup-environment",
+                  "universities/automation/n8n-developer/custom-nodes-basics",
+                  "universities/automation/n8n-developer/workflow-patterns",
+                  "universities/automation/n8n-developer/backup-strategies"
+                ]
+              },
+              {
+                "group": "Getting Started with n8n",
+                "pages": [
+                  "universities/automation/no-code/n8n-self-hosting",
+                  "universities/automation/no-code/n8n-basics",
+                  "universities/automation/no-code/n8n-node-categories",
+                  "universities/automation/no-code/n8n-service-integrations",
+                  "universities/automation/no-code/n8n-complete-node-list",
+                  "universities/automation/no-code/n8n-llm-workflow-generation"
+                ]
+              },
+              "universities/automation/community"
             ]
           }
         ]

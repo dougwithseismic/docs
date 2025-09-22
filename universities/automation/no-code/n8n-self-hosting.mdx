@@ -1,0 +1,215 @@
+---
+title: Self-Hosting n8n
+description: Deploy your own n8n instance with Railway - the fastest way to production
+icon: server
+---
+
+## Quickest Way to Deploy
+
+The fastest way to get n8n running in production is through Railway. It handles all the infrastructure complexity and gets you running in just 2 minutes.
+
+import { DealRedemption } from "/snippets/deal-redemption.jsx";
+
+<DealRedemption
+  title="Deploy n8n on Railway"
+  description="One-click deploy n8n with Redis, Postgres, and workers - production-ready in 2 minutes"
+  link="https://railway.com/new/template/n8n-with-workers?referralCode=dougie"
+  type="offer"
+  offerText="Deploy Now →"
+/>
+
+## Why Railway?
+
+Railway is the recommended deployment method because it provides:
+
+- **One-click deployment** - No configuration needed
+- **Automatic SSL** - HTTPS out of the box
+- **Managed databases** - PostgreSQL and Redis included
+- **Auto-scaling** - Handles traffic spikes
+- **Built-in monitoring** - See logs and metrics
+- **Easy updates** - Redeploy with one click
+
+## Railway Setup Steps
+
+### Prerequisites
+
+- Sign up for Railway at [railway.com](https://railway.com?referralCode=dougie)
+- GitHub account for authentication
+
+### Step-by-Step Deployment
+
+1. **Click Deploy Button**
+   - Use the deploy button above
+   - Or visit [railway.com/new/template/n8n-with-workers](https://railway.com/new/template/n8n-with-workers?referralCode=dougie)
+
+2. **Authorize Railway**
+   - Sign in with GitHub
+   - Authorize Railway to create repositories
+
+3. **Deploy Template**
+   - Click "Deploy" on the n8n template
+   - Railway automatically provisions:
+     - Redis for queues
+     - PostgreSQL for data
+     - n8n primary instance
+     - n8n worker instances
+
+4. **Access Your Instance**
+   - Go to Railway dashboard
+   - Click on "Primary" service
+   - Navigate to Settings → Network
+   - Click "Generate Domain"
+   - Access your n8n at the provided URL
+
+5. **Set Admin Credentials**
+   - In Railway dashboard, go to Variables
+   - Set these environment variables:
+   ```
+   N8N_BASIC_AUTH_ACTIVE=true
+   N8N_BASIC_AUTH_USER=your_username
+   N8N_BASIC_AUTH_PASSWORD=your_secure_password
+   ```
+   - Redeploy for changes to take effect
+
+## Alternative: Docker Compose
+
+If you prefer more control over your deployment, use Docker Compose:
+
+```yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: n8n
+      POSTGRES_DB: n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n
+      - QUEUE_BULL_REDIS_HOST=redis
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=changeme
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  n8n_data:
+  postgres_data:
+  redis_data:
+```
+
+Run with:
+```bash
+docker-compose up -d
+```
+
+## Post-Deployment Setup
+
+### Configure Webhook URL
+
+After deployment, configure your webhook URL:
+
+1. In Railway or your deployment environment
+2. Set the `WEBHOOK_URL` environment variable
+3. Use your public domain: `https://your-domain.railway.app/`
+
+### Enable Execution Pruning
+
+Keep your database clean:
+
+```
+N8N_EXECUTIONS_DATA_PRUNE=true
+N8N_EXECUTIONS_DATA_MAX_AGE=168
+```
+
+### Set Timezone
+
+Configure your timezone:
+
+```
+GENERIC_TIMEZONE=America/New_York
+```
+
+## Monitoring Your Instance
+
+### Railway Monitoring
+
+Railway provides built-in monitoring:
+
+- **Logs** - Real-time application logs
+- **Metrics** - CPU, memory, and network usage
+- **Deployments** - Track deployment history
+- **Alerts** - Set up notifications
+
+### Health Checks
+
+Check if your instance is running:
+
+```bash
+curl https://your-n8n-url.railway.app/healthz
+```
+
+## Scaling Your Deployment
+
+### Adding More Workers
+
+In Railway, scale workers by:
+
+1. Go to your project settings
+2. Find the n8n-worker service
+3. Increase replica count
+4. Railway handles load balancing
+
+### Database Optimization
+
+For better performance:
+
+```
+DB_POSTGRESDB_SSL_ENABLED=true
+DATABASE_CONNECTION_POOL_MIN=2
+DATABASE_CONNECTION_POOL_MAX=10
+```
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| Can't access n8n | Check if domain is generated in Railway |
+| Webhooks not working | Ensure WEBHOOK_URL is set correctly |
+| High memory usage | Enable execution pruning |
+| Authentication not working | Check N8N_BASIC_AUTH variables |
+
+### Getting Help
+
+- [n8n Community Forum](https://community.n8n.io)
+- [Railway Discord](https://discord.gg/railway)
+- [n8n Documentation](https://docs.n8n.io)
+
+## Next Steps
+
+- [Configure Error Handling](/universities/automation/no-code/n8n-handling-errors)
+- [Set Up Retry Strategies](/universities/automation/no-code/n8n-retry-strategies)
+- [Build Advanced Workflows](/universities/automation/no-code/n8n-do-some-dance)

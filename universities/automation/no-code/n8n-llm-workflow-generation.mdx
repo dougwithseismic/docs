@@ -1,0 +1,636 @@
+---
+title: Generating n8n Workflows with LLMs
+description: Master the art of creating accurate n8n workflows using AI language models
+icon: robot
+---
+
+## Overview
+
+Learn how to leverage Large Language Models (LLMs) like ChatGPT, Claude, and others to generate accurate n8n workflow configurations by providing them with the right context from n8n's source code.
+
+<Info>
+**Pro Tip**: Replace the 'g' in any GitHub URL with 'u' to get a markdown-ready version perfect for feeding to LLMs. For example:
+- GitHub: `https://github.com/n8n-io/n8n`
+- Markdown: `https://uithub.com/n8n-io/n8n`
+</Info>
+
+## Essential n8n Resources
+
+<CardGroup cols={2}>
+  <Card title="Main Repository" icon="github">
+    [n8n Core](https://github.com/n8n-io/n8n) - The main n8n repository with all source code
+  </Card>
+  <Card title="Documentation" icon="book">
+    [n8n Docs](https://github.com/n8n-io/n8n-docs) - Official documentation source
+  </Card>
+  <Card title="All Nodes Reference" icon="cube">
+    [Node Implementations](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base) - Complete node source code
+  </Card>
+  <Card title="Workflow Examples" icon="diagram-project">
+    [Workflow Library](https://n8n.io/workflows) - Pre-built workflow templates
+  </Card>
+</CardGroup>
+
+## Method 1: Direct Node Source Training
+
+### Step 1: Access Node Source Code
+
+Navigate to the [nodes-base directory](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/nodes) to find specific node implementations:
+
+```bash
+# Key directories for LLM context:
+packages/nodes-base/nodes/          # All node implementations
+packages/nodes-base/credentials/    # Credential schemas
+packages/workflow/src/              # Workflow engine
+packages/core/src/                  # Core functionality
+```
+
+### Step 2: Extract Node Schema
+
+For example, let's look at the Webhook node structure:
+
+```typescript
+// From: packages/nodes-base/nodes/Webhook/Webhook.node.ts
+export class Webhook implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'Webhook',
+    name: 'webhook',
+    icon: 'file:webhook.svg',
+    group: ['trigger'],
+    version: [1, 1.1, 2],
+    description: 'Starts the workflow when a webhook is called',
+    eventTriggerDescription: 'Waiting for you to call the Test URL',
+    defaults: {
+      name: 'Webhook',
+    },
+    inputs: [],
+    outputs: ['main'],
+    credentials: [],
+    webhooks: [
+      {
+        name: 'default',
+        httpMethod: '={{$parameter["httpMethod"] || "GET"}}',
+        responseMode: '={{$parameter["responseMode"]}}',
+        path: '={{$parameter["path"]}}',
+        restartWebhook: true,
+      },
+    ],
+    properties: [
+      {
+        displayName: 'Path',
+        name: 'path',
+        type: 'string',
+        default: '',
+        placeholder: 'webhook',
+        required: true,
+        description: 'The path to listen to',
+      },
+      {
+        displayName: 'HTTP Method',
+        name: 'httpMethod',
+        type: 'options',
+        options: [
+          { name: 'DELETE', value: 'DELETE' },
+          { name: 'GET', value: 'GET' },
+          { name: 'HEAD', value: 'HEAD' },
+          { name: 'PATCH', value: 'PATCH' },
+          { name: 'POST', value: 'POST' },
+          { name: 'PUT', value: 'PUT' },
+        ],
+        default: 'GET',
+        description: 'The HTTP method to listen to',
+      },
+    ],
+  };
+}
+```
+
+### Step 3: Provide Context to LLM
+
+Feed the LLM with actual node implementations:
+
+```markdown
+# Prompt for LLM:
+
+Using this exact n8n node structure from the source code, generate a workflow that:
+1. Receives webhook data
+2. Processes it with JavaScript
+3. Sends to Slack
+
+Here's the actual Webhook node implementation:
+[paste node code]
+
+Here's the actual Code node implementation:
+[paste code node]
+
+Here's the actual Slack node implementation:
+[paste slack node]
+
+Generate a complete n8n workflow JSON following this exact structure.
+```
+
+## Method 2: Using Node Documentation
+
+### Comprehensive Node Categories
+
+Access the complete node reference at [packages/nodes-base](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/nodes):
+
+#### Core Trigger Nodes
+- **Webhook** - HTTP endpoint triggers
+- **Schedule** - Cron-based triggers
+- **EmailTrigger** - Email arrival triggers
+- **FileTrigger** - File system monitoring
+- **KafkaTrigger** - Kafka message triggers
+- **RabbitMQTrigger** - RabbitMQ message triggers
+
+#### Data Processing Nodes
+- **Code** - Execute JavaScript/Python
+- **Function** - Transform items
+- **FunctionItem** - Process individual items
+- **Set** - Set field values
+- **Merge** - Combine data streams
+- **SplitInBatches** - Process in chunks
+- **Switch** - Conditional routing
+
+#### AI/LLM Nodes (from source)
+```typescript
+// OpenAI node example structure
+packages/nodes-base/nodes/OpenAi/
+├── OpenAi.node.ts           # Main node implementation
+├── OpenAi.node.json          # Node metadata
+├── actions/                  # Different AI operations
+│   ├── assistant/
+│   ├── chat/
+│   ├── image/
+│   └── text/
+└── transport/               # API communication layer
+```
+
+## Method 3: Workflow JSON Structure
+
+### Complete Workflow Template
+
+```json
+{
+  "name": "My Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "webhook-endpoint",
+        "httpMethod": "POST",
+        "responseMode": "onReceived"
+      },
+      "id": "uuid-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "unique-webhook-id"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Process the incoming data\nconst item = $input.item.json;\n\n// Transform data\nconst processed = {\n  ...item,\n  timestamp: new Date().toISOString(),\n  processed: true\n};\n\nreturn processed;"
+      },
+      "id": "uuid-2",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "post",
+        "channel": "#notifications",
+        "text": "=New webhook data received: {{$json[\"message\"]}}"
+      },
+      "id": "uuid-3",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [650, 300],
+      "credentials": {
+        "slackApi": {
+          "id": "credential-id",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "instance-id"
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "versionId": "version-id"
+}
+```
+
+## Method 4: LLM Prompt Engineering
+
+### Effective Prompt Template
+
+```markdown
+You are an n8n workflow expert. Generate workflows using this exact structure from the n8n source code.
+
+Context:
+- n8n version: latest
+- Node types must match exactly: "n8n-nodes-base.nodename"
+- Position nodes in [x, y] coordinates
+- Use UUIDs for node IDs
+- Connections use node names, not IDs
+
+Requirements:
+[List specific requirements]
+
+Use these actual node implementations from the source:
+[Paste relevant node source code]
+
+Generate a complete, valid n8n workflow JSON.
+```
+
+### Advanced Prompt with Examples
+
+```markdown
+Generate an n8n workflow for [USE CASE] using these constraints:
+
+1. MUST use exact node types from packages/nodes-base/nodes/
+2. MUST follow n8n's connection structure
+3. MUST include proper credentials references
+4. MUST use valid parameter names from source
+
+Reference implementation from GitHub:
+- Webhook: https://github.com/n8n-io/n8n/blob/master/packages/nodes-base/nodes/Webhook/Webhook.node.ts
+- Code: https://github.com/n8n-io/n8n/blob/master/packages/nodes-base/nodes/Code/Code.node.ts
+- [Other nodes as needed]
+
+Example working workflow:
+[Paste a known working workflow]
+
+Now generate a workflow that:
+[Specific requirements]
+```
+
+## Method 5: Using n8n's TypeScript Definitions
+
+### Import Type Definitions
+
+```typescript
+// Key interfaces from n8n-workflow package
+import type {
+  INodeType,
+  INodeTypeDescription,
+  IExecuteFunctions,
+  INodeExecutionData,
+  INodePropertyOptions,
+  INodeProperties,
+  IDataObject,
+} from 'n8n-workflow';
+
+// Example node property structure
+const nodeProperty: INodeProperties = {
+  displayName: 'Field Name',
+  name: 'fieldName',
+  type: 'string',
+  default: '',
+  required: true,
+  displayOptions: {
+    show: {
+      operation: ['create', 'update'],
+    },
+  },
+  description: 'The field description',
+};
+```
+
+### Generate Nodes Programmatically
+
+```javascript
+// Script to generate n8n node JSON
+const generateNode = (name, type, parameters, position) => ({
+  id: crypto.randomUUID(),
+  name,
+  type: `n8n-nodes-base.${type}`,
+  typeVersion: 2,
+  position,
+  parameters,
+});
+
+const generateWorkflow = (nodes, connections) => ({
+  name: "Generated Workflow",
+  nodes,
+  connections,
+  settings: {
+    executionOrder: "v1",
+    saveManualExecutions: true,
+  },
+});
+```
+
+## Common Node Patterns
+
+### Pattern 1: Webhook → Process → Store
+
+```json
+{
+  "nodes": [
+    {
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "data-intake",
+        "httpMethod": "POST"
+      }
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "jsCode": "// Validation and transformation"
+      }
+    },
+    {
+      "type": "n8n-nodes-base.postgres",
+      "parameters": {
+        "operation": "insert",
+        "table": "events"
+      }
+    }
+  ]
+}
+```
+
+### Pattern 2: Schedule → Fetch → Transform → Notify
+
+```json
+{
+  "nodes": [
+    {
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 1 }]
+        }
+      }
+    },
+    {
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "https://api.example.com/data",
+        "method": "GET"
+      }
+    },
+    {
+      "type": "n8n-nodes-base.itemLists",
+      "parameters": {
+        "operation": "aggregateItems"
+      }
+    },
+    {
+      "type": "n8n-nodes-base.slack",
+      "parameters": {
+        "operation": "post",
+        "channel": "#updates"
+      }
+    }
+  ]
+}
+```
+
+## Testing Generated Workflows
+
+### Validation Script
+
+```javascript
+// Validate generated workflow structure
+function validateWorkflow(workflow) {
+  const errors = [];
+
+  // Check required fields
+  if (!workflow.nodes || !Array.isArray(workflow.nodes)) {
+    errors.push("Missing or invalid nodes array");
+  }
+
+  // Validate each node
+  workflow.nodes?.forEach(node => {
+    if (!node.type?.startsWith('n8n-nodes-base.')) {
+      errors.push(`Invalid node type: ${node.type}`);
+    }
+    if (!node.position || node.position.length !== 2) {
+      errors.push(`Invalid position for node: ${node.name}`);
+    }
+  });
+
+  // Validate connections
+  if (workflow.connections) {
+    Object.keys(workflow.connections).forEach(nodeName => {
+      const nodeExists = workflow.nodes.some(n => n.name === nodeName);
+      if (!nodeExists) {
+        errors.push(`Connection references non-existent node: ${nodeName}`);
+      }
+    });
+  }
+
+  return errors;
+}
+```
+
+### Import and Test
+
+1. Copy generated JSON
+2. In n8n UI: **Workflows** → **Import from File** or **Import from URL**
+3. Test with sample data
+4. Check execution logs for errors
+
+## Best Practices
+
+### 1. Always Reference Source Code
+
+```markdown
+When asking LLMs to generate workflows:
+- Provide actual node implementations
+- Include TypeScript interfaces
+- Reference specific file paths
+- Use exact property names
+```
+
+### 2. Node Versioning
+
+```javascript
+// Always specify typeVersion for consistency
+{
+  "type": "n8n-nodes-base.slack",
+  "typeVersion": 2.1,  // Use latest stable version
+  // ...
+}
+```
+
+### 3. Credential Handling
+
+```json
+{
+  "credentials": {
+    "slackApi": {
+      "id": "placeholder",
+      "name": "Slack account"
+    }
+  }
+}
+```
+
+### 4. Error Handling Patterns
+
+```javascript
+// Include error handling in Code nodes
+try {
+  // Your logic here
+  return items;
+} catch (error) {
+  throw new Error(`Processing failed: ${error.message}`);
+}
+```
+
+## Troubleshooting Generated Workflows
+
+### Common Issues and Fixes
+
+| Issue | Solution |
+|-------|----------|
+| "Unknown node type" | Ensure type matches exactly: `n8n-nodes-base.nodeName` |
+| "Missing credentials" | Add credentials object to node definition |
+| "Invalid parameters" | Check parameter names against source code |
+| "Connection errors" | Verify node names in connections match node definitions |
+| "Position overlap" | Space nodes at least 200px apart |
+
+## Advanced Generation Techniques
+
+### Using n8n's Schema
+
+```typescript
+// Extract schema from n8n source
+const extractNodeSchema = async (nodeType) => {
+  const response = await fetch(
+    `https://raw.githubusercontent.com/n8n-io/n8n/master/packages/nodes-base/nodes/${nodeType}/${nodeType}.node.ts`
+  );
+  const source = await response.text();
+  // Parse TypeScript to extract INodeTypeDescription
+  return parseNodeDescription(source);
+};
+```
+
+### Automated Workflow Builder
+
+```javascript
+class N8nWorkflowBuilder {
+  constructor() {
+    this.nodes = [];
+    this.connections = {};
+  }
+
+  addNode(name, type, parameters, position = [0, 0]) {
+    const node = {
+      id: crypto.randomUUID(),
+      name,
+      type: `n8n-nodes-base.${type}`,
+      typeVersion: 2,
+      position,
+      parameters,
+    };
+    this.nodes.push(node);
+    return this;
+  }
+
+  connect(from, to) {
+    if (!this.connections[from]) {
+      this.connections[from] = { main: [[]] };
+    }
+    this.connections[from].main[0].push({
+      node: to,
+      type: 'main',
+      index: 0,
+    });
+    return this;
+  }
+
+  build() {
+    return {
+      name: 'Generated Workflow',
+      nodes: this.nodes,
+      connections: this.connections,
+      settings: {
+        executionOrder: 'v1',
+      },
+    };
+  }
+}
+
+// Usage
+const workflow = new N8nWorkflowBuilder()
+  .addNode('Webhook', 'webhook', { path: 'test' }, [250, 300])
+  .addNode('Process', 'code', { jsCode: '// process' }, [450, 300])
+  .connect('Webhook', 'Process')
+  .build();
+```
+
+## Resources for LLM Training
+
+### Essential Files to Feed LLMs
+
+1. **Node Implementations**: `/packages/nodes-base/nodes/[NodeName]/`
+2. **Workflow Engine**: `/packages/workflow/src/`
+3. **Type Definitions**: `/packages/workflow/src/Interfaces.ts`
+4. **Node Helpers**: `/packages/nodes-base/utils/`
+5. **Credentials**: `/packages/nodes-base/credentials/`
+
+### GitHub Raw URLs for Direct Access
+
+```bash
+# Base URL for raw file access
+https://raw.githubusercontent.com/n8n-io/n8n/master/
+
+# Examples:
+# Webhook node
+https://raw.githubusercontent.com/n8n-io/n8n/master/packages/nodes-base/nodes/Webhook/Webhook.node.ts
+
+# Code node
+https://raw.githubusercontent.com/n8n-io/n8n/master/packages/nodes-base/nodes/Code/Code.node.ts
+
+# Interfaces
+https://raw.githubusercontent.com/n8n-io/n8n/master/packages/workflow/src/Interfaces.ts
+```
+
+## Next Steps
+
+- Practice with [n8n Playground](https://n8n.io/playground)
+- Explore [Community Workflows](https://n8n.io/workflows)
+- Join [n8n Community Forum](https://community.n8n.io)
+- Contribute to [n8n on GitHub](https://github.com/n8n-io/n8n)

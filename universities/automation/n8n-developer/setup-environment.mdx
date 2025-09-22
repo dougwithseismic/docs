@@ -1,0 +1,358 @@
+---
+title: Setting Up Your n8n Development Environment
+description: Configure a complete n8n development environment for building custom nodes and workflows
+icon: laptop-code
+---
+
+# Setting Up Your n8n Development Environment
+
+Let's get your development environment ready for building on n8n.
+
+## Quickest & Easiest Way: Railway
+
+The fastest way to get started with n8n is using Railway - you'll have a production-ready instance in 2 minutes with PostgreSQL, Redis, and workers all configured.
+
+<Card title="Deploy n8n on Railway" href="/universities/automation/no-code/n8n-self-hosting" icon="rocket">
+  One-click deploy with automatic SSL, managed databases, and scaling
+</Card>
+
+Railway handles all the infrastructure complexity so you can focus on building workflows and custom nodes. It includes:
+- Automatic HTTPS/SSL
+- PostgreSQL database
+- Redis for queue management
+- Worker processes for scaling
+- Built-in monitoring and logs
+
+## Local Development Options
+
+If you prefer to run n8n locally for development, here are the quick start options:
+
+<Tabs>
+  <Tab title="Docker (Recommended)">
+    ```bash
+    # Create a directory for n8n data
+    mkdir ~/.n8n
+
+    # Run n8n with PostgreSQL
+    docker run -it --rm \
+      --name n8n \
+      -p 5678:5678 \
+      -e DB_TYPE=postgresdb \
+      -e DB_POSTGRESDB_DATABASE=n8n \
+      -e DB_POSTGRESDB_HOST=postgres \
+      -e DB_POSTGRESDB_PORT=5432 \
+      -e DB_POSTGRESDB_USER=postgres \
+      -e DB_POSTGRESDB_PASSWORD=password \
+      -v ~/.n8n:/home/node/.n8n \
+      n8nio/n8n
+    ```
+  </Tab>
+
+  <Tab title="Docker Compose">
+    Create `docker-compose.yml`:
+    ```yaml
+    version: '3.8'
+
+    services:
+      postgres:
+        image: postgres:15
+        restart: always
+        environment:
+          POSTGRES_USER: n8n
+          POSTGRES_PASSWORD: n8n
+          POSTGRES_DB: n8n
+        volumes:
+          - postgres-data:/var/lib/postgresql/data
+        healthcheck:
+          test: ['CMD-SHELL', 'pg_isready -U n8n']
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+      n8n:
+        image: n8nio/n8n
+        restart: always
+        ports:
+          - '5678:5678'
+        environment:
+          - N8N_BASIC_AUTH_ACTIVE=true
+          - N8N_BASIC_AUTH_USER=admin
+          - N8N_BASIC_AUTH_PASSWORD=password
+          - N8N_HOST=localhost
+          - N8N_PORT=5678
+          - N8N_PROTOCOL=http
+          - NODE_ENV=production
+          - DB_TYPE=postgresdb
+          - DB_POSTGRESDB_HOST=postgres
+          - DB_POSTGRESDB_PORT=5432
+          - DB_POSTGRESDB_DATABASE=n8n
+          - DB_POSTGRESDB_USER=n8n
+          - DB_POSTGRESDB_PASSWORD=n8n
+        volumes:
+          - n8n-data:/home/node/.n8n
+          - ./custom-nodes:/home/node/.n8n/custom
+        depends_on:
+          postgres:
+            condition: service_healthy
+
+    volumes:
+      postgres-data:
+      n8n-data:
+    ```
+
+    Then run:
+    ```bash
+    docker-compose up -d
+    ```
+  </Tab>
+
+  <Tab title="npm/yarn">
+    ```bash
+    # Install globally
+    npm install n8n -g
+
+    # Or with yarn
+    yarn global add n8n
+
+    # Start n8n
+    n8n start
+    ```
+  </Tab>
+
+  <Tab title="Source Code">
+    ```bash
+    # Clone the repository
+    git clone https://github.com/n8n-io/n8n.git
+    cd n8n
+
+    # Install dependencies
+    pnpm install
+
+    # Build all packages
+    pnpm build
+
+    # Start n8n
+    pnpm start
+    ```
+  </Tab>
+</Tabs>
+
+## n8n CLI Setup
+
+```bash
+# Install n8n CLI globally
+npm install -g n8n
+
+# Create a new custom node project
+npx n8n-node-dev new
+
+# Commands available
+n8n start          # Start n8n
+n8n start --tunnel # Start with tunnel for webhooks
+n8n export:workflow --all # Export all workflows
+n8n import:workflow --input=file.json # Import workflows
+```
+
+## Database Configuration
+
+### PostgreSQL Setup (Recommended for Production)
+
+```bash
+# Using Docker
+docker run -d \
+  --name n8n-postgres \
+  -e POSTGRES_USER=n8n \
+  -e POSTGRES_PASSWORD=n8n \
+  -e POSTGRES_DB=n8n \
+  -p 5432:5432 \
+  postgres:15
+
+# Configure n8n to use PostgreSQL
+export DB_TYPE=postgresdb
+export DB_POSTGRESDB_DATABASE=n8n
+export DB_POSTGRESDB_HOST=localhost
+export DB_POSTGRESDB_PORT=5432
+export DB_POSTGRESDB_USER=n8n
+export DB_POSTGRESDB_PASSWORD=n8n
+```
+
+### MySQL Setup
+
+```bash
+# Using Docker
+docker run -d \
+  --name n8n-mysql \
+  -e MYSQL_ROOT_PASSWORD=rootpassword \
+  -e MYSQL_DATABASE=n8n \
+  -e MYSQL_USER=n8n \
+  -e MYSQL_PASSWORD=n8n \
+  -p 3306:3306 \
+  mysql:8
+
+# Configure n8n
+export DB_TYPE=mysqldb
+export DB_MYSQLDB_DATABASE=n8n
+export DB_MYSQLDB_HOST=localhost
+export DB_MYSQLDB_PORT=3306
+export DB_MYSQLDB_USER=n8n
+export DB_MYSQLDB_PASSWORD=n8n
+```
+
+## Environment Variables
+
+Create `.env` file for your development setup:
+
+```bash
+# Basic Configuration
+N8N_HOST=localhost
+N8N_PORT=5678
+N8N_PROTOCOL=http
+NODE_ENV=development
+
+# Database
+DB_TYPE=postgresdb
+DB_POSTGRESDB_DATABASE=n8n
+DB_POSTGRESDB_HOST=localhost
+DB_POSTGRESDB_PORT=5432
+DB_POSTGRESDB_USER=n8n
+DB_POSTGRESDB_PASSWORD=n8n
+
+# Security
+N8N_BASIC_AUTH_ACTIVE=true
+N8N_BASIC_AUTH_USER=dev
+N8N_BASIC_AUTH_PASSWORD=dev
+
+# Execution
+EXECUTIONS_MODE=regular
+EXECUTIONS_TIMEOUT=3600
+EXECUTIONS_TIMEOUT_MAX=7200
+
+# Logs
+N8N_LOG_LEVEL=info
+N8N_LOG_OUTPUT=console
+
+# Custom Nodes
+N8N_CUSTOM_EXTENSIONS="/home/node/.n8n/custom"
+EXTERNAL_HOOK_FILES="/home/node/.n8n/hooks"
+
+# Development
+N8N_DIAGNOSTICS_ENABLED=false
+N8N_TEMPLATES_ENABLED=true
+N8N_PERSONALIZATION_ENABLED=false
+```
+
+
+## Testing Your Setup
+
+### 1. Verify n8n is Running
+
+```bash
+# Check if n8n is accessible
+curl http://localhost:5678/healthz
+
+# Expected response
+{"status":"ok"}
+```
+
+### 2. Create Test Workflow
+
+```javascript
+// test-workflow.js
+const axios = require('axios');
+
+const workflow = {
+  name: 'Test Workflow',
+  nodes: [
+    {
+      parameters: {},
+      name: 'Start',
+      type: 'n8n-nodes-base.start',
+      position: [250, 300]
+    }
+  ],
+  connections: {}
+};
+
+// Import via API
+axios.post('http://localhost:5678/api/v1/workflows', workflow, {
+  headers: {
+    'Authorization': 'Basic ' + Buffer.from('dev:dev').toString('base64')
+  }
+}).then(res => console.log('Workflow created:', res.data.id));
+```
+
+### 3. Enable Development Mode Features
+
+```bash
+# Start with tunnel for webhook development
+n8n start --tunnel
+
+# Enable verbose logging
+N8N_LOG_LEVEL=debug n8n start
+
+# Watch for file changes (custom nodes)
+N8N_WATCH=true n8n start
+```
+
+## Troubleshooting Common Issues
+
+<AccordionGroup>
+  <Accordion title="Port 5678 already in use">
+    ```bash
+    # Find process using port
+    lsof -i :5678
+
+    # Kill the process
+    kill -9 <PID>
+
+    # Or use different port
+    N8N_PORT=5679 n8n start
+    ```
+  </Accordion>
+
+  <Accordion title="Database connection failed">
+    ```bash
+    # Check PostgreSQL is running
+    docker ps | grep postgres
+
+    # Test connection
+    psql -h localhost -U n8n -d n8n
+
+    # Check logs
+    docker logs n8n-postgres
+    ```
+  </Accordion>
+
+  <Accordion title="Custom nodes not loading">
+    ```bash
+    # Verify custom node directory
+    ls ~/.n8n/custom/
+
+    # Check n8n logs for errors
+    N8N_LOG_LEVEL=debug n8n start
+
+    # Rebuild custom nodes
+    cd ~/.n8n/custom && npm run build
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that your environment is set up, you're ready to start building!
+
+<CardGroup cols={2}>
+  <Card title="Build Your First Node" href="./custom-nodes-basics" icon="hammer">
+    Create a custom n8n node from scratch
+  </Card>
+  <Card title="Workflow Development" href="./workflow-patterns" icon="sitemap">
+    Learn workflow design patterns
+  </Card>
+</CardGroup>
+
+## Additional Resources
+
+- [n8n Documentation](https://docs.n8n.io)
+- [n8n Community Forum](https://community.n8n.io)
+- [n8n GitHub Repository](https://github.com/n8n-io/n8n)
+- [Node Development Guide](https://docs.n8n.io/integrations/creating-nodes/)

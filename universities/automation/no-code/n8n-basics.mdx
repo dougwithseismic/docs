@@ -1,0 +1,112 @@
+---
+title: n8n Basics
+description: Get started with n8n - The Flexible AI Workflow Automation for Technical Teams
+icon: flow-chart
+---
+
+## What is n8n?
+
+n8n (pronounced "n-eight-n") stands for **nodemation** - a clever play on "node" and "automation." It positions itself as "The Flexible AI Workflow Automation for Technical Teams," providing a powerful, self-hosted solution for building complex automation workflows.
+
+<Info>
+**Fun Fact**: The name n8n represents "nodemation" where the "8" replaces the eight letters between the first and last "n" - similar to how "internationalization" becomes "i18n". As the founder Jan Oberhauser explains: "'node-' in the sense that it uses a Node-View and that it uses Node.js and '-mation' for 'automation'."
+</Info>
+
+## Quick Start Options
+
+### Try Locally with NPX
+
+The fastest way to try n8n locally:
+
+```bash
+# Run n8n instantly without installation
+npx n8n
+
+# Access at http://localhost:5678
+```
+
+### Production Hosting
+
+For production deployment, you have two main options:
+
+1. **Fastest Production Setup**: Use our [Railway one-click deploy](/universities/automation/no-code/n8n-self-hosting) - gets you running in 2 minutes with Redis, PostgreSQL, and workers
+
+2. **Docker Compose**: For teams wanting more control, use our Docker Compose setup:
+
+```yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: n8n
+      POSTGRES_DB: n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=changeme
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+
+volumes:
+  n8n_data:
+  postgres_data:
+```
+
+## Building Your First Workflow
+
+### Basic Workflow Structure
+
+Every n8n workflow consists of:
+
+1. **Trigger**: What starts your workflow (webhook, schedule, manual)
+2. **Actions**: Processing steps (transform data, call APIs, save to database)
+3. **Connections**: How data flows between nodes
+
+### Example: Simple Data Pipeline
+
+1. **Webhook Trigger** - Receives incoming data
+2. **Code Node** - Process and transform the data
+3. **Database Node** - Store the results
+
+```javascript
+// Example Code node for data transformation
+const items = $input.all();
+
+return items.map(item => ({
+  json: {
+    processed: true,
+    timestamp: new Date().toISOString(),
+    data: item.json
+  }
+}));
+```
+
+## Essential Resources
+
+- [Official Documentation](https://docs.n8n.io)
+- [Community Forum](https://community.n8n.io)
+- [Workflow Library](https://n8n.io/workflows)
+
+## Next Steps
+
+- Explore [Node Categories](/universities/automation/no-code/n8n-node-categories) - All available node types
+- Browse [Service Integrations](/universities/automation/no-code/n8n-service-integrations) - 400+ integrations
+- Learn [LLM Workflow Generation](/universities/automation/no-code/n8n-llm-workflow-generation) - Generate workflows with AI
+- Deploy with [Self-Hosting Guide](/universities/automation/no-code/n8n-self-hosting) - Production setup

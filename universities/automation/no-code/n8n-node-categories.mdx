@@ -1,0 +1,303 @@
+---
+title: n8n Node Categories
+description: Complete guide to all n8n node types and their capabilities
+icon: cube
+---
+
+## Overview
+
+n8n provides hundreds of nodes organized into categories. Each node represents a specific action or trigger in your workflow.
+
+## 🤖 AI/LLM Integration Nodes
+
+n8n provides native support for AI workflows:
+
+### Language Models
+- **OpenAI** - GPT-4, GPT-3.5, DALL-E, Embeddings
+- **Claude** - Anthropic's AI models
+- **Mistral AI** - Open-weight models
+- **Perplexity** - Search-augmented AI
+- **Cohere** - Text generation and analysis
+- **Hugging Face** - Open source models
+
+### AI Infrastructure
+- **LangChain** - Complex AI chains and agents
+- **Vector Stores** - Pinecone, Weaviate, Qdrant, Chroma
+- **Document Loaders** - PDF, Word, Web scraping
+- **Embeddings** - Text vectorization
+- **Memory** - Conversation history management
+
+## 🔧 Core Utility Nodes
+
+Essential building blocks for any workflow:
+
+### Triggers
+- **Webhook** - Receive HTTP requests
+- **Schedule Trigger** - Cron-based automation
+- **Email Trigger** - React to incoming emails
+- **File Trigger** - Monitor file system changes
+- **Interval** - Simple time-based triggers
+- **Manual Trigger** - Start workflows manually
+
+### Data Processing
+- **Code** - Execute JavaScript/Python
+- **Function** - Transform data with code
+- **Set** - Set or rename fields
+- **Merge** - Combine multiple data streams
+- **Split In Batches** - Process large datasets
+- **Item Lists** - Aggregate and split items
+
+### Flow Control
+- **Switch** - Conditional routing (if/else)
+- **Loop** - Iterate over items
+- **Wait** - Delay execution
+- **Stop and Error** - Handle errors
+- **Execute Workflow** - Run sub-workflows
+- **Execute Command** - Run shell commands
+
+## 💾 Database Nodes
+
+Connect to any database:
+
+### SQL Databases
+- **PostgreSQL** - Full CRUD operations
+- **MySQL/MariaDB** - Query and manipulate data
+- **Microsoft SQL Server** - Enterprise database
+- **SQLite** - Lightweight local database
+- **Oracle** - Enterprise Oracle DB
+- **QuestDB** - Time-series database
+
+### NoSQL Databases
+- **MongoDB** - Document database
+- **Redis** - In-memory data store
+- **Elasticsearch** - Search and analytics
+- **CouchDB** - Document-oriented database
+- **ArangoDB** - Multi-model database
+- **Cassandra** - Wide column store
+
+### Cloud Databases
+- **Supabase** - Open source Firebase alternative
+- **Firebase/Firestore** - Google's cloud database
+- **AWS DynamoDB** - Amazon's NoSQL service
+- **TimescaleDB** - Time-series on PostgreSQL
+- **InfluxDB** - Time-series metrics
+
+## 📱 Communication Nodes
+
+### Messaging Platforms
+- **Slack** - Send messages, manage channels
+- **Discord** - Bot interactions, webhooks
+- **Telegram** - Bots and notifications
+- **Microsoft Teams** - Team collaboration
+- **Matrix** - Decentralized communication
+- **Mattermost** - Open source Slack alternative
+
+### Email Services
+- **Email Send** - SMTP email sending
+- **Email Read** - IMAP email reading
+- **Gmail** - Google email integration
+- **Outlook** - Microsoft email
+- **SendGrid** - Transactional email
+- **Mailchimp** - Marketing emails
+
+### SMS & Voice
+- **Twilio** - SMS, voice, WhatsApp
+- **Vonage** - SMS and voice APIs
+- **MessageBird** - Omnichannel messaging
+- **Plivo** - Voice and SMS platform
+
+## 📊 Data & Analytics
+
+### Spreadsheets
+- **Google Sheets** - Read/write spreadsheets
+- **Microsoft Excel** - Excel file operations
+- **Airtable** - Database-spreadsheet hybrid
+- **Baserow** - Open source Airtable alternative
+- **SeaTable** - Collaborative database
+
+### Business Intelligence
+- **Google Analytics** - Website analytics
+- **Mixpanel** - Product analytics
+- **Segment** - Customer data platform
+- **Amplitude** - Product intelligence
+- **Metabase** - Open source BI
+
+### Data Processing
+- **CSV** - Parse and create CSV files
+- **XML** - Parse and create XML
+- **JSON** - Manipulate JSON data
+- **HTML Extract** - Scrape web pages
+- **Binary Data** - Handle files and attachments
+
+## 🔌 File & Storage
+
+### Cloud Storage
+- **Google Drive** - Files and folders
+- **Dropbox** - File sync and share
+- **Box** - Enterprise content management
+- **OneDrive** - Microsoft cloud storage
+- **AWS S3** - Object storage
+- **FTP/SFTP** - File transfer protocols
+
+### File Operations
+- **Read Binary File** - Load files
+- **Write Binary File** - Save files
+- **Move Binary Data** - Transfer between nodes
+- **Compression** - Zip/unzip files
+- **Encryption** - Secure file handling
+
+## 🌐 HTTP & APIs
+
+### Request Nodes
+- **HTTP Request** - Make any API call
+- **GraphQL** - Query GraphQL endpoints
+- **Webhook** - Receive HTTP calls
+- **SSE Trigger** - Server-sent events
+- **WebSocket** - Real-time connections
+- **RSS Feed** - Read RSS/Atom feeds
+
+### API Tools
+- **Respond to Webhook** - Send webhook responses
+- **OAuth2** - Authentication flows
+- **API Rate Limiting** - Manage API limits
+- **Pagination** - Handle paginated APIs
+- **Retry on Fail** - Automatic retries
+
+## 🔄 Workflow Control
+
+### Execution Management
+- **Start** - Workflow entry point
+- **Execute Workflow** - Run other workflows
+- **Execute Command** - System commands
+- **Wait** - Pause execution
+- **Schedule** - Time-based execution
+- **Cron** - Advanced scheduling
+
+### Error Handling
+- **Error Trigger** - Catch workflow errors
+- **Stop and Error** - Throw custom errors
+- **Try/Catch** - Error boundaries
+- **Retry** - Automatic retry logic
+- **Circuit Breaker** - Failure protection
+
+## 🛠️ Development Tools
+
+### Version Control
+- **Git** - Repository operations
+- **GitHub** - Issues, PRs, releases
+- **GitLab** - Complete DevOps platform
+- **Bitbucket** - Atlassian's Git solution
+
+### CI/CD
+- **Jenkins** - Automation server
+- **CircleCI** - Continuous integration
+- **GitHub Actions** - GitHub workflows
+- **Netlify** - Deploy and host
+
+### Monitoring
+- **Sentry** - Error tracking
+- **Datadog** - Infrastructure monitoring
+- **New Relic** - Application performance
+- **PagerDuty** - Incident management
+
+## 🎯 Marketing & Sales
+
+### CRM Systems
+- **Salesforce** - Enterprise CRM
+- **HubSpot** - Inbound marketing
+- **Pipedrive** - Sales pipeline
+- **Zoho CRM** - Business suite
+- **Copper** - Google Workspace CRM
+
+### Marketing Automation
+- **Mailchimp** - Email marketing
+- **ActiveCampaign** - Marketing automation
+- **Sendinblue** - Digital marketing
+- **ConvertKit** - Creator marketing
+- **Drip** - E-commerce CRM
+
+### Social Media
+- **Twitter** - Post and monitor
+- **LinkedIn** - Professional network
+- **Facebook** - Pages and ads
+- **Instagram** - Business tools
+- **YouTube** - Video management
+
+## 💰 E-commerce & Payments
+
+### Payment Processing
+- **Stripe** - Payment infrastructure
+- **PayPal** - Online payments
+- **Square** - Payment processing
+- **Paddle** - SaaS payments
+- **Wise** - International transfers
+
+### E-commerce Platforms
+- **Shopify** - Online stores
+- **WooCommerce** - WordPress commerce
+- **Magento** - Open source commerce
+- **BigCommerce** - SaaS platform
+- **Gumroad** - Creator commerce
+
+## 🏢 Business Tools
+
+### Project Management
+- **Jira** - Issue tracking
+- **Asana** - Work management
+- **Trello** - Kanban boards
+- **Monday.com** - Work OS
+- **ClickUp** - All-in-one PM
+
+### Collaboration
+- **Notion** - All-in-one workspace
+- **Confluence** - Team collaboration
+- **Miro** - Visual collaboration
+- **Figma** - Design collaboration
+- **Loom** - Video messaging
+
+### HR & Operations
+- **BambooHR** - HR management
+- **Calendly** - Appointment scheduling
+- **Typeform** - Interactive forms
+- **DocuSign** - Electronic signatures
+- **Zapier** - Automation platform
+
+## Custom Nodes
+
+### Creating Custom Nodes
+
+n8n allows you to create custom nodes for proprietary APIs or specific business logic:
+
+```typescript
+import { INodeType, INodeTypeDescription } from 'n8n-workflow';
+
+export class MyCustomNode implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'My Custom Node',
+    name: 'myCustomNode',
+    group: ['transform'],
+    version: 1,
+    description: 'Custom node for specific task',
+    defaults: {
+      name: 'My Custom Node',
+    },
+    inputs: ['main'],
+    outputs: ['main'],
+    properties: [
+      // Define node parameters
+    ],
+  };
+}
+```
+
+## Node Resources
+
+- [Complete Node Reference](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/nodes)
+- [Node Documentation](https://docs.n8n.io/integrations/)
+- [Community Nodes](https://www.npmjs.com/search?q=n8n-nodes)
+
+## Next Steps
+
+- Browse [Service Integrations](/universities/automation/no-code/n8n-service-integrations) for detailed integration guides
+- Learn [Workflow Patterns](/universities/automation/no-code/n8n-workflow-patterns) for common use cases
+- Explore [Custom Node Development](/universities/automation/no-code/n8n-custom-nodes) to extend n8n

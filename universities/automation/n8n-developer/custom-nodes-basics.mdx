@@ -1,0 +1,794 @@
+---
+title: Building Custom n8n Nodes
+description: Create powerful custom nodes to extend n8n's capabilities
+icon: puzzle-piece
+---
+
+# Building Custom n8n Nodes
+
+Custom nodes are the ultimate way to extend n8n's functionality. Let's build your first custom node from scratch.
+
+## Understanding n8n Node Architecture
+
+```typescript
+// Basic node structure
+import { INodeType, INodeTypeDescription } from 'n8n-workflow';
+
+export class MyCustomNode implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'My Custom Node',
+    name: 'myCustomNode',
+    group: ['transform'],
+    version: 1,
+    description: 'My first custom node',
+    defaults: {
+      name: 'My Custom Node',
+    },
+    inputs: ['main'],
+    outputs: ['main'],
+    properties: []
+  };
+
+  async execute(this: IExecuteFunctions) {
+    // Node logic here
+  }
+}
+```
+
+## Project Setup
+
+### 1. Initialize Node Project
+
+```bash
+# Create project directory
+mkdir n8n-nodes-custom && cd n8n-nodes-custom
+
+# Initialize package.json
+npm init -y
+
+# Install dependencies
+npm install n8n-core n8n-workflow
+npm install -D @types/node typescript
+```
+
+### 2. Configure TypeScript
+
+Create `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "target": "es2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}
+```
+
+### 3. Package Configuration
+
+Update `package.json`:
+
+```json
+{
+  "name": "n8n-nodes-custom",
+  "version": "0.1.0",
+  "description": "Custom n8n nodes",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src --ext .ts",
+    "prepublishOnly": "npm run build"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "nodes": [
+      "dist/nodes/HttpBin/HttpBin.node.js",
+      "dist/nodes/DataProcessor/DataProcessor.node.js"
+    ],
+    "credentials": [
+      "dist/credentials/CustomApi.credentials.js"
+    ]
+  },
+  "files": [
+    "dist"
+  ]
+}
+```
+
+## Building Your First Node: HTTP Bin
+
+Let's create a node that interacts with httpbin.org for testing HTTP requests.
+
+### Node Implementation
+
+Create `src/nodes/HttpBin/HttpBin.node.ts`:
+
+```typescript
+import {
+  IExecuteFunctions,
+  INodeExecutionData,
+  INodeType,
+  INodeTypeDescription,
+  NodeOperationError,
+} from 'n8n-workflow';
+import { OptionsWithUri } from 'request-promise-native';
+
+export class HttpBin implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'HTTP Bin',
+    name: 'httpBin',
+    icon: 'file:httpbin.svg',
+    group: ['input'],
+    version: 1,
+    subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
+    description: 'Interact with httpbin.org for testing',
+    defaults: {
+      name: 'HTTP Bin',
+    },
+    inputs: ['main'],
+    outputs: ['main'],
+    credentials: [],
+    properties: [
+      {
+        displayName: 'Resource',
+        name: 'resource',
+        type: 'options',
+        noDataExpression: true,
+        options: [
+          { name: 'Request', value: 'request' },
+          { name: 'Response', value: 'response' },
+          { name: 'Auth', value: 'auth' },
+        ],
+        default: 'request',
+      },
+      {
+        displayName: 'Operation',
+        name: 'operation',
+        type: 'options',
+        noDataExpression: true,
+        displayOptions: {
+          show: {
+            resource: ['request'],
+          },
+        },
+        options: [
+          { name: 'GET', value: 'get' },
+          { name: 'POST', value: 'post' },
+          { name: 'PUT', value: 'put' },
+          { name: 'DELETE', value: 'delete' },
+        ],
+        default: 'get',
+      },
+      {
+        displayName: 'Endpoint',
+        name: 'endpoint',
+        type: 'string',
+        required: true,
+        displayOptions: {
+          show: {
+            resource: ['request'],
+          },
+        },
+        default: '/anything',
+        placeholder: '/anything',
+        description: 'The endpoint to call',
+      },
+      {
+        displayName: 'Request Body',
+        name: 'body',
+        type: 'json',
+        displayOptions: {
+          show: {
+            resource: ['request'],
+            operation: ['post', 'put'],
+          },
+        },
+        default: '{}',
+        description: 'Body to send with request',
+      },
+      {
+        displayName: 'Query Parameters',
+        name: 'queryParams',
+        type: 'fixedCollection',
+        placeholder: 'Add Query Parameter',
+        default: {},
+        typeOptions: {
+          multipleValues: true,
+        },
+        options: [
+          {
+            name: 'parameter',
+            displayName: 'Parameter',
+            values: [
+              {
+                displayName: 'Name',
+                name: 'name',
+                type: 'string',
+                default: '',
+              },
+              {
+                displayName: 'Value',
+                name: 'value',
+                type: 'string',
+                default: '',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const items = this.getInputData();
+    const returnData: INodeExecutionData[] = [];
+    const resource = this.getNodeParameter('resource', 0) as string;
+    const operation = this.getNodeParameter('operation', 0) as string;
+
+    for (let i = 0; i < items.length; i++) {
+      try {
+        if (resource === 'request') {
+          const endpoint = this.getNodeParameter('endpoint', i) as string;
+          const method = operation.toUpperCase();
+
+          const options: OptionsWithUri = {
+            method,
+            uri: `https://httpbin.org${endpoint}`,
+            json: true,
+          };
+
+          // Add query parameters
+          const queryParams = this.getNodeParameter('queryParams', i, {}) as any;
+          if (queryParams.parameter) {
+            const qs: any = {};
+            for (const param of queryParams.parameter) {
+              qs[param.name] = param.value;
+            }
+            options.qs = qs;
+          }
+
+          // Add body for POST/PUT
+          if (['POST', 'PUT'].includes(method)) {
+            const body = this.getNodeParameter('body', i) as string;
+            options.body = JSON.parse(body);
+          }
+
+          const response = await this.helpers.request(options);
+          returnData.push({ json: response });
+        }
+
+        if (resource === 'response') {
+          // Generate custom responses
+          const statusCode = this.getNodeParameter('statusCode', i, 200) as number;
+          const customResponse = {
+            status: statusCode,
+            timestamp: new Date().toISOString(),
+            message: `Generated response with status ${statusCode}`,
+          };
+          returnData.push({ json: customResponse });
+        }
+
+        if (resource === 'auth') {
+          // Test authentication
+          const authType = this.getNodeParameter('authType', i) as string;
+          const options: OptionsWithUri = {
+            method: 'GET',
+            uri: `https://httpbin.org/${authType}`,
+            json: true,
+          };
+
+          const response = await this.helpers.request(options);
+          returnData.push({ json: response });
+        }
+      } catch (error) {
+        if (this.continueOnFail()) {
+          returnData.push({ json: { error: error.message } });
+          continue;
+        }
+        throw new NodeOperationError(this.getNode(), error);
+      }
+    }
+
+    return [returnData];
+  }
+}
+```
+
+## Advanced Node: Data Processor
+
+Create `src/nodes/DataProcessor/DataProcessor.node.ts`:
+
+```typescript
+import {
+  IExecuteFunctions,
+  INodeExecutionData,
+  INodeType,
+  INodeTypeDescription,
+} from 'n8n-workflow';
+
+export class DataProcessor implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'Data Processor',
+    name: 'dataProcessor',
+    group: ['transform'],
+    version: 1,
+    description: 'Process and transform data with custom logic',
+    defaults: {
+      name: 'Data Processor',
+    },
+    inputs: ['main'],
+    outputs: ['main'],
+    properties: [
+      {
+        displayName: 'Processing Mode',
+        name: 'mode',
+        type: 'options',
+        options: [
+          {
+            name: 'Transform',
+            value: 'transform',
+            description: 'Transform data structure',
+          },
+          {
+            name: 'Filter',
+            value: 'filter',
+            description: 'Filter items based on conditions',
+          },
+          {
+            name: 'Aggregate',
+            value: 'aggregate',
+            description: 'Aggregate data',
+          },
+          {
+            name: 'Custom Script',
+            value: 'script',
+            description: 'Run custom JavaScript',
+          },
+        ],
+        default: 'transform',
+      },
+      {
+        displayName: 'Transform Expression',
+        name: 'transformExpression',
+        type: 'string',
+        typeOptions: {
+          editor: 'code',
+          editorLanguage: 'javascript',
+        },
+        displayOptions: {
+          show: {
+            mode: ['transform'],
+          },
+        },
+        default: `// Available variables:
+// item - current item
+// index - current index
+// items - all items
+
+return {
+  id: item.json.id,
+  name: item.json.name,
+  processed: true,
+  timestamp: new Date().toISOString()
+};`,
+        description: 'JavaScript code to transform each item',
+      },
+      {
+        displayName: 'Filter Expression',
+        name: 'filterExpression',
+        type: 'string',
+        typeOptions: {
+          editor: 'code',
+          editorLanguage: 'javascript',
+        },
+        displayOptions: {
+          show: {
+            mode: ['filter'],
+          },
+        },
+        default: `// Return true to keep item, false to filter out
+// Available: item, index, items
+
+return item.json.active === true;`,
+      },
+      {
+        displayName: 'Aggregation Type',
+        name: 'aggregationType',
+        type: 'options',
+        displayOptions: {
+          show: {
+            mode: ['aggregate'],
+          },
+        },
+        options: [
+          { name: 'Sum', value: 'sum' },
+          { name: 'Average', value: 'average' },
+          { name: 'Count', value: 'count' },
+          { name: 'Group By', value: 'groupBy' },
+          { name: 'Custom', value: 'custom' },
+        ],
+        default: 'sum',
+      },
+      {
+        displayName: 'Field to Aggregate',
+        name: 'aggregateField',
+        type: 'string',
+        displayOptions: {
+          show: {
+            mode: ['aggregate'],
+            aggregationType: ['sum', 'average'],
+          },
+        },
+        default: 'value',
+        description: 'The field to perform aggregation on',
+      },
+      {
+        displayName: 'Group By Field',
+        name: 'groupByField',
+        type: 'string',
+        displayOptions: {
+          show: {
+            mode: ['aggregate'],
+            aggregationType: ['groupBy'],
+          },
+        },
+        default: 'category',
+      },
+      {
+        displayName: 'Custom Script',
+        name: 'customScript',
+        type: 'string',
+        typeOptions: {
+          editor: 'code',
+          editorLanguage: 'javascript',
+        },
+        displayOptions: {
+          show: {
+            mode: ['script'],
+          },
+        },
+        default: `// Full access to items array
+// Must return array of items
+
+const processedItems = items.map((item, index) => {
+  // Your custom processing logic
+  return {
+    json: {
+      ...item.json,
+      processedAt: new Date().toISOString(),
+      index: index
+    }
+  };
+});
+
+return processedItems;`,
+      },
+    ],
+  };
+
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const items = this.getInputData();
+    const mode = this.getNodeParameter('mode', 0) as string;
+    let returnData: INodeExecutionData[] = [];
+
+    switch (mode) {
+      case 'transform':
+        const transformExpression = this.getNodeParameter('transformExpression', 0) as string;
+        returnData = items.map((item, index) => {
+          const sandbox = {
+            item,
+            index,
+            items,
+          };
+          const transformFunction = new Function('item', 'index', 'items', transformExpression);
+          const result = transformFunction(item, index, items);
+          return { json: result };
+        });
+        break;
+
+      case 'filter':
+        const filterExpression = this.getNodeParameter('filterExpression', 0) as string;
+        const filterFunction = new Function('item', 'index', 'items', filterExpression);
+        returnData = items.filter((item, index) => filterFunction(item, index, items));
+        break;
+
+      case 'aggregate':
+        const aggregationType = this.getNodeParameter('aggregationType', 0) as string;
+
+        if (aggregationType === 'sum' || aggregationType === 'average') {
+          const field = this.getNodeParameter('aggregateField', 0) as string;
+          const values = items.map(item => item.json[field] as number).filter(v => v !== undefined);
+
+          const sum = values.reduce((acc, val) => acc + val, 0);
+          const result = aggregationType === 'sum' ? sum : sum / values.length;
+
+          returnData = [{
+            json: {
+              aggregation: aggregationType,
+              field,
+              result,
+              itemCount: values.length,
+            }
+          }];
+        } else if (aggregationType === 'count') {
+          returnData = [{
+            json: {
+              count: items.length,
+            }
+          }];
+        } else if (aggregationType === 'groupBy') {
+          const groupField = this.getNodeParameter('groupByField', 0) as string;
+          const groups: { [key: string]: any[] } = {};
+
+          items.forEach(item => {
+            const key = item.json[groupField] as string;
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(item.json);
+          });
+
+          returnData = Object.entries(groups).map(([key, values]) => ({
+            json: {
+              [groupField]: key,
+              items: values,
+              count: values.length,
+            }
+          }));
+        }
+        break;
+
+      case 'script':
+        const customScript = this.getNodeParameter('customScript', 0) as string;
+        const scriptFunction = new Function('items', customScript);
+        const result = scriptFunction(items);
+        returnData = Array.isArray(result) ? result : [{ json: result }];
+        break;
+    }
+
+    return [returnData];
+  }
+}
+```
+
+## Creating Custom Credentials
+
+Create `src/credentials/CustomApi.credentials.ts`:
+
+```typescript
+import {
+  ICredentialType,
+  INodeProperties,
+} from 'n8n-workflow';
+
+export class CustomApi implements ICredentialType {
+  name = 'customApi';
+  displayName = 'Custom API';
+  documentationUrl = 'https://docs.example.com/api';
+  properties: INodeProperties[] = [
+    {
+      displayName: 'API Key',
+      name: 'apiKey',
+      type: 'string',
+      typeOptions: {
+        password: true,
+      },
+      default: '',
+      required: true,
+    },
+    {
+      displayName: 'API Secret',
+      name: 'apiSecret',
+      type: 'string',
+      typeOptions: {
+        password: true,
+      },
+      default: '',
+    },
+    {
+      displayName: 'Base URL',
+      name: 'baseUrl',
+      type: 'string',
+      default: 'https://api.example.com',
+      placeholder: 'https://api.example.com',
+    },
+    {
+      displayName: 'Environment',
+      name: 'environment',
+      type: 'options',
+      options: [
+        { name: 'Production', value: 'production' },
+        { name: 'Staging', value: 'staging' },
+        { name: 'Development', value: 'development' },
+      ],
+      default: 'production',
+    },
+  ];
+}
+```
+
+## Testing Your Custom Nodes
+
+### 1. Unit Tests
+
+Create `src/nodes/HttpBin/HttpBin.test.ts`:
+
+```typescript
+import { HttpBin } from './HttpBin.node';
+import { IExecuteFunctions } from 'n8n-workflow';
+
+describe('HttpBin Node', () => {
+  let httpBin: HttpBin;
+  let executeFunctions: IExecuteFunctions;
+
+  beforeEach(() => {
+    httpBin = new HttpBin();
+    executeFunctions = {
+      getInputData: jest.fn(() => [{ json: { test: 'data' } }]),
+      getNodeParameter: jest.fn(),
+      helpers: {
+        request: jest.fn(),
+      },
+      continueOnFail: jest.fn(() => false),
+      getNode: jest.fn(),
+    } as any;
+  });
+
+  test('should make GET request', async () => {
+    executeFunctions.getNodeParameter = jest.fn()
+      .mockReturnValueOnce('request')
+      .mockReturnValueOnce('get')
+      .mockReturnValueOnce('/get');
+
+    executeFunctions.helpers.request = jest.fn()
+      .mockResolvedValue({ success: true });
+
+    const result = await httpBin.execute.call(executeFunctions);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toHaveLength(1);
+    expect(result[0][0].json).toEqual({ success: true });
+  });
+});
+```
+
+### 2. Integration Testing
+
+```bash
+# Link your node package locally
+cd n8n-nodes-custom
+npm link
+
+# Link to n8n
+cd ~/.n8n/custom
+npm link n8n-nodes-custom
+
+# Restart n8n
+n8n start
+
+# Your custom nodes should now appear in the node panel
+```
+
+### 3. Debugging
+
+```typescript
+// Add debug logging to your node
+console.log('Debug:', {
+  parameter: this.getNodeParameter('mode', 0),
+  itemCount: items.length,
+});
+
+// Use n8n's logger
+this.logger.info('Processing items', { count: items.length });
+
+// Start n8n with debug logging
+N8N_LOG_LEVEL=debug n8n start
+```
+
+## Publishing Your Nodes
+
+### 1. Prepare for Publication
+
+```json
+// package.json
+{
+  "name": "@yourorg/n8n-nodes-custom",
+  "version": "1.0.0",
+  "description": "Custom n8n nodes for your organization",
+  "keywords": [
+    "n8n",
+    "n8n-node",
+    "workflow",
+    "automation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourorg/n8n-nodes-custom"
+  }
+}
+```
+
+### 2. Publish to npm
+
+```bash
+# Build the project
+npm run build
+
+# Login to npm
+npm login
+
+# Publish
+npm publish --access public
+```
+
+### 3. Install in n8n
+
+```bash
+# Install globally
+npm install -g @yourorg/n8n-nodes-custom
+
+# Or in n8n custom directory
+cd ~/.n8n/custom
+npm install @yourorg/n8n-nodes-custom
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Error Handling">
+    Always implement proper error handling:
+    ```typescript
+    try {
+      // Your node logic
+    } catch (error) {
+      if (this.continueOnFail()) {
+        return [{ json: { error: error.message } }];
+      }
+      throw new NodeOperationError(this.getNode(), error);
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Performance">
+    - Process items in batches when possible
+    - Use streaming for large files
+    - Implement pagination for API calls
+    - Cache frequently accessed data
+  </Accordion>
+
+  <Accordion title="Documentation">
+    - Add clear descriptions for all parameters
+    - Include examples in parameter placeholders
+    - Document credential requirements
+    - Provide usage examples
+  </Accordion>
+
+  <Accordion title="Versioning">
+    - Use semantic versioning
+    - Maintain backward compatibility
+    - Document breaking changes
+    - Test migrations thoroughly
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Advanced Node Features" href="./custom-nodes-advanced" icon="rocket">
+    Webhooks, polling, and more
+  </Card>
+  <Card title="Workflow Patterns" href="./workflow-patterns" icon="sitemap">
+    Design complex workflows
+  </Card>
+</CardGroup>
