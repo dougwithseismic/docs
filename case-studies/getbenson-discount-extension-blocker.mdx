@@ -11,11 +11,11 @@ description: "How getBenson's technology prevents discount extensions like Honey
 
 Our journey to getBenson began at VoucherCloud, which later got acquired by Groupon. Working in the voucher publishing space provided a unique vantage point to see both sides of the Honey problem.
 
-"As a Honey user myself, I saw that a lot of the times they were getting affiliate revenue for not giving any value, essentially. The codes weren't working. As a brand, I wouldn't pay for it," we recall.
+As Honey users ourselves, we witnessed firsthand how extensions earned affiliate commissions without providing real value. The codes often didn't work, yet brands were still paying for these failed conversions.
 
 The problem ran deeper than just broken codes. There was a conspiracy of silence in the affiliate industry:
 
-"Affiliate managers and networks get a kickback from Honey every time they make a sale. So they would never bad mouth them because they were such a cash cow. It was the B2C brands that were really shafted - caught between a rock and a hard place because they weren't getting the information they needed to make a solid judgment on whether Honey was good or bad for them."
+The affiliate industry had a built-in conflict of interest: networks earned kickbacks from every Honey transaction, creating a powerful incentive to stay silent about the damage. B2C brands were left in the dark, lacking the critical data needed to understand whether these extensions helped or hurt their business.
 
 Our unique position - understanding both the affiliate space and having the technical capability to build a solution - made the opportunity clear.
 
@@ -53,11 +53,9 @@ This pattern repeats across email campaigns, loyalty programs, and strategic par
 
 ### The Decision to Build
 
-"I was looking at what was out there before building to see if this was something that someone had already solved. There were one or two, but nothing that stood out as the be-all solution."
+Before building, we researched existing solutions. While a couple existed, none offered comprehensive protection. Our vision crystallized around three core questions: Could we reliably detect these extensions? Could we prevent them from interfering? Could we help brands reclaim their lost margin?
 
-Our vision was clear: Can we detect Chrome extensions? Can we stop them from running? Can we help brands save more margin?
-
-"I needed to do this. I had clients from my affiliate site that were talking about this, and it was a no-brainer for me to be able to spin this up."
+With clients from our affiliate network already expressing frustration about this problem, the decision to build getBenson was obvious.
 
 getBenson became the first comprehensive defense system against discount extension parasites. Instead of accepting these losses as "cost of doing business," getBenson blocks extensions from interfering with checkout flows entirely.
 
@@ -65,17 +63,17 @@ getBenson became the first comprehensive defense system against discount extensi
 
 Building getBenson in 2018 meant entering an evolving cat-and-mouse game between extensions and detection methods.
 
-"Pretty tough because every extension is built differently. Some run as scripts in the main world versus isolated - it's a Chrome extension, web extension development term. There are safety features like shadow DOMs, which meant that essentially extensions couldn't see what was inside."
+The technical challenge was formidable. Each extension operated differently - some ran in the main execution context, others in isolated environments. We had to navigate the complex security boundaries of browser architecture, leveraging features like Shadow DOM to create protected zones that extensions couldn't penetrate.
 
 Our process was iterative and challenging:
 
-"I went through loads of different strategies and tactics to detect these extensions. The more you get into it, the more you realize that you do need the safety stuff - you need some level of safety involved there, which meant that both worlds can't interact with one another unless specifically wanting to."
+We experimented with countless detection strategies, each iteration teaching us more about the delicate balance between functionality and security. The key insight: maintaining strict separation between the extension world and our protected checkout environment was non-negotiable.
 
 ### The Breakthrough
 
 Our solution came from an unexpected approach:
 
-"The best moment I had was just treating it like reversing an app - using API calls to detect whether certain files were available within the web extension that would be exposed by the browser. That way I had a fingerprint that I could then say: okay, Honey is being used, or Retail Me Not is being used, Rakuten is being used here."
+The breakthrough came when we approached the problem like reverse engineering an application. By detecting specific files that extensions exposed through the browser's API, we could create unique fingerprints for each extension - definitively identifying whether Honey, Retail Me Not, Rakuten, or others were active on the page.
 
 ### How It Works
 
@@ -122,17 +120,17 @@ getBenson integrates seamlessly with any e-commerce platform:
 
 ### The First Client: Theory11
 
-"Our first client was Theory11 - a premium playing card B2C brand. It was a no-brainer for them to pick up because they had seen the impact of Honey on their bottom line and wanted to get rid of it. They tried other solutions in the space but they weren't working well."
+Theory11, a premium playing card brand, became our first client. They had already experienced Honey's devastating impact on their margins and tried other solutions without success. For them, getBenson was an immediate necessity.
 
 ### Two Types of Buyers
 
 Through customer conversations, we discovered two distinct buyer personas:
 
 **The Immediate Blockers**
-"I just want to block Honey. I'm losing margin and I want to block it." These brands knew the problem and wanted an immediate solution.
+These brands had clear urgency: "Block these extensions now - we're hemorrhaging margin." They understood the problem and wanted immediate protection.
 
 **The Data-Driven Analysts**
-"The more savvy ones were actually like, 'I don't really want to block them straight away. I want to know the impact here.' So that led us down the route of building out not just a blocker but an analytics and impact tool to work out what the actual impact was."
+More sophisticated buyers took a measured approach: "Before blocking anything, we need to understand the true impact." This feedback pushed us to evolve getBenson beyond simple blocking into a comprehensive analytics platform that could quantify exactly how much these extensions were costing.
 
 This insight shaped getBenson's evolution from pure blocking tool to comprehensive analytics platform.
 
@@ -246,7 +244,7 @@ getBenson is built with privacy-first principles:
 
 ### Shopify's Checkout Changes
 
-"Eventually, Shopify blocked third-party scripts running on the checkout. So getBenson died an untimely death."
+Shopify's decision to block all third-party scripts from their checkout process brought getBenson's journey to an abrupt end.
 
 This was before Shopify's sweeping changes to allow checkout extensions - a platform decision that fundamentally changed what was possible in the e-commerce protection space.
 
@@ -256,21 +254,19 @@ This was before Shopify's sweeping changes to allow checkout extensions - a plat
 
 Looking back, we see a different path:
 
-"Building getBenson again today, we'd focus less on being adversarial and saying 'I'm going to block extensions because they're stealing margin.' We'd focus way more on the impact analysis. Let's find out: Is Honey good or bad for you? What money are you making here?"
+If we were building getBenson today, we'd take a fundamentally different approach. Rather than positioning ourselves as adversaries to discount extensions, we'd focus on objective impact analysis. The question wouldn't be "How do we block them?" but "What's the actual ROI of these partnerships?"
 
-Our vision evolved from blocking to partnering:
-
-"We would go down that route and partner with the extensions so that they can use getBenson as a sales tool. Really, we're just showing people what the impact is and not trying to force them down a narrative of 'X is bad, Y is bad.'"
+We'd even explore partnering with the extensions themselves, positioning getBenson as a neutral analytics platform that helps brands make informed decisions rather than pushing a narrative about good versus bad.
 
 ### The Partnership Paradox
 
 Our original approach created unnecessary enemies:
 
-"That would get the affiliate networks on board and involved a lot more. When we were trying to sell it to them previously, it was at direct odds with them because they wanted the kickback from the affiliate sale. So why would they want to block this?"
+This collaborative approach would align with affiliate networks' interests rather than opposing them. Our original adversarial stance put us at odds with networks who benefited from extension commissions - why would they support something that reduced their revenue?
 
 ### The Maturity of Perspective
 
-"As we mature and get older, we realize being adversarial only gets you so far. Being a real partner and giving value to everyone - letting them make up their own minds and decisions and narrative - is the way forward."
+Experience has taught us that adversarial strategies have limited reach. True success comes from creating value for all stakeholders, providing transparent data that empowers informed decisions rather than forcing a particular narrative.
 
 This shift from "blocking the enemy" to "measuring the impact" represents a fundamental evolution in approaching business problems - from zero-sum competition to value creation for all parties.
 
