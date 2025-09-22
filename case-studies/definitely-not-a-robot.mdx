@@ -1,0 +1,257 @@
+---
+title: "definitely-not-a-robot: Humanizing Browser Automation"
+description: "How we built an npm package that makes automated browsers indistinguishable from human users"
+icon: "robot"
+---
+
+![Definitely Not A Robot Demo](/images/definitely-not-a-robot.gif)
+
+## The Challenge
+
+Web automation has become a cat-and-mouse game. Modern bot detection systems have learned to identify automated browsers through predictable patterns:
+
+- **Perfect timing**: Bots click exactly 500ms after page load
+- **Linear movements**: Mouse travels in straight lines to targets
+- **Consistent typing**: Every keystroke at identical intervals
+- **Mechanical scrolling**: Always the same speed and distance
+- **Zero mistakes**: No hesitation, no errors, no human variability
+
+This made legitimate automation tasks increasingly difficult:
+
+- Testing tools getting blocked on production sites
+- Web scraping for research hitting endless CAPTCHAs
+- QA automation failing due to bot detection
+- Monitoring tools getting IP banned
+- Data collection becoming unreliable
+
+---
+
+## The Solution
+
+We built `definitely-not-a-robot`, a Puppeteer wrapper that embraces human imperfection as a feature. By introducing deliberate randomness and natural movement patterns, it makes automated browsers virtually indistinguishable from human users.
+
+The package leverages puppeteer-extra with StealthPlugin and adds layers of human-like behaviors:
+
+1. **Bezier curve mouse movements** that arc naturally like a human hand
+2. **Variable typing speeds** based on ASCII key distances
+3. **Random micro-movements** during idle time
+4. **Natural hesitation** before important clicks
+5. **Debug visualization** to see exactly how the "human" moves
+
+---
+
+## Technical Build
+
+### Core Architecture
+
+**Language**: TypeScript for type safety
+**Bundler**: ESBuild for fast compilation
+**Base**: Puppeteer-extra with StealthPlugin
+**Output**: CommonJS for broad compatibility
+
+### Key Implementations
+
+#### Bezier Mouse Movement Algorithm
+
+```typescript
+// Splits long movements into segments with jitter
+const distance = calculateDistance(start, end)
+const segments = Math.max(2, Math.min(50, Math.floor(distance / 10)))
+
+// Natural acceleration/deceleration
+const speed = 0.03 + distance * 0.001
+const acceleration = 0.002
+
+// Bezier control points for curved paths
+const ctrlPt1 = start + Math.random() * (end - start) * 0.5
+const ctrlPt2 = end - Math.random() * (end - start) * 0.5
+```
+
+#### ASCII-Based Typing Delays
+
+```typescript
+// Larger key distance = longer delay
+const diff = Math.abs(text.charCodeAt(i) - text.charCodeAt(i - 1))
+const delay = averageDelayPerChar + (diff * 2)
+
+// Pause after punctuation
+if (['.', '!', '?'].includes(char)) {
+  delay += 200 // Natural thinking pause
+}
+```
+
+#### Jitter Movement System
+
+- 3-95 pixel random movements
+- Returns to original position
+- Simulates idle hand tremor
+- Configurable intensity and count
+
+### API Design
+
+```typescript
+const browser = new HumanBrowser()
+
+// All methods return promises for chaining
+await browser.launch({ headless: false })
+await browser.navigate('https://example.com')
+await browser.humanMove('#button', {
+  hesitationBeforeClick: true
+})
+await browser.humanType('Hello World', 100) // WPM
+await browser.jitterMouse({ jitterCount: 3 })
+await browser.wait(1000, 5000) // Random delay
+```
+
+---
+
+## Results & Impact
+
+### Technical Achievements
+
+- **Bezier curve paths** instead of straight lines
+- **50-150ms random click delays** for natural hesitation
+- **WPM-based typing** with variable speeds (default 40 WPM)
+- **Debug mode** showing red path visualization
+- **Zero dependencies** beyond Puppeteer ecosystem
+
+### Real-World Usage
+
+The package is used for:
+
+- **QA Testing**: Running tests on production without triggering bot detection
+- **Web Scraping**: Collecting public data for research and analysis
+- **Automation**: Building reliable workflows that don't break
+- **Monitoring**: Tracking competitor sites without getting banned
+
+### Open Source Impact
+
+- Published on npm as `definitely-not-a-robot`
+- GitHub repository with working examples
+- Demo automation of shadcn/ui interface
+- Clear documentation and TypeScript types
+
+---
+
+## Lessons Learned
+
+### Randomness is Key
+
+The difference between bot and human is unpredictability:
+
+- Humans don't move in straight lines
+- Typing speed varies based on key distance
+- Everyone has idle hand movements
+- Mistakes and corrections are natural
+
+### Debug Visualization Matters
+
+The red path tracing was crucial for development:
+
+- See exactly how the mouse moves
+- Verify Bezier curves look natural
+- Spot mechanical patterns instantly
+- Tune parameters visually
+
+### Simplicity Wins
+
+Rather than complex ML models, simple randomization worked:
+
+- Bezier curves for natural arcs
+- Normal distribution for delays
+- ASCII distance for typing variance
+- Basic jitter for idle movement
+
+---
+
+## What Made It Work
+
+1. **Mathematical foundations** — Bezier curves and easing functions
+2. **Observation of humans** — How people actually move and type
+3. **Debug-first development** — Visual feedback during creation
+4. **Modular design** — Separate utilities for each behavior
+5. **TypeScript** — Caught edge cases during development
+
+---
+
+## Industry Impact
+
+- Proved simple randomization can defeat bot detection
+- Showed legitimate use cases need human-like automation
+- Demonstrated the importance of imperfection in automation
+- Set a template for ethical automation tools
+
+---
+
+## Open Source
+
+<Card
+  title="definitely-not-a-robot on GitHub"
+  icon="github"
+  href="https://github.com/dougwithseismic/npm-definitely-not-a-robot"
+>
+  View source code and contribute
+</Card>
+
+## Technologies Used
+
+<CardGroup cols={3}>
+  <Card title="TypeScript" icon="code">
+    Type-safe development
+  </Card>
+  <Card title="Puppeteer" icon="browser">
+    Browser automation
+  </Card>
+  <Card title="ESBuild" icon="bolt">
+    Fast bundling
+  </Card>
+  <Card title="Stealth Plugin" icon="user-secret">
+    Bot evasion
+  </Card>
+  <Card title="Bezier Curves" icon="wave">
+    Natural movement
+  </Card>
+  <Card title="Canvas API" icon="paint-brush">
+    Debug visualization
+  </Card>
+</CardGroup>
+
+---
+
+## Code Example
+
+Here's how the package handles a typical automation flow:
+
+```typescript
+import HumanBrowser from 'definitely-not-a-robot'
+
+const browser = new HumanBrowser()
+
+await browser.launch({ headless: false })
+await browser.navigate('https://ui.shadcn.com')
+
+// Search with natural movement and typing
+await browser.humanMove('input[type="search"]', {
+  hesitationBeforeClick: true,
+  debug: true // Shows red path
+})
+await browser.jitterMouse({ jitterCount: 3 })
+await browser.humanType('Hello World', 86) // 86 WPM
+
+// Navigate with pauses
+await browser.wait(300, 500)
+await browser.humanMove('button[aria-label="Select a team"]')
+
+// Careful typing for important fields
+await browser.humanType('Monster', 30) // Slow 30 WPM
+
+await browser.close()
+```
+
+---
+
+## Ethical Note
+
+While this tool can bypass bot detection, it's designed for legitimate use cases: testing, research, monitoring, and accessibility. The project includes clear disclaimers about responsible use and explicitly discourages malicious applications.
+
+As we note in the README: "Beep Boop. We don't condone this behaviour." — But sometimes you need to test your production site without getting blocked.
