@@ -9,7 +9,7 @@
   },
   "favicon": "/favicon.svg",
   "banner": {
-    "content": "🚀 Book a two week sprint for new clients from $6k. [Get started →](/contact)",
+    "content": "🚀 Automate your business processes in two weeks from $6k. [Get started →](/contact)",
     "dismissible": true
   },
   "navigation": {
@@ -59,16 +59,39 @@
             ]
           },
           {
-            "group": "Success Stories",
+            "group": "Web Extension Projects",
             "pages": [
               "case-studies/contra-linkedin-automation",
-              "case-studies/vouchernaut-programmatic-ppc",
-              "case-studies/snacker-ai-video-platform",
               "case-studies/getbenson-discount-extension-blocker",
-              "case-studies/fingers-on-pulse-content-intelligence",
-              "case-studies/definitely-not-a-robot",
-              "case-studies/growthrunner-devtools",
-              "case-studies/lead-qualifier"
+              "case-studies/growthrunner-devtools"
+            ]
+          },
+          {
+            "group": "Internal Tools & Automation",
+            "pages": [
+              "case-studies/vouchernaut-programmatic-ppc",
+              "case-studies/lead-qualifier",
+              "case-studies/fingers-on-pulse-content-intelligence"
+            ]
+          },
+          {
+            "group": "AI & LLM Solutions",
+            "pages": [
+              "case-studies/snacker-ai-video-platform",
+              "case-studies/fingers-on-pulse-content-intelligence"
+            ]
+          },
+          {
+            "group": "MVP & Product Development",
+            "pages": [
+              "case-studies/snacker-ai-video-platform",
+              "case-studies/vouchernaut-programmatic-ppc"
+            ]
+          },
+          {
+            "group": "Browser Automation",
+            "pages": [
+              "case-studies/definitely-not-a-robot"
             ]
           }
         ]
