@@ -522,7 +522,7 @@ const GlyphsGrid = () => {
       <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => setSelectedCategory("all")}
-          className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all ${
+          className={`px-4 py-2 text-sm font-medium rounded-sm border transition-all ${
             selectedCategory === "all"
               ? "bg-orange-500 text-white border-orange-500"
               : "bg-transparent text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-orange-400"
@@ -535,7 +535,7 @@ const GlyphsGrid = () => {
           <button
             key={key}
             onClick={() => setSelectedCategory(key)}
-            className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all ${
+            className={`px-4 py-2 text-sm font-medium rounded-sm border transition-all ${
               selectedCategory === key
                 ? "bg-orange-500 text-white border-orange-500"
                 : "bg-transparent text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-orange-400"
@@ -559,7 +559,7 @@ const GlyphsGrid = () => {
           <button
             onClick={clearChain}
             disabled={!characterChain}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${
               characterChain
                 ? "bg-gray-500 text-white hover:bg-gray-600"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -570,7 +570,7 @@ const GlyphsGrid = () => {
           <button
             onClick={copyChainToClipboard}
             disabled={!characterChain}
-            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${
               copiedChain
                 ? "bg-green-500 text-white"
                 : characterChain
@@ -585,7 +585,7 @@ const GlyphsGrid = () => {
 
       {/* Special note for Zalgo characters */}
       {selectedCategory === "zalgo" && (
-        <div className="mb-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+        <div className="mb-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-sm border border-purple-200 dark:border-purple-800">
           <div className="flex items-start gap-2">
             <span className="text-xl">⚠️</span>
             <div>
@@ -604,7 +604,7 @@ const GlyphsGrid = () => {
 
       {/* Glyphs Grid */}
       <div
-        className={`grid gap-3 ${
+        className={`grid gap-3 max-h-[600px] overflow-y-auto pr-2 ${
           categoryGridConfig[selectedCategory] ||
           "grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8"
         }`}
@@ -613,7 +613,7 @@ const GlyphsGrid = () => {
           <div
             key={`${glyph.code}-${index}`}
             onClick={() => handleGlyphClick(glyph)}
-            className={`group relative p-4 rounded-lg border cursor-pointer transition-all text-center select-none ${
+            className={`group relative p-4 rounded-sm border cursor-pointer transition-all text-center select-none ${
               copiedGlyph === glyph.char
                 ? "bg-green-500 border-green-500 text-white"
                 : "bg-neutral-500/5 border-neutral-500/10 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/10"
@@ -638,7 +638,7 @@ const GlyphsGrid = () => {
             )}
 
             {/* Tooltip on hover */}
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 min-w-[150px] shadow-lg">
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 min-w-[150px] shadow-lg">
               <div className="font-semibold mb-1 break-all">{glyph.char}</div>
               <div className="text-gray-300">{glyph.name}</div>
               <div className="text-gray-400 text-[10px] mt-1">{glyph.code}</div>
@@ -663,7 +663,7 @@ const GlyphsGrid = () => {
           💡 Quick Tips
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+          <div className="bg-neutral-500/5 p-3 rounded-sm border border-neutral-500/10">
             <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
               HTML Usage
             </div>
@@ -671,7 +671,7 @@ const GlyphsGrid = () => {
               Use as &amp;#x2192; for →
             </div>
           </div>
-          <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+          <div className="bg-neutral-500/5 p-3 rounded-sm border border-neutral-500/10">
             <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
               CSS Usage
             </div>
@@ -679,7 +679,7 @@ const GlyphsGrid = () => {
               content: "\2192" for →
             </div>
           </div>
-          <div className="bg-neutral-500/5 p-3 rounded border border-neutral-500/10">
+          <div className="bg-neutral-500/5 p-3 rounded-sm border border-neutral-500/10">
             <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
               JavaScript
             </div>
