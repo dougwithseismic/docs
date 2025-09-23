@@ -6,13 +6,21 @@ icon: flow-chart
 
 ## What is n8n?
 
+<Info>
+n8n (pronounced "n-eight-n") is a powerful, self-hosted workflow automation platform that stands for "nodemation" - combining "node" and "automation." It's designed as "The Flexible AI Workflow Automation for Technical Teams."
+</Info>
+
 n8n (pronounced "n-eight-n") stands for **nodemation** - a clever play on "node" and "automation." It positions itself as "The Flexible AI Workflow Automation for Technical Teams," providing a powerful, self-hosted solution for building complex automation workflows.
 
 <Info>
 **Fun Fact**: The name n8n represents "nodemation" where the "8" replaces the eight letters between the first and last "n" - similar to how "internationalization" becomes "i18n". As the founder Jan Oberhauser explains: "'node-' in the sense that it uses a Node-View and that it uses Node.js and '-mation' for 'automation'."
 </Info>
 
-## Quick Start Options
+## How Can I Get Started with n8n Quickly?
+
+<Info>
+You can start with n8n instantly using `npx n8n` for local testing, or deploy to production using Railway (2 minutes) or Docker Compose for more control.
+</Info>
 
 ### Try Locally with NPX
 
@@ -69,7 +77,11 @@ volumes:
   postgres_data:
 ```
 
-## Building Your First Workflow
+## How Do I Build My First Workflow?
+
+<Info>
+Every n8n workflow has three essential components: a Trigger (what starts it), Actions (processing steps), and Connections (how data flows between nodes).
+</Info>
 
 ### Basic Workflow Structure
 
@@ -98,15 +110,65 @@ return items.map(item => ({
 }));
 ```
 
-## Essential Resources
+## What Resources Should I Know About?
+
+<Info>
+Key resources include the official documentation, community forum for help, and the workflow library with pre-built templates you can use immediately.
+</Info>
 
 - [Official Documentation](https://docs.n8n.io)
 - [Community Forum](https://community.n8n.io)
 - [Workflow Library](https://n8n.io/workflows)
 
-## Next Steps
+## What Should I Learn Next?
+
+<Info>
+After mastering the basics, explore node categories, service integrations, AI workflow generation, and production deployment strategies.
+</Info>
 
 - Explore [Node Categories](/universities/automation/no-code/n8n-node-categories) - All available node types
 - Browse [Service Integrations](/universities/automation/no-code/n8n-service-integrations) - 400+ integrations
 - Learn [LLM Workflow Generation](/universities/automation/no-code/n8n-llm-workflow-generation) - Generate workflows with AI
 - Deploy with [Self-Hosting Guide](/universities/automation/no-code/n8n-self-hosting) - Production setup
+
+## Frequently Asked Questions
+
+### How is n8n different from Zapier or other automation tools?
+
+n8n is self-hosted, giving you complete control over your data and workflows. Unlike cloud-based tools, you can customize it extensively, integrate with internal systems, and avoid per-execution pricing. It's designed for technical teams who need flexibility and data sovereignty.
+
+### What programming knowledge do I need to use n8n?
+
+You can build basic workflows with no coding using the visual interface. For advanced workflows, basic JavaScript knowledge helps with custom transformations in Function nodes. For custom nodes, you'll need TypeScript/JavaScript skills.
+
+### Can n8n handle large-scale automation?
+
+n8n can scale horizontally with multiple worker instances and supports queue-based execution with Redis. Companies use it to process millions of executions monthly. Performance depends on your infrastructure and workflow complexity.
+
+### Is n8n secure for enterprise use?
+
+Yes, n8n offers enterprise-grade security with credential encryption, webhook security, SSL/TLS support, and audit logging. Since it's self-hosted, you maintain complete control over your data and compliance requirements.
+
+### What's the difference between n8n.cloud and self-hosting?
+
+n8n.cloud is the managed service - no setup required but with usage limits and monthly costs. Self-hosting gives you unlimited executions, full customization, and data control but requires infrastructure management.
+
+### How much does n8n cost to run?
+
+Self-hosted n8n is free. Your only costs are infrastructure (server, database, storage). A basic production setup might cost $20-50/month on cloud providers, while enterprise deployments vary based on scale and requirements.
+
+### Can I integrate n8n with my existing APIs and databases?
+
+n8n supports 400+ integrations out of the box, plus HTTP Request nodes for any REST API. You can connect to databases via built-in nodes (PostgreSQL, MySQL, MongoDB) or create custom nodes for proprietary systems.
+
+### What happens if my n8n instance goes down?
+
+With proper setup (database backups, Redis for queues), workflows can resume where they left off. Failed executions can be retried automatically. Consider high-availability setups with multiple instances for critical production use.
+
+### How do I migrate workflows between environments?
+
+Workflows can be exported as JSON and imported to other instances. Use the n8n CLI for bulk operations, version control for workflow management, and API-based deployment for CI/CD integration.
+
+### Can I contribute to n8n or create custom integrations?
+
+n8n is open source - you can contribute to the core project, create custom nodes, and share them with the community. The community actively contributes nodes, templates, and improvements to the platform.

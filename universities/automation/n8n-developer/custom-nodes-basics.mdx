@@ -3,13 +3,21 @@ title: "Lesson 2: Building Custom n8n Nodes"
 description: Create powerful custom nodes to extend n8n's capabilities
 ---
 
-## Why Custom Nodes Transform Your n8n Experience
+## Why Do Custom Nodes Transform Your n8n Experience?
+
+<Info>
+Custom nodes unlock n8n's full potential by enabling integration with proprietary APIs, implementing custom business logic, and optimizing complex workflows into single, reusable components.
+</Info>
 
 When you first start with n8n, you're limited to the pre-built nodes. That works great until you need to integrate with your company's proprietary API, implement custom business logic, or optimize a complex workflow that's using 20 nodes when it could use just one. Custom nodes change everything.
 
 Custom nodes are your escape hatch from limitations. Instead of waiting for the n8n team to build support for your specific use case, you build it yourself. Instead of chaining together multiple nodes with complex logic, you encapsulate that logic in a single, reusable component.
 
-## What We're Building Today
+## What Will We Build in This Lesson?
+
+<Info>
+We'll build two custom nodes: an HTTP Bin Node for learning basic structure and API interactions, and a Data Processor Node for complex data transformations and business logic.
+</Info>
 
 In this lesson, we'll create two custom nodes that demonstrate different complexity levels:
 
@@ -18,7 +26,11 @@ In this lesson, we'll create two custom nodes that demonstrate different complex
 
 By the end of this lesson, you won't just have two working nodes - you'll understand the patterns and principles to build any node you can imagine.
 
-## Understanding n8n Node Architecture
+## How Does n8n Node Architecture Work?
+
+<Info>
+Every n8n node is a TypeScript class implementing the INodeType interface, with a description object defining the UI and an execute function containing the business logic.
+</Info>
 
 Before we write any code, we need to understand what makes a node tick. Every n8n node is a TypeScript class that implements the `INodeType` interface.
 
@@ -59,7 +71,11 @@ Let's break down what each part does:
 
 n8n handles all the complex stuff - workflow execution, error handling, data passing between nodes - while you focus on your node's specific logic.
 
-## Project Setup: Building Your Development Environment
+## How Do I Set Up My Development Environment?
+
+<Info>
+Set up a professional development environment by initializing a Node.js project, configuring TypeScript for n8n compatibility, and setting up the package.json with proper n8n configuration.
+</Info>
 
 Now we'll set up a proper development environment for building custom nodes. We're creating a professional development setup that you can use for all your future node projects.
 
@@ -142,7 +158,11 @@ The most important part of your `package.json` is the n8n configuration section.
 
 The `n8n` section tells n8n where to find your nodes and credentials. When n8n starts up, it reads this section and loads your custom nodes into the node panel, making them appear alongside the built-in ones.
 
-## Building Your First Node: HTTP Bin
+## How Do I Build My First Custom Node?
+
+<Info>
+We'll build an HTTP Bin node that makes different types of HTTP requests, handles dynamic parameters, processes responses, and provides a user-friendly configuration interface.
+</Info>
 
 Now for the exciting part - let's build our first real node! We'll create an HTTP Bin node that interacts with httpbin.org, a service designed for testing HTTP requests. This is perfect for learning because it's simple enough to understand but complex enough to teach you the important patterns.
 
@@ -380,7 +400,11 @@ Now let's add some advanced features to make our node production-ready. We'll ad
 
 These features transform our simple node into something you'd actually use in production.
 
-## Building a Production-Grade Node: Data Processor
+## How Do I Build a Production-Grade Node?
+
+<Info>
+The Data Processor node demonstrates advanced patterns including dynamic code execution, mode-based behavior, aggregation logic, and professional error handling for real-world applications.
+</Info>
 
 Now that you understand the basics, let's build something more sophisticated. The Data Processor node will demonstrate advanced patterns you'll use in real-world nodes.
 
@@ -653,7 +677,11 @@ This node showcases several important patterns:
 
 **Aggregation Logic**: The aggregation mode demonstrates how to process entire datasets rather than individual items. This is essential for analytics and reporting workflows.
 
-## Creating Custom Credentials: Securing Your Integrations
+## How Do I Create Custom Credentials?
+
+<Info>
+Custom credentials securely store API keys, secrets, and configuration data with encryption, environment-specific settings, and user-friendly forms for credential management.
+</Info>
 
 Create `src/credentials/CustomApi.credentials.ts`:
 
@@ -720,7 +748,11 @@ When users add credentials:
 
 The `typeOptions: { password: true }` setting ensures sensitive fields are masked in the UI and encrypted in storage. This is critical for security.
 
-## Testing Your Custom Nodes: From Development to Production
+## How Do I Test My Custom Nodes?
+
+<Info>
+Implement comprehensive testing with unit tests for individual functions, integration tests with real n8n instances, and debugging techniques for troubleshooting development issues.
+</Info>
 
 Testing is crucial for reliable nodes. Let's set up a comprehensive testing strategy that covers unit tests, integration tests, and debugging techniques.
 
@@ -804,7 +836,11 @@ this.logger.info('Processing items', { count: items.length });
 N8N_LOG_LEVEL=debug n8n start
 ```
 
-## Publishing Your Nodes: Sharing with the World
+## How Do I Publish My Custom Nodes?
+
+<Info>
+Publish your nodes by preparing package.json with proper metadata, publishing to npm with public access, and enabling installation in n8n instances globally or locally.
+</Info>
 
 Once your nodes are tested and working, you can share them with your team or the community.
 
@@ -857,7 +893,7 @@ cd ~/.n8n/custom
 npm install @yourorg/n8n-nodes-custom
 ```
 
-## Best Practices
+## What Are the Best Practices for Custom Nodes?
 
 <AccordionGroup>
   <Accordion title="Error Handling">
@@ -896,7 +932,11 @@ npm install @yourorg/n8n-nodes-custom
   </Accordion>
 </AccordionGroup>
 
-## Next Steps
+## What Should I Learn Next?
+
+<Info>
+Progress to advanced node features like webhooks and polling, or learn workflow design patterns to create complex, production-ready automation systems.
+</Info>
 
 <CardGroup cols={2}>
   <Card title="Advanced Node Features" href="./custom-nodes-advanced" icon="rocket">
@@ -906,3 +946,45 @@ npm install @yourorg/n8n-nodes-custom
     Design complex workflows
   </Card>
 </CardGroup>
+
+## Frequently Asked Questions
+
+### How long does it take to build a custom node?
+
+A simple node like HTTP Bin takes 2-4 hours for beginners. Complex nodes with advanced features can take days or weeks. Experience significantly reduces development time.
+
+### Can I modify existing n8n nodes instead of creating new ones?
+
+Yes, you can fork existing nodes from the n8n repository, modify them, and publish as custom nodes. This is often faster than building from scratch.
+
+### What's the difference between a node and a credential?
+
+Nodes contain business logic and UI for operations. Credentials securely store authentication data (API keys, passwords) that nodes use to connect to services.
+
+### How do I handle sensitive data in custom nodes?
+
+Never hardcode sensitive data. Use credentials for API keys, environment variables for configuration, and n8n's built-in encryption for storing sensitive information.
+
+### Can custom nodes access the file system?
+
+Yes, but be cautious. Custom nodes run with the same permissions as n8n. Use n8n's helper methods when possible and validate all file paths to prevent security issues.
+
+### How do I debug custom nodes during development?
+
+Use console.log for basic debugging, n8n's logger for structured logging, TypeScript for type checking, and n8n's development mode for hot reloading.
+
+### What happens if my custom node has errors?
+
+n8n will catch errors and display them in the workflow execution. Implement proper error handling with try-catch blocks and meaningful error messages for users.
+
+### Can I use external npm packages in custom nodes?
+
+Yes, add them to your package.json dependencies. Be mindful of package size and security. Popular packages like axios, lodash, and moment are commonly used.
+
+### How do I version my custom nodes?
+
+Use semantic versioning (semver). Increment patch for bug fixes, minor for new features, major for breaking changes. Update the version in your node description.
+
+### Can I contribute my nodes to the official n8n repository?
+
+Yes, n8n welcomes community contributions. Follow their contribution guidelines, ensure high code quality, and consider community benefit when proposing new nodes.

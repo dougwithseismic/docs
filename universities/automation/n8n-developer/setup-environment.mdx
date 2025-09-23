@@ -3,9 +3,19 @@ title: "Lesson 1: Setting Up Your n8n Development Environment"
 description: Configure a complete n8n development environment for building custom nodes and workflows
 ---
 
+## What Will I Learn in This Lesson?
+
+<Info>
+You'll learn to set up a complete n8n development environment using Railway (fastest), local options (Docker, npm), CLI tools, and database configurations for building custom nodes and workflows.
+</Info>
+
 Let's get your development environment ready for building on n8n.
 
-## Quickest & Easiest Way: Railway
+## What's the Fastest Way to Get Started?
+
+<Info>
+Railway provides the fastest setup - a production-ready n8n instance in 2 minutes with PostgreSQL, Redis, workers, automatic SSL, and built-in monitoring.
+</Info>
 
 The fastest way to get started with n8n is using Railway - you'll have a production-ready instance in 2 minutes with PostgreSQL, Redis, and workers all configured.
 
@@ -20,7 +30,11 @@ Railway handles all the infrastructure complexity so you can focus on building w
 - Worker processes for scaling
 - Built-in monitoring and logs
 
-## Local Development Options
+## How Can I Run n8n Locally for Development?
+
+<Info>
+For local development, you can use Docker (recommended), Docker Compose, npm/yarn installation, or build from source code, each offering different levels of control and setup complexity.
+</Info>
 
 If you prefer to run n8n locally for development, here are the quick start options:
 
@@ -134,7 +148,11 @@ If you prefer to run n8n locally for development, here are the quick start optio
   </Tab>
 </Tabs>
 
-## n8n CLI Setup
+## How Do I Set Up the n8n CLI?
+
+<Info>
+The n8n CLI provides essential commands for starting n8n, creating custom nodes, and managing workflows. Install it globally with npm for development.
+</Info>
 
 ```bash
 # Install n8n CLI globally
@@ -150,7 +168,11 @@ n8n export:workflow --all # Export all workflows
 n8n import:workflow --input=file.json # Import workflows
 ```
 
-## Database Configuration
+## How Do I Configure Different Databases?
+
+<Info>
+PostgreSQL is recommended for production, while MySQL is also supported. Both can be set up with Docker and configured via environment variables.
+</Info>
 
 ### PostgreSQL Setup (Recommended for Production)
 
@@ -195,7 +217,11 @@ export DB_MYSQLDB_USER=n8n
 export DB_MYSQLDB_PASSWORD=n8n
 ```
 
-## Environment Variables
+## What Environment Variables Should I Configure?
+
+<Info>
+Environment variables control n8n's behavior including database connections, security settings, execution modes, logging, and custom extensions. Create a .env file for development.
+</Info>
 
 Create `.env` file for your development setup:
 
@@ -239,7 +265,11 @@ N8N_PERSONALIZATION_ENABLED=false
 ```
 
 
-## Testing Your Setup
+## How Do I Test My n8n Setup?
+
+<Info>
+Test your setup by checking the health endpoint, creating test workflows, and enabling development features like tunnels and verbose logging.
+</Info>
 
 ### 1. Verify n8n is Running
 
@@ -291,7 +321,11 @@ N8N_LOG_LEVEL=debug n8n start
 N8N_WATCH=true n8n start
 ```
 
-## Troubleshooting Common Issues
+## What Are Common Setup Issues and Solutions?
+
+<Info>
+Common issues include port conflicts, database connection failures, and custom node loading problems. Each has specific troubleshooting steps and solutions.
+</Info>
 
 <AccordionGroup>
   <Accordion title="Port 5678 already in use">
@@ -334,7 +368,11 @@ N8N_WATCH=true n8n start
   </Accordion>
 </AccordionGroup>
 
-## Next Steps
+## What Should I Do Next?
+
+<Info>
+With your environment set up, you can start building custom nodes or learning advanced workflow patterns. Additional resources include official documentation and community support.
+</Info>
 
 Now that your environment is set up, you're ready to start building!
 
@@ -353,3 +391,45 @@ Now that your environment is set up, you're ready to start building!
 - [n8n Community Forum](https://community.n8n.io)
 - [n8n GitHub Repository](https://github.com/n8n-io/n8n)
 - [Node Development Guide](https://docs.n8n.io/integrations/creating-nodes/)
+
+## Frequently Asked Questions
+
+### Should I use Railway or local development for learning?
+
+For learning, start with Railway to get familiar with n8n quickly, then move to local development when you're ready to build custom nodes. Local development gives you more control and faster iteration cycles.
+
+### What's the difference between SQLite and PostgreSQL for development?
+
+SQLite is simpler for local development but doesn't support all production features. PostgreSQL matches production environments and supports advanced features like queue management with Redis.
+
+### How do I switch between different n8n versions?
+
+With Docker, change the image tag (e.g., `n8nio/n8n:0.200.0`). With npm, use `npm install n8n@version`. Always backup your data before switching versions.
+
+### Can I use n8n with other databases like MongoDB?
+
+n8n officially supports PostgreSQL, MySQL, and SQLite. MongoDB isn't supported as the primary database, but you can connect to MongoDB through workflow nodes.
+
+### How do I enable debug mode for troubleshooting?
+
+Set `N8N_LOG_LEVEL=debug` and `NODE_ENV=development`. This provides verbose logging for troubleshooting issues with workflows, nodes, and connections.
+
+### What ports does n8n use besides 5678?
+
+n8n uses port 5678 for the web interface. If using Redis, it typically uses 6379. PostgreSQL uses 5432, MySQL uses 3306. Ensure these ports are available or configure alternatives.
+
+### How do I backup my development environment?
+
+Export workflows via CLI (`n8n export:workflow --all`), backup your database, and version control your custom nodes. For complete backups, include the `.n8n` directory contents.
+
+### Can I run multiple n8n instances for different projects?
+
+Yes, use different ports and data directories. Set `N8N_PORT`, `N8N_USER_FOLDER`, and separate database configurations for each instance to avoid conflicts.
+
+### What happens if I don't set up a database?
+
+n8n defaults to SQLite stored in the user folder. This works for development but isn't recommended for production due to performance and concurrency limitations.
+
+### How do I update n8n in my development environment?
+
+For Docker, pull the latest image. For npm installations, run `npm update n8n`. For Railway, redeploy with the latest template. Always backup before updating.
