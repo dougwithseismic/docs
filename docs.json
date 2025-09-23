@@ -238,6 +238,12 @@
         "tab": "Articles",
         "groups": [
           {
+            "group": "About WithSeismic",
+            "pages": [
+              "articles/documentation-site-without-product"
+            ]
+          },
+          {
             "group": "Projects",
             "pages": [
               "articles/open-source-projects"
