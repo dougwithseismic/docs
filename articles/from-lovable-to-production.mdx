@@ -19,6 +19,11 @@ The result is a sustainable development process where everyone on your team can 
 
 ## Understanding the Workflow
 
+<Info>
+**How does the Lovable + Turborepo workflow maintain collaboration after handoff?**
+The workflow uses Git submodules so non-technical team members can continue prototyping in Lovable while developers build production infrastructure around it, avoiding a one-time handoff model.
+</Info>
+
 Before diving into the technical steps, let's understand the overall workflow:
 
 1. **Lovable + GitHub branches for prototyping**:
@@ -40,6 +45,11 @@ This approach gives you the freedom to continue rapid prototyping while simultan
 
 ## Prerequisites
 
+<Info>
+**What do I need before starting a Lovable to production transition?**
+You'll need a Lovable app ready for handoff, basic Git/GitHub knowledge, familiarity with monorepo concepts, Cursor IDE, and Node.js with pnpm installed.
+</Info>
+
 - A Lovable app ready for handoff
 - Basic knowledge of Git and GitHub
 - Familiarity with monorepo concepts
@@ -47,6 +57,11 @@ This approach gives you the freedom to continue rapid prototyping while simultan
 - Node.js and pnpm
 
 ## The Setup Process
+
+<Info>
+**What's the overall setup process for transitioning from Lovable to production?**
+The process involves connecting Lovable to GitHub, creating a Turborepo monorepo, adding the Lovable app as a Git submodule, building a production backend, and configuring the entire system to work together.
+</Info>
 
 ### Step 1: GitHub Integration
 
@@ -182,6 +197,11 @@ Update `turbo.json` to include your apps:
 
 ## Advanced Integration Techniques
 
+<Info>
+**How can you share components across a Lovable + Turborepo setup?**
+Create shared UI packages that both your Lovable app and other monorepo apps can use, ensuring consistency and reusability across your entire development ecosystem.
+</Info>
+
 ### Shared Components
 
 Create shared UI components that both your Lovable app and other apps can use:
@@ -219,6 +239,11 @@ The monorepo structure makes it easy to manage deployments and environment varia
 
 ## Benefits of This Approach
 
+<Info>
+**What are the main advantages of this Turborepo + Lovable approach?**
+This approach enables continuous collaboration, gradual migration from Lovable to custom code, shared codebase management, proper version control, and easy scalability as your project grows.
+</Info>
+
 1. **Continuous Collaboration**: Non-technical team members can continue using Lovable while developers build production infrastructure
 2. **Gradual Migration**: You can gradually move pieces from Lovable to custom code as needed
 3. **Shared Codebase**: All production code lives in one place, making it easier to manage
@@ -226,6 +251,11 @@ The monorepo structure makes it easy to manage deployments and environment varia
 5. **Scalability**: Easy to add new services, packages, and apps as your project grows
 
 ## Maintaining the Workflow
+
+<Info>
+**How do you keep Lovable changes and code changes in sync?**
+Lovable automatically pushes to GitHub, then you pull changes to your submodule. For technical changes, you make them directly in code and they sync back to Lovable automatically.
+</Info>
 
 ### For Lovable Changes
 
@@ -249,6 +279,11 @@ git commit -m "Update frontend from Lovable"
 4. Changes automatically sync back to Lovable
 
 ## Conclusion
+
+<Info>
+**Why choose this approach over rebuilding from scratch?**
+This approach bridges rapid prototyping and production development, letting teams maintain collaborative momentum from prototyping while building robust production infrastructure—it's both, not either/or.
+</Info>
 
 This approach bridges the gap between rapid prototyping and production development. Instead of treating Lovable as a throwaway tool, you can build a sustainable development process that leverages the strengths of both visual development and traditional coding.
 
