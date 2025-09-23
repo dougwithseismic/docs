@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 
 const GlyphsGrid = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -6,10 +6,12 @@ const GlyphsGrid = () => {
   const [copiedGlyph, setCopiedGlyph] = useState(null);
   const [characterChain, setCharacterChain] = useState("");
   const [copiedChain, setCopiedChain] = useState(false);
+  const [hoveredGlyph, setHoveredGlyph] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   // Grid configuration per category (optional)
   const categoryGridConfig = {
-    tableFlip: "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+    tableFlip: "grid-cols-1 sm:grid-cols-2 md:grid-cols-3",
     // Add more custom grid configs here as needed
   };
 
@@ -493,6 +495,19 @@ const GlyphsGrid = () => {
     setCharacterChain("");
   };
 
+  const handleMouseEnter = (e, glyph) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setTooltipPosition({
+      x: rect.left + rect.width / 2,
+      y: rect.top
+    });
+    setHoveredGlyph(glyph);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredGlyph(null);
+  };
+
   return (
     <div className="bg-background rounded-sm p-6 my-6 border border-neutral-500/20 shadow-sm">
       {/* Header */}
@@ -603,17 +618,34 @@ const GlyphsGrid = () => {
       )}
 
       {/* Glyphs Grid */}
-      <div
-        className={`grid gap-3 max-h-[600px] overflow-y-auto pr-2 ${
-          categoryGridConfig[selectedCategory] ||
-          "grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8"
-        }`}
-      >
-        {filteredGlyphs.map((glyph, index) => (
+      <div className="relative">
+        <div
+          className={`grid gap-3 max-h-[600px] overflow-y-auto overflow-x-hidden pr-2 ${
+            categoryGridConfig[selectedCategory] ||
+            "grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8"
+          }`}
+        >
+        {filteredGlyphs.map((glyph, index) => {
+          // Determine grid span based on character length
+          const charLength = glyph.char.length;
+          let gridSpan = "";
+          if (charLength > 15) {
+            gridSpan = "col-span-3";
+          } else if (charLength > 8) {
+            gridSpan = "col-span-2";
+          }
+          // For table flip category, don't apply span
+          if (selectedCategory === 'tableFlip') {
+            gridSpan = "";
+          }
+
+          return (
           <div
             key={`${glyph.code}-${index}`}
             onClick={() => handleGlyphClick(glyph)}
-            className={`group relative p-4 rounded-sm border cursor-pointer transition-all text-center select-none ${
+            onMouseEnter={(e) => handleMouseEnter(e, glyph)}
+            onMouseLeave={handleMouseLeave}
+            className={`${gridSpan} group relative aspect-square flex flex-col items-center justify-center p-2 rounded-sm border cursor-pointer transition-all text-center select-none ${
               copiedGlyph === glyph.char
                 ? "bg-green-500 border-green-500 text-white"
                 : "bg-neutral-500/5 border-neutral-500/10 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/10"
@@ -622,29 +654,23 @@ const GlyphsGrid = () => {
             <div
               className={`${
                 selectedCategory === "tableFlip"
-                  ? "text-base sm:text-lg"
-                  : "text-3xl"
-              } mb-2 ${selectedCategory === "tableFlip" ? "font-mono" : ""}`}
+                  ? "text-xs sm:text-sm"
+                  : "text-2xl sm:text-3xl"
+              } ${selectedCategory === "tableFlip" ? "font-mono" : ""} overflow-hidden`}
             >
               {glyph.char}
-            </div>
-            <div className="text-[10px] opacity-60 overflow-hidden text-ellipsis whitespace-nowrap px-1">
-              {glyph.name}
             </div>
             {copiedGlyph === glyph.char && (
               <div className="absolute top-1 right-1 text-[10px] font-bold">
                 Copied!
               </div>
             )}
-
-            {/* Tooltip on hover */}
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 min-w-[150px] shadow-lg">
-              <div className="font-semibold mb-1 break-all">{glyph.char}</div>
-              <div className="text-gray-300">{glyph.name}</div>
-              <div className="text-gray-400 text-[10px] mt-1">{glyph.code}</div>
-            </div>
           </div>
-        ))}
+          );
+        })}
+        </div>
+        {/* Gradient overlay at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none bg-gradient-to-t from-background to-transparent" />
       </div>
 
       {filteredGlyphs.length === 0 && (
@@ -689,6 +715,22 @@ const GlyphsGrid = () => {
           </div>
         </div>
       </div>
+
+      {/* Tooltip rendered outside overflow container */}
+      {hoveredGlyph && (
+        <div
+          className="fixed px-3 py-2 bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-sm z-50 min-w-[150px] shadow-lg pointer-events-none text-center"
+          style={{
+            left: `${tooltipPosition.x}px`,
+            top: `${tooltipPosition.y}px`,
+            transform: 'translate(-50%, calc(-100% - 8px))'
+          }}
+        >
+          <div className="font-semibold mb-1 break-all">{hoveredGlyph.char}</div>
+          <div className="text-gray-300">{hoveredGlyph.name}</div>
+          <div className="text-gray-400 text-[10px] mt-1">{hoveredGlyph.code}</div>
+        </div>
+      )}
     </div>
   );
 };

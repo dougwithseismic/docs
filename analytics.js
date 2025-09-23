@@ -365,6 +365,23 @@
                window.location.hostname === '127.0.0.1' ||
                window.location.hostname.includes('.local');
       }
+    },
+    {
+      id: "keep_scrolling",
+      name: "Keep Scrolling, Scrolling, Scrolling",
+      icon: "🎢",
+      description: "Scroll through a page longer than 20,000 pixels",
+      qualifier: (profile) => {
+        // Check if any page session has scrolled through a very long page
+        const pages = Object.values(profile.behavior?.pages || {});
+        return pages.some(page => {
+          return page.sessions?.some(session =>
+            session.actions?.some(action =>
+              action.type === 'scrolled_long_page' && action.data?.pageHeight >= 20000
+            )
+          );
+        });
+      }
     }
   ];
 
@@ -644,6 +661,8 @@
       this.category = this.detectCategory();
       this.scrollDepth = 0;
       this.timeouts = [];
+      this.initialized = false; // Track if this tracker has been initialized
+      this.cleanedUp = false; // Track if cleanup has been called
       this.sessionData = {
         sessionId: null,
         timestamp: new Date().toISOString(),
@@ -667,6 +686,13 @@
     }
 
     initializePage() {
+      // Prevent duplicate initialization
+      if (this.initialized) {
+        log("PageTracker already initialized, skipping");
+        return;
+      }
+      this.initialized = true;
+
       const profile = StorageManager.getVisitorProfile();
 
       // Track daily visits
@@ -709,6 +735,9 @@
         }
       }
 
+      // Check if this is a genuine new page visit (not a refresh or re-initialization)
+      const isNewPageVisit = profile.currentSession.currentPage !== this.pagePath;
+
       // Initialize or update page data
       if (!profile.behavior.pages[this.pagePath]) {
         profile.behavior.pages[this.pagePath] = {
@@ -724,10 +753,17 @@
           sessions: [],
         };
         profile.behavior.uniquePagesViewed++;
+        // Update global counters only for new pages
+        profile.behavior.totalPageViews++;
       } else {
-        profile.behavior.pages[this.pagePath].visitCount++;
-        profile.behavior.pages[this.pagePath].lastVisit =
-          new Date().toISOString();
+        // Only increment visit count if this is a new page visit (not a refresh)
+        if (isNewPageVisit) {
+          profile.behavior.pages[this.pagePath].visitCount++;
+          profile.behavior.pages[this.pagePath].lastVisit =
+            new Date().toISOString();
+          // Update global counters only for genuine new visits
+          profile.behavior.totalPageViews++;
+        }
         profile.behavior.pages[this.pagePath].title = this.pageTitle; // Update in case it changed
       }
 
@@ -736,22 +772,27 @@
       profile.currentSession.pageStartTime = Date.now();
       this.sessionData.sessionId = profile.currentSession.sessionId;
 
-      // Update global counters
-      profile.behavior.totalPageViews++;
-
       // Track content category
       if (!profile.behavior.contentCategories.includes(this.category)) {
         profile.behavior.contentCategories.push(this.category);
       }
 
-      // Update engagement
-      this.updateEngagement(profile, "pageView");
+      // Update engagement only for new page visits
+      if (isNewPageVisit) {
+        this.updateEngagement(profile, "pageView");
+      }
 
       StorageManager.saveVisitorProfile(profile);
       log("Page initialized:", this.pagePath);
     }
 
     trackTimeOnPage() {
+      // Prevent tracking if already cleaned up
+      if (this.cleanedUp) {
+        log("Tracker already cleaned up, skipping time tracking");
+        return;
+      }
+
       const now = Date.now();
       const deltaTime = Math.floor((now - this.lastUpdateTime) / 1000);
 
@@ -826,6 +867,7 @@
 
     setupScrollTracking() {
       let ticking = false;
+      let longPageTracked = false; // Track if we've already recorded this long page
 
       const updateScrollProgress = () => {
         const windowHeight = window.innerHeight;
@@ -835,6 +877,25 @@
         const scrollPercent = Math.round(
           (scrollTop / (documentHeight - windowHeight)) * 100
         );
+
+        // Check for extremely long page (20,000+ pixels)
+        if (!longPageTracked && documentHeight >= 20000 && scrollPercent >= 50) {
+          longPageTracked = true;
+          this.sessionData.actions.push({
+            type: 'scrolled_long_page',
+            data: {
+              pageHeight: documentHeight,
+              pagePath: this.pagePath
+            },
+            timestamp: new Date().toISOString(),
+          });
+          log(`Long page scrolling detected! Page height: ${documentHeight}px on ${this.pagePath}`);
+
+          // Check for achievement immediately
+          const profile = StorageManager.getVisitorProfile();
+          StorageManager.checkAchievements(profile);
+          StorageManager.saveVisitorProfile(profile);
+        }
 
         if (scrollPercent > this.scrollDepth) {
           this.scrollDepth = scrollPercent;
@@ -1171,6 +1232,13 @@
     }
 
     cleanup() {
+      // Prevent duplicate cleanup
+      if (this.cleanedUp) {
+        log("PageTracker already cleaned up, skipping");
+        return;
+      }
+      this.cleanedUp = true;
+
       // Save current session data
       this.saveSessionData();
 
@@ -1183,29 +1251,54 @@
       // Clear time tracking interval
       if (this.timeTrackingInterval) {
         clearInterval(this.timeTrackingInterval);
+        this.timeTrackingInterval = null;
+      }
+
+      // Remove event listeners to prevent memory leaks
+      this.removeEventListeners();
+    }
+
+    removeEventListeners() {
+      // Remove the beforeunload and visibilitychange listeners if they exist
+      if (this.beforeUnloadHandler) {
+        window.removeEventListener("beforeunload", this.beforeUnloadHandler);
+        this.beforeUnloadHandler = null;
+      }
+      if (this.visibilityChangeHandler) {
+        document.removeEventListener("visibilitychange", this.visibilityChangeHandler);
+        this.visibilityChangeHandler = null;
       }
     }
 
     init() {
+      // Prevent duplicate initialization
+      if (this.initialized) {
+        log("PageTracker init already called, skipping");
+        return;
+      }
+
       this.initializePage();
       this.setupScrollTracking();
       this.setupTimeTracking();
 
       // Track time every 10 seconds for accurate measurement
       // Using 10 seconds to balance accuracy with performance
-      this.timeTrackingInterval = setInterval(() => {
-        if (!document.hidden) {
-          this.trackTimeOnPage();
-        }
-      }, 10000);
+      if (!this.timeTrackingInterval) {
+        this.timeTrackingInterval = setInterval(() => {
+          if (!document.hidden && !this.cleanedUp) {
+            this.trackTimeOnPage();
+          }
+        }, 10000);
+      }
 
-      // Track time when leaving page
-      window.addEventListener("beforeunload", () => {
+      // Store handlers so we can remove them later
+      this.beforeUnloadHandler = () => {
         this.cleanup();
-      });
+      };
+      window.addEventListener("beforeunload", this.beforeUnloadHandler);
 
       // Track when tab becomes hidden/visible
-      document.addEventListener("visibilitychange", () => {
+      this.visibilityChangeHandler = () => {
         if (document.hidden) {
           // Save time when tab loses focus
           this.trackTimeOnPage();
@@ -1214,7 +1307,8 @@
           // This prevents counting the time while the tab was hidden
           this.lastUpdateTime = Date.now();
         }
-      });
+      };
+      document.addEventListener("visibilitychange", this.visibilityChangeHandler);
     }
   }
 
@@ -1377,6 +1471,8 @@
   // Initialize tracking
   let currentTracker = null;
   let globalListenersSetup = false;
+  let currentPagePath = null; // Track current page to prevent duplicate init
+  let pageInitialized = false; // Track if current page has been initialized
 
   // Setup global event listeners only once
   const setupGlobalListeners = () => {
@@ -1426,11 +1522,23 @@
   };
 
   const init = () => {
+    const newPath = window.location.pathname;
+
+    // Check if we're already tracking this page
+    if (currentPagePath === newPath && pageInitialized) {
+      log("Page already initialized, skipping:", newPath);
+      return;
+    }
+
     // Clean up previous tracker
     if (currentTracker) {
       currentTracker.cleanup();
       currentTracker = null; // Ensure old tracker is fully cleared
     }
+
+    // Reset page tracking flags
+    currentPagePath = newPath;
+    pageInitialized = true;
 
     currentTracker = new PageTracker();
     currentTracker.init();
@@ -1447,6 +1555,8 @@
       if (currentPath !== lastPath) {
         log("Navigation detected:", lastPath, "->", currentPath);
         lastPath = currentPath;
+        // Reset page initialization flag when navigating to a new page
+        pageInitialized = false;
         init();
       }
     }, 500);
@@ -1454,6 +1564,7 @@
     // Listen for popstate
     window.addEventListener("popstate", () => {
       log("Popstate navigation detected");
+      pageInitialized = false; // Reset flag
       init();
     });
 
@@ -1465,6 +1576,7 @@
       originalPushState.apply(history, arguments);
       setTimeout(() => {
         log("PushState navigation detected");
+        pageInitialized = false; // Reset flag
         init();
       }, 0);
     };
@@ -1473,6 +1585,7 @@
       originalReplaceState.apply(history, arguments);
       setTimeout(() => {
         log("ReplaceState navigation detected");
+        pageInitialized = false; // Reset flag
         init();
       }, 0);
     };

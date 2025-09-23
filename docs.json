@@ -199,7 +199,6 @@
             "group": "Get Started",
             "pages": [
               "contact",
-              "contact/book-consultation",
               "contact/project-requirements",
               "contact/faq"
             ]
