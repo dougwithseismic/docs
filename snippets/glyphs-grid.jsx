@@ -1,4 +1,3 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
 
 const GlyphsGrid = () => {
   const [searchTerm, setSearchTerm] = useState("");

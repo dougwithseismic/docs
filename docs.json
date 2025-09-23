@@ -246,6 +246,7 @@
           {
             "group": "Insights",
             "pages": [
+              "articles/programmatic-acquisition-playbook",
               "articles/fingers-on-the-pulse",
               "articles/great-job-search-delusion",
               "articles/importance-of-being-overlooked",
