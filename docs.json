@@ -240,12 +240,7 @@
           {
             "group": "About WithSeismic",
             "pages": [
-              "articles/documentation-site-without-product"
-            ]
-          },
-          {
-            "group": "Projects",
-            "pages": [
+              "articles/documentation-site-without-product",
               "articles/open-source-projects"
             ]
           },
