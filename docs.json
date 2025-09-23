@@ -8,6 +8,10 @@
     "dark": "#CC6600"
   },
   "favicon": "/favicon.svg",
+  "seo": {
+    "title": "WithSeismic - Internal Tools & Automation",
+    "description": "Boutique growth engineering consultancy that turns technical innovation into revenue acceleration. We build Chrome extensions, LLM workflows, browser automation, and MCP servers for SaaS and marketplaces."
+  },
   "banner": {
     "content": "🚀 Automate your business processes in two weeks from $6k. [Get started →](/contact)",
     "dismissible": true
