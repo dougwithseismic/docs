@@ -4,7 +4,15 @@ description: Build powerful automation workflows and custom nodes with n8n
 icon: graduation-cap
 ---
 
-Master n8n from a developer's perspective - build custom nodes, create complex workflows, and deploy production-ready automation solutions.
+## Transform From n8n User to n8n Developer
+
+Most n8n tutorials teach you how to drag and drop nodes. This course teaches you how to build them. You'll learn to see n8n not just as an automation tool, but as a powerful platform you can extend and customize to solve any integration challenge.
+
+Whether you're building internal tools for your team, creating automation products for clients, or developing a SaaS integration strategy, this course gives you the skills to leverage n8n at its full potential. We'll start with the fundamentals of self-hosting and gradually work our way up to building production-grade custom nodes and enterprise workflow architectures.
+
+## Why This Course Exists
+
+After years of working with n8n in production environments, we've seen the gap between using n8n and truly mastering it. The difference? Understanding how to extend n8n with custom code. This course bridges that gap, taking you from workflow builder to workflow architect.
 
 ## Course Objectives
 
@@ -25,25 +33,71 @@ Master n8n from a developer's perspective - build custom nodes, create complex w
 
 ## What Makes This Course Different
 
-This isn't just another n8n tutorial. We focus on:
+We focus on:
 
 - **Developer-first approach**: Learn n8n as a platform to build on, not just use
 - **Production readiness**: Real-world deployment and scaling strategies
 - **Code-centric learning**: Write TypeScript, create custom nodes, extend functionality
 - **Architecture patterns**: Design maintainable, scalable workflow systems
 
+## What You'll Actually Build
+
+Here's what you'll create in this course - real solutions you can use immediately:
+
+### Your First Custom Node (Week 2)
+
+Building your first node is a pivotal moment in your n8n journey. Here's exactly what we'll do:
+
+1. **Understand the Node Structure**: Before writing any code, we'll explore how n8n nodes work internally - the lifecycle, the data flow, and the TypeScript patterns
+2. **Set Up the Development Environment**: Configure your local n8n instance for node development with hot-reloading and debugging
+3. **Create the HTTP Bin Node**: Start with a simple node that makes HTTP requests, teaching you the basics of properties, parameters, and execution
+4. **Add Advanced Features**: Implement authentication, error handling, retry logic, and custom options
+5. **Test and Debug**: Use n8n's built-in testing framework to ensure your node works reliably
+6. **Package and Distribute**: Learn how to share your nodes with your team or the community
+
+You'll understand *why* each piece of code exists and how to modify it for your own needs.
+
+### The Data Processor Node (Week 3)
+
+Once you've built your first node, we'll tackle something more complex:
+
+- Handle multiple input types (JSON, CSV, XML)
+- Implement streaming for large datasets
+- Add custom transformation functions
+- Create a configuration UI that non-developers can use
+- Build in error recovery and logging
+
+By the end of this lesson, you'll be able to create nodes that solve real business problems, not just tutorial examples.
+
+## Why Custom Nodes Change Everything
+
+Most people don't realize that the built-in nodes are just the beginning. When you can build custom nodes, you can:
+
+- **Integrate proprietary systems** without waiting for official support
+- **Enforce business logic** at the integration layer
+- **Create reusable components** that encapsulate complex workflows
+- **Build products** on top of n8n's infrastructure
+
+Instead of chaining 10 nodes together to process data, you can create one custom node that does exactly what you need, with proper error handling, logging, and performance optimization.
+
 ## Course Lessons
 
 ### Available Now
 
 #### Lesson 1: Setting Up Your Development Environment
-- Deploy n8n with Railway (quickest method)
-- Local development with Docker & Docker Compose
-- n8n CLI setup and commands
-- Environment variables and configuration
-- Database setup (PostgreSQL/MySQL)
+
+The foundation of everything starts here. We'll explore multiple deployment strategies because each teaches you something different about n8n's architecture. Railway shows you the fastest path to production, Docker teaches you about containerization and dependencies, and local development gives you the control needed for serious node development.
+
+**What you'll learn:**
+- Deploy n8n with Railway in under 5 minutes (and understand what's happening behind the scenes)
+- Master Docker & Docker Compose for consistent development environments
+- Configure n8n CLI for rapid development and testing
+- Understand environment variables and how they control n8n's behavior
+- Choose between SQLite, PostgreSQL, and MySQL based on your scaling needs
 
 #### Lesson 2: Building Custom n8n Nodes
+
+This is the heart of the course. We start simple but quickly ramp up to professional-grade node development. You'll write actual TypeScript code, not just configuration files, and understand how n8n's execution engine processes your nodes.
 - Understanding node architecture
 - Creating your first custom node
 - Building an HTTP Bin test node
@@ -120,15 +174,43 @@ This isn't just another n8n tutorial. We focus on:
 - Git
 - PostgreSQL or MySQL (optional)
 
-## Learning Path
+## Your Learning Journey
+
+### Phase 1: Foundation (Weeks 1-2)
+Start by understanding n8n's architecture and setting up a proper development environment. You'll deploy n8n multiple ways - locally, with Docker, and on Railway - so you understand the trade-offs of each approach. This isn't busywork; each deployment method teaches you something crucial about how n8n operates in different contexts.
+
+### Phase 2: Node Development (Weeks 3-4)
+This is where the course really differentiates itself. You'll build three progressively complex nodes:
+- **HTTP Bin Node**: Learn the basics of node structure, TypeScript patterns, and n8n's execution model
+- **Data Processor**: Handle complex data transformations, implement streaming, and create professional UIs
+- **Custom Credentials**: Build secure authentication systems that integrate with your organization's infrastructure
+
+### Phase 3: Advanced Workflows (Weeks 5-6)
+With custom nodes in your toolkit, you'll architect sophisticated workflow patterns:
+- Error recovery pipelines that self-heal
+- Event-driven systems that scale automatically
+- State machines for complex business processes
+- Performance optimization techniques for handling millions of executions
+
+### Phase 4: Production Systems (Weeks 7-8)
+Finally, you'll learn what it takes to run n8n at scale:
+- Implement comprehensive backup and recovery strategies
+- Set up monitoring and alerting systems
+- Design high-availability architectures
+- Build multi-tenant deployments for SaaS applications
 
 ```mermaid
 graph LR
-    A[Setup Environment] --> B[Learn Core Concepts]
-    B --> C[Build First Node]
-    C --> D[Create Workflows]
-    D --> E[Deploy to Production]
-    E --> F[Scale & Optimize]
+    A[Setup Environment<br/>Week 1] --> B[Core Concepts<br/>Week 2]
+    B --> C[Build First Node<br/>Week 3]
+    C --> D[Advanced Nodes<br/>Week 4]
+    D --> E[Workflow Patterns<br/>Weeks 5-6]
+    E --> F[Production Deploy<br/>Week 7]
+    F --> G[Scale & Optimize<br/>Week 8]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bbf,stroke:#333,stroke-width:2px
+    style G fill:#bfb,stroke:#333,stroke-width:2px
 ```
 
 ## Project-Based Learning

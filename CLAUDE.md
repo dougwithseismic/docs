@@ -14,28 +14,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Project Structure
 
-This is a Mintlify documentation site with the following key components:
+This is a Mintlify documentation site for WithSeismic - Internal Tools & Automation services:
 
-- **docs.json**: Main configuration file defining navigation structure, theme, and site settings
-- **MDX files**: Content pages using Markdown with JSX components and YAML frontmatter
-- **/api-reference**: OpenAPI-based API documentation with endpoint examples
-- **/essentials**: Core documentation writing guides (markdown, code, images, navigation)
-- **/ai-tools**: AI assistant setup guides (Cursor, Claude Code, Windsurf)
-- **/snippets**: Reusable content components
+- **docs.json**: Main configuration defining navigation tabs, theme colors (#FF8000 primary), and site settings
+- **MDX files**: Content pages with YAML frontmatter for metadata
+- **Custom styling**: custom.css for dark theme customization (rgb(8, 8, 8) background)
+- **Analytics**: analytics.js for tracking implementation
+
+### Content Organization
+
+- **/approach**: Development process documentation (discovery, sprints, launch, optimization)
+- **/articles**: Blog-style content and thought leadership pieces
+- **/build**: Service offerings (MVPs, internal tools, LLM workflows, MCP servers, web extensions)
+- **/case-studies**: Client project showcases organized by category
+- **/interactive-tools**: Interactive demos and tools (social media mockup, glyphs)
+- **/pre-built-tools**: Ready-to-use tool documentation
+- **/services**: Service descriptions (no-code to production, productization)
+- **/snippets**: Reusable MDX components (email capture, Cal.com embeds, calculators)
+- **/tool-ideas**: Tool suggestions by team type and business model
+- **/universities**: Educational content on automation and n8n
 
 ### Navigation Structure
 
-The site has two main tabs defined in docs.json:
+Multiple tabs defined in docs.json:
+- **Our Services**: Getting started, what we build, our approach
+- **Case Studies**: Project examples by category (web extensions, automation, AI/LLM, MVP, browser automation)
+- **Tool Ideas**: Organized by team type and business model
+- **Pre-Built Tools**: Ready-to-deploy solutions
+- **Universities**: Automation and n8n training content
 
-1. **Guides**: Getting started, customization, writing content, AI tools
-2. **API reference**: API documentation and endpoint examples
+### Theme Configuration
 
-### Key Configuration
-
-- Theme: "mint" with green primary colors (#16A34A)
-- Logo: Separate light/dark versions in /logo directory
-- Global anchors: Documentation, Community, Blog
-- Contextual options: copy, view, chatgpt, claude, perplexity, mcp, cursor, vscode
+- Colors: Orange theme (#FF8000 primary, #FFA040 light, #CC6600 dark)
+- Banner: Promotional CTA with dismissible option
+- Favicon: /favicon.svg
 
 ## Documentation Standards
 
