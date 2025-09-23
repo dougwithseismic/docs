@@ -10,7 +10,29 @@
   "favicon": "/favicon.svg",
   "seo": {
     "title": "WithSeismic - Internal Tools & Automation",
-    "description": "Boutique growth engineering consultancy that turns technical innovation into revenue acceleration. We build Chrome extensions, LLM workflows, browser automation, and MCP servers for SaaS and marketplaces."
+    "description": "Boutique growth engineering consultancy that turns technical innovation into revenue acceleration. We build Chrome extensions, LLM workflows, browser automation, and MCP servers for SaaS and marketplaces.",
+    "metatags": {
+      "charset": "UTF-8",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "keywords": "growth engineering, chrome extensions, browser automation, LLM workflows, MCP servers, internal tools, SaaS automation, marketplace tools, n8n automation",
+      "author": "WithSeismic",
+      "robots": "index, follow",
+      "language": "en",
+      "HandheldFriendly": "True",
+      "MobileOptimized": "320",
+      "theme-color": "#FF8000",
+      "color-scheme": "light dark",
+      "og:title": "WithSeismic - Internal Tools & Automation",
+      "og:type": "website",
+      "og:url": "https://withseismic.com",
+      "og:image": "/images/og.png",
+      "og:description": "Build MVPs, Chrome extensions, LLM workflows, browser automation, and MCP servers. Automate your business processes in two weeks from $6k.",
+      "og:site_name": "WithSeismic",
+      "twitter:card": "summary_large_image",
+      "twitter:title": "WithSeismic - Internal Tools & Automation",
+      "twitter:description": "Build Chrome extensions, LLM workflows, browser automation, and MCP servers. Automate your business processes in two weeks from $6k.",
+      "twitter:image": "/images/og.png"
+    }
   },
   "banner": {
     "content": "🚀 Automate your business processes in two weeks from $6k. [Get started →](/contact)",
@@ -23,12 +45,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": [
-              "index",
-              "pricing",
-              "development",
-              "quickstart"
-            ]
+            "pages": ["index", "pricing", "development", "quickstart"]
           },
           {
             "group": "What We Build",
@@ -59,9 +76,7 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "case-studies/introduction"
-            ]
+            "pages": ["case-studies/introduction"]
           },
           {
             "group": "Web Extension Projects",
@@ -95,9 +110,7 @@
           },
           {
             "group": "Browser Automation",
-            "pages": [
-              "case-studies/definitely-not-a-robot"
-            ]
+            "pages": ["case-studies/definitely-not-a-robot"]
           }
         ]
       },
@@ -106,10 +119,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": [
-              "tool-ideas/introduction",
-              "tool-ideas/ai-agent-tools"
-            ]
+            "pages": ["tool-ideas/introduction", "tool-ideas/ai-agent-tools"]
           },
           {
             "group": "By Team Type",
@@ -149,15 +159,11 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": [
-              "pre-built-tools/introduction"
-            ]
+            "pages": ["pre-built-tools/introduction"]
           },
           {
             "group": "Automation & Workflow Tools",
-            "pages": [
-              "pre-built-tools/tools/n8n-ai-workflow-generator"
-            ]
+            "pages": ["pre-built-tools/tools/n8n-ai-workflow-generator"]
           },
           {
             "group": "Content & Media Tools",
@@ -201,11 +207,7 @@
         "groups": [
           {
             "group": "Get Started",
-            "pages": [
-              "contact",
-              "contact/project-requirements",
-              "contact/faq"
-            ]
+            "pages": ["contact", "contact/project-requirements", "contact/faq"]
           }
         ]
       },
@@ -214,15 +216,11 @@
         "groups": [
           {
             "group": "Marketing Tools",
-            "pages": [
-              "interactive-tools/social-media-mockup"
-            ]
+            "pages": ["interactive-tools/social-media-mockup"]
           },
           {
             "group": "Design Tools",
-            "pages": [
-              "interactive-tools/glyphs"
-            ]
+            "pages": ["interactive-tools/glyphs"]
           }
         ]
       },
@@ -232,9 +230,7 @@
         "groups": [
           {
             "group": "Design Tools",
-            "pages": [
-              "deals/framer"
-            ]
+            "pages": ["deals/framer"]
           }
         ]
       },
@@ -279,10 +275,7 @@
         "groups": [
           {
             "group": "Get Started",
-            "pages": [
-              "universities/overview",
-              "universities/how-it-works"
-            ]
+            "pages": ["universities/overview", "universities/how-it-works"]
           },
           {
             "group": "n8n University",
@@ -347,19 +340,18 @@
         "href": "mailto:hello@withseismic.com"
       }
     ]
-
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
