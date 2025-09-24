@@ -49,7 +49,13 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["index", "about-withseismic", "pricing", "development", "quickstart"]
+            "pages": [
+              "index",
+              "about-withseismic",
+              "pricing",
+              "development",
+              "quickstart"
+            ]
           },
           {
             "group": "What We Build",
@@ -208,7 +214,7 @@
         ]
       },
       {
-        "tab": "Work With Us",
+        "tab": "Contact Us",
         "groups": [
           {
             "group": "Get Started",
