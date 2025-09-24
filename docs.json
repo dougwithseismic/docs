@@ -295,7 +295,7 @@
             "pages": ["universities/overview", "universities/how-it-works"]
           },
           {
-            "group": "Mac Developer Productivity University",
+            "group": "Productivity for Mac Users",
             "icon": "laptop",
             "pages": [
               "universities/mac-developer/introduction",

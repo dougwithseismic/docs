@@ -9,14 +9,22 @@ icon: rocket
 Essential tools for Mac development: GitHub CLI, Git, Node.js, pnpm, Cursor, Claude Code, and Powerlevel10k.
 
 <Info>
-**Time Required**: 15-20 minutes for complete setup.
+**How long will this setup take?**
+The complete setup takes about 15-20 minutes. You can also pick and choose specific tools if you already have some installed.
 </Info>
+
+Setting up a new Mac for development can feel overwhelming with countless tools and configurations. This guide gives you exactly what you need to be productive immediately.
+
+We'll start with foundational tools, then layer in productivity enhancers that make Mac development enjoyable.
 
 ## Package Manager Setup
 
 <Info>
-  Homebrew is a package manager for macOS that simplifies installing developer tools.
+**Why start with Homebrew?**
+Homebrew is the missing package manager for macOS. Instead of hunting down installers, dealing with version conflicts, or manually managing dependencies, Homebrew handles everything with simple commands. It's how experienced Mac developers install and manage their tools - one command instead of clicking through dozens of installation wizards.
 </Info>
+
+Before installing anything else, we need a package manager. Homebrew is the Mac standard. Every tool installed through Homebrew follows the same patterns, updates the same way, and can be removed cleanly without leaving artifacts scattered across your system.
 
 ### Install Homebrew
 
@@ -24,7 +32,7 @@ Essential tools for Mac development: GitHub CLI, Git, Node.js, pnpm, Cursor, Cla
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-After installation, add Homebrew to your PATH:
+After installation, you need to add Homebrew to your PATH. This step is often missed, leading to "command not found" errors that frustrate new users. The location depends on your Mac's architecture:
 
 **For Apple Silicon Macs (M1/M2/M3):**
 ```bash
@@ -38,17 +46,24 @@ echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zprofile
 eval "$(/usr/local/bin/brew shellenv)"
 ```
 
+The difference in paths exists because Apple Silicon Macs use a different directory structure to maintain compatibility with both ARM and Intel binaries. Don't worry if this seems complex - once set up, you'll never think about it again.
+
 ## Git & GitHub CLI
 
 <Info>
-  GitHub CLI allows you to manage GitHub repositories, pull requests, and issues from the terminal.
+**Why do I need both Git and GitHub CLI?**
+Git handles version control locally, while GitHub CLI connects you to GitHub's services. Together, they eliminate the friction of managing code. No more switching to the browser to create pull requests, no more complex SSH key setups - just seamless integration between your local work and GitHub.
 </Info>
+
+Git provides version control, change history, and safe experimentation. The GitHub CLI brings GitHub's collaborative features directly to your terminal.
 
 ### Install Git and GitHub CLI
 
 ```bash
 brew install git gh
 ```
+
+This single command installs both tools. Homebrew handles all the dependencies, ensures they're compatible, and sets up the necessary paths. Compare this to manually downloading installers, running them, and hoping everything works together.
 
 ### Authenticate GitHub CLI
 
@@ -62,14 +77,20 @@ Choose:
 - Login with web browser
 
 <Info>
-  GitHub CLI handles authentication automatically, eliminating the need for manual SSH key setup.
+**What about SSH keys?**
+GitHub CLI handles authentication automatically, creating and managing credentials securely. You can still set up SSH keys if you prefer, but for most developers, the GitHub CLI's authentication is simpler and just as secure.
 </Info>
+
+The authentication process opens your browser, confirms your identity, and securely stores your credentials. This modern approach is more secure than manually managing SSH keys and works seamlessly across different repositories and organizations.
 
 ## Git Configuration
 
 <Info>
-  Configure your Git identity and useful defaults for better workflow.
+**Why configure Git beyond the basics?**
+These configurations aren't just preferences - they solve real problems. Setting your identity ensures your commits are properly attributed. The other settings prevent common frustrations like merge conflicts, orphaned branches, and inconsistent branch names across projects.
 </Info>
+
+Git's defaults are conservative. These configurations address specific pain points that developers encounter daily.
 
 ### Set Your Identity
 
@@ -77,6 +98,8 @@ Choose:
 git config --global user.name "Your Name"
 git config --global user.email "your.email@example.com"
 ```
+
+This identifies your commits across all repositories. Use the same email associated with your GitHub account to link your commits to your profile.
 
 ### Essential Git Defaults
 
@@ -94,17 +117,31 @@ git config --global merge.conflictstyle diff3
 git config --global fetch.prune true
 ```
 
+Why each setting matters:
+
+- **Default branch as main**: Aligns with modern conventions and GitHub's defaults
+- **Auto-setup remote tracking**: Eliminates the "no upstream branch" error when pushing new branches
+- **Diff3 conflict style**: Shows the common ancestor in merge conflicts, making resolution clearer
+- **Prune on fetch**: Automatically cleans up references to deleted remote branches
+
+These settings prevent small frustrations that compound into major productivity losses.
+
 ## Node.js & pnpm
 
 <Info>
-  pnpm is a fast, disk-space efficient package manager that prevents dependency issues.
+**Why pnpm instead of npm or yarn?**
+pnpm is faster and uses significantly less disk space by sharing dependencies across projects. If a hundred projects use React 18, pnpm stores it once and links it everywhere. It also prevents the "works on my machine" problem by ensuring stricter dependency resolution.
 </Info>
+
+JavaScript development requires a package manager. While npm comes with Node.js, pnpm solves real problems that plague JavaScript projects: disk space consumption, installation speed, and phantom dependencies.
 
 ### Install Node.js
 
 ```bash
 brew install node
 ```
+
+This installs the latest stable Node.js and npm. Even if you plan to use pnpm exclusively, npm is needed for global packages and as a fallback.
 
 ### Install pnpm
 
@@ -117,14 +154,20 @@ corepack prepare pnpm@latest --activate
 ```
 
 <Info>
-  pnpm works with any npm-compatible project. You can still use npm or yarn when needed.
+**Will pnpm work with my existing projects?**
+Yes! pnpm is fully compatible with npm and yarn projects. You can use `pnpm install` in any project with a package.json. Your teammates can continue using npm or yarn - pnpm generates a standard node_modules structure.
 </Info>
+
+Corepack is Node's built-in tool for managing package managers. It ensures everyone on a project uses the same package manager version, preventing "works on my machine" issues. This is especially valuable in team environments where consistency matters.
 
 ## Code Editors
 
 <Info>
-  Cursor is an AI-powered IDE. Claude Code is a CLI tool for quick edits. They serve different use cases.
+**Do I need both Cursor and Claude Code?**
+They serve different purposes. Cursor is your primary IDE for deep work - writing features, refactoring, debugging. Claude Code excels at quick edits, code generation, and interactive problem-solving from the terminal. Think of Cursor as your workshop and Claude Code as your Swiss Army knife.
 </Info>
+
+Modern developers use multiple tools for different tasks. Cursor and Claude Code complement each other, covering everything from quick fixes to complex development sessions.
 
 ### Install Cursor
 
@@ -132,30 +175,38 @@ corepack prepare pnpm@latest --activate
 brew install --cask cursor
 ```
 
-Cursor is a fork of VS Code with AI capabilities built in. It includes:
-- AI code completion
-- Chat with your codebase
-- Natural language code editing
+Cursor is a fork of VS Code with AI capabilities built in:
+- AI understands your entire codebase context
+- Natural language editing that actually works
+- Predictions that feel like a senior developer looking over your shoulder
+
+The `--cask` flag tells Homebrew this is a GUI application. Homebrew Cask manages these just like command-line tools, providing consistent installation and updates.
 
 ### Install Claude Code
 
 ```bash
 npm install -g @anthropic/claude-code
 
-# Authenticate
-claude-code auth
+# Start using it
+claude
 ```
 
-Claude Code is Anthropic's official CLI for Claude. Use it for:
-- Quick file edits from terminal
-- Code generation
-- Interactive coding assistance
+Claude Code brings Anthropic's Claude directly to your terminal. Use it for:
+- Rapid prototyping without leaving the command line
+- Explaining complex code sections
+- Generating boilerplate that actually fits your project's patterns
+- Interactive debugging sessions where you can ask "why isn't this working?"
+
+The first thing you'll realize is that Claude Code asks your permission for literally everything - every file read, every command execution, every edit. This is by design for safety, but once you feel comfortable with it, running `claude --dangerously-skip-permissions` will bypass permission checks. I'm not responsible for what might happen if you use this flag - it's powerful but removes important safeguards!
 
 ## Powerlevel10k Terminal Theme
 
 <Info>
-  Powerlevel10k is a fast terminal theme that displays git status, execution time, and error codes in your prompt.
+**Why customize my terminal?**
+A well-configured terminal isn't about aesthetics - it's about information density and reducing cognitive load. Powerlevel10k shows git status, execution time, error states, and context without requiring separate commands. You'll spot issues faster and understand your environment at a glance.
 </Info>
+
+The default terminal shows just a dollar sign and cursor. Powerlevel10k transforms it into an information-rich environment that helps you work better.
 
 ### Install Powerlevel10k
 
@@ -164,7 +215,11 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >> ~/.zshrc
 ```
 
+The `--depth=1` flag performs a shallow clone, downloading only the latest version without the entire history. This saves time and space while giving you everything you need.
+
 ### Add Helpful Zsh Plugins
+
+These plugins transform your terminal from a command executor to an intelligent assistant:
 
 ```bash
 # Auto-suggestions as you type
@@ -175,6 +230,8 @@ echo "source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ~/.zshrc
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
 echo "source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ~/.zshrc
 ```
+
+Auto-suggestions remember your command history and suggest completions as you type. Syntax highlighting shows valid commands in green and errors in red before you press enter. Together, they catch typos, remind you of forgotten flags, and speed up repetitive tasks.
 
 ### Configure Your Theme
 
@@ -189,10 +246,13 @@ Recommended settings for developers:
 - **Prompt Height**: One line
 - **Prompt Spacing**: Compact
 
+The configuration wizard is interactive and shows you exactly how your prompt will look. You can reconfigure anytime by running the command again.
+
 ## Verification Checklist
 
 <Info>
-  Verify your installation with these commands:
+**How do I know everything is working?**
+Run through this checklist to verify your installation. Each command should return a version number or status message. If something fails, that component needs attention - but don't let one failure stop you from checking everything else.
 </Info>
 
 ```bash
@@ -219,10 +279,13 @@ git config --get user.email
 gh auth status
 ```
 
+Save this checklist - it's useful whenever you set up a new machine or help a colleague debug their environment.
+
 ## One-Command Setup
 
 <Info>
-  Script for installing all tools at once:
+**Can I automate all of this?**
+Absolutely! This script installs everything in one go. It's perfect for setting up new machines, onboarding team members, or recovering from a system reinstall. The script is idempotent - running it multiple times won't cause issues.
 </Info>
 
 Save this as `~/setup-essentials.sh`:
@@ -266,9 +329,11 @@ chmod +x ~/setup-essentials.sh
 ~/setup-essentials.sh
 ```
 
+The script provides clear next steps because some configurations require interactive input.
+
 ## Next Steps
 
-Your essentials are installed. Level up with:
+Your essentials are installed. The tools form a solid foundation for productivity enhancers that multiply your effectiveness.
 
 <CardGroup cols={3}>
   <Card title="Productivity Apps" href="./productivity-apps" icon="rocket">
@@ -282,5 +347,6 @@ Your essentials are installed. Level up with:
   </Card>
 </CardGroup>
 
----
+Each next step builds on what you've installed. Productivity apps leverage your terminal setup. Aliases enhance your shell. Keyboard shortcuts work across all tools. Each piece of the system amplifies the others.
 
+---
