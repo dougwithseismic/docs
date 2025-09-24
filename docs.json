@@ -289,6 +289,19 @@
             "pages": ["universities/overview", "universities/how-it-works"]
           },
           {
+            "group": "Mac Developer Productivity University",
+            "icon": "laptop",
+            "pages": [
+              "universities/productivity/introduction",
+              {
+                "group": "Essential Mac Skills",
+                "pages": [
+                  "articles/mac-developer-productivity-cheat-sheet"
+                ]
+              }
+            ]
+          },
+          {
             "group": "n8n University",
             "icon": "graduation-cap",
             "pages": [
