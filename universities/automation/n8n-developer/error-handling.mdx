@@ -1,0 +1,907 @@
+---
+title: Error Handling, Retries & Fallback Logic
+description: Build bulletproof n8n nodes with comprehensive error handling, intelligent retry mechanisms, and graceful degradation
+icon: shield-exclamation
+---
+
+## The Reality of Production Errors
+
+<Info>
+In production, everything that can fail will fail. APIs go down, rate limits hit, networks timeout, and data arrives malformed. The difference between amateur and professional nodes is how they handle these failures.
+</Info>
+
+Your nodes will encounter:
+- **Network failures**: Timeouts, DNS resolution, connection resets
+- **API errors**: Rate limits, quota exhaustion, service outages
+- **Data issues**: Malformed JSON, encoding problems, missing fields
+- **Resource constraints**: Memory limits, CPU throttling, disk space
+- **Concurrency problems**: Race conditions, deadlocks, resource contention
+
+## Building Resilient Error Handling
+
+### The Error Handling Hierarchy
+
+```typescript
+import {
+  IExecuteFunctions,
+  INodeExecutionData,
+  NodeOperationError,
+  NodeApiError,
+} from 'n8n-workflow';
+
+export class ResilientNode {
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const items = this.getInputData();
+    const returnData: INodeExecutionData[] = [];
+
+    // Process each item with comprehensive error handling
+    for (let i = 0; i < items.length; i++) {
+      try {
+        // Level 1: Try primary operation
+        const result = await this.executePrimary(items[i], i);
+        returnData.push({ json: result });
+      } catch (primaryError) {
+        try {
+          // Level 2: Fallback to secondary method
+          this.logger.warn('Primary failed, trying fallback', { primaryError });
+          const result = await this.executeFallback(items[i], i);
+          returnData.push({
+            json: result,
+            error: this.formatError(primaryError, 'primary_failed')
+          });
+        } catch (fallbackError) {
+          // Level 3: Graceful degradation
+          const degraded = await this.handleDegradation(items[i], i, fallbackError);
+
+          if (degraded) {
+            returnData.push(degraded);
+          } else {
+            // Level 4: Decide whether to fail the entire workflow
+            const continueOnFail = this.getNodeParameter('continueOnFail', i, false) as boolean;
+
+            if (continueOnFail) {
+              returnData.push({
+                json: {},
+                error: this.formatError(fallbackError, 'all_methods_failed'),
+                pairedItem: { item: i }
+              });
+            } else {
+              throw new NodeOperationError(
+                this.getNode(),
+                'All processing methods failed',
+                {
+                  description: this.getDetailedErrorDescription(primaryError, fallbackError),
+                  itemIndex: i
+                }
+              );
+            }
+          }
+        }
+      }
+    }
+
+    return [returnData];
+  }
+
+  private formatError(error: any, context: string): any {
+    return {
+      message: error.message,
+      context,
+      timestamp: new Date().toISOString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    };
+  }
+
+  private getDetailedErrorDescription(primary: any, fallback: any): string {
+    return `
+      Primary method failed: ${primary.message}
+      Fallback method failed: ${fallback.message}
+
+      Troubleshooting:
+      1. Check API credentials and permissions
+      2. Verify network connectivity
+      3. Ensure data format is correct
+      4. Check service status page
+    `;
+  }
+}
+```
+
+### Custom Error Types
+
+```typescript
+export class CustomNodeErrors {
+  static AuthenticationError = class extends NodeOperationError {
+    constructor(node: any, message: string, details?: any) {
+      super(node, message, {
+        description: 'Authentication failed. Please check your credentials.',
+        ...details
+      });
+      this.name = 'AuthenticationError';
+    }
+  };
+
+  static RateLimitError = class extends NodeApiError {
+    constructor(node: any, response: any, retryAfter?: number) {
+      super(node, response, {
+        message: 'Rate limit exceeded',
+        description: `Please wait ${retryAfter || 60} seconds before retrying`,
+        httpCode: '429'
+      });
+      this.name = 'RateLimitError';
+      this.retryAfter = retryAfter;
+    }
+    retryAfter?: number;
+  };
+
+  static DataValidationError = class extends NodeOperationError {
+    constructor(node: any, field: string, value: any, expectedType: string) {
+      super(node, `Invalid data in field: ${field}`, {
+        description: `Expected ${expectedType} but received ${typeof value}`,
+        field,
+        value,
+        expectedType
+      });
+      this.name = 'DataValidationError';
+    }
+  };
+
+  static NetworkError = class extends NodeOperationError {
+    constructor(node: any, originalError: any) {
+      const message = CustomNodeErrors.getNetworkErrorMessage(originalError);
+      super(node, message, {
+        description: CustomNodeErrors.getNetworkErrorDescription(originalError),
+        code: originalError.code,
+        errno: originalError.errno
+      });
+      this.name = 'NetworkError';
+    }
+  };
+
+  private static getNetworkErrorMessage(error: any): string {
+    const messages: { [key: string]: string } = {
+      'ENOTFOUND': 'DNS lookup failed - host not found',
+      'ECONNREFUSED': 'Connection refused by server',
+      'ETIMEDOUT': 'Connection timed out',
+      'ECONNRESET': 'Connection reset by peer',
+      'EHOSTUNREACH': 'Host is unreachable',
+      'ENETUNREACH': 'Network is unreachable',
+      'EPIPE': 'Broken pipe - connection closed',
+      'EADDRINUSE': 'Address already in use'
+    };
+
+    return messages[error.code] || `Network error: ${error.code}`;
+  }
+
+  private static getNetworkErrorDescription(error: any): string {
+    const descriptions: { [key: string]: string } = {
+      'ENOTFOUND': 'The hostname could not be resolved. Check the URL and DNS settings.',
+      'ECONNREFUSED': 'The server refused the connection. It may be down or blocking requests.',
+      'ETIMEDOUT': 'The request took too long. Try increasing the timeout or check network connectivity.',
+      'ECONNRESET': 'The connection was forcibly closed. This often happens with overloaded servers.',
+    };
+
+    return descriptions[error.code] || 'A network error occurred. Check your connection and try again.';
+  }
+}
+```
+
+## Advanced Retry Strategies
+
+### Exponential Backoff with Jitter
+
+<Warning>
+Never retry immediately after a failure. Use exponential backoff with jitter to avoid thundering herd problems and respect rate limits.
+</Warning>
+
+```typescript
+export class RetryableNode {
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const retryConfig = {
+      maxAttempts: this.getNodeParameter('maxRetries', 0, 3) as number,
+      initialDelayMs: this.getNodeParameter('initialDelay', 0, 1000) as number,
+      maxDelayMs: this.getNodeParameter('maxDelay', 0, 30000) as number,
+      backoffFactor: this.getNodeParameter('backoffFactor', 0, 2) as number,
+      jitterFactor: this.getNodeParameter('jitterFactor', 0, 0.1) as number,
+    };
+
+    return await this.executeWithRetry(retryConfig);
+  }
+
+  private async executeWithRetry(config: RetryConfig): Promise<INodeExecutionData[][]> {
+    let lastError: Error | undefined;
+    let delay = config.initialDelayMs;
+
+    for (let attempt = 1; attempt <= config.maxAttempts; attempt++) {
+      try {
+        this.logger.info(`Attempt ${attempt}/${config.maxAttempts}`);
+
+        // Try the operation
+        const result = await this.performOperation();
+
+        // Success! Log and return
+        if (attempt > 1) {
+          this.logger.info(`Succeeded after ${attempt} attempts`);
+        }
+
+        return [[{ json: result }]];
+      } catch (error) {
+        lastError = error as Error;
+
+        // Check if error is retryable
+        if (!this.isRetryableError(error)) {
+          this.logger.error('Non-retryable error encountered', { error });
+          throw error;
+        }
+
+        // Check if we should continue retrying
+        if (attempt >= config.maxAttempts) {
+          this.logger.error(`All ${config.maxAttempts} attempts failed`);
+          break;
+        }
+
+        // Calculate delay with exponential backoff and jitter
+        delay = this.calculateDelay(attempt, delay, config);
+
+        this.logger.warn(`Attempt ${attempt} failed, retrying in ${delay}ms`, {
+          error: error.message
+        });
+
+        // Wait before retry
+        await this.delay(delay);
+      }
+    }
+
+    // All retries exhausted
+    throw new NodeOperationError(
+      this.getNode(),
+      `Operation failed after ${config.maxAttempts} attempts`,
+      {
+        description: lastError?.message,
+        lastError
+      }
+    );
+  }
+
+  private isRetryableError(error: any): boolean {
+    // Network errors are usually retryable
+    if (error.code && ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND'].includes(error.code)) {
+      return true;
+    }
+
+    // HTTP status codes that are retryable
+    if (error.statusCode) {
+      const retryableStatuses = [
+        408, // Request Timeout
+        429, // Too Many Requests
+        500, // Internal Server Error
+        502, // Bad Gateway
+        503, // Service Unavailable
+        504, // Gateway Timeout
+      ];
+      return retryableStatuses.includes(error.statusCode);
+    }
+
+    // Custom retry logic
+    if (error.message?.includes('temporary') || error.message?.includes('transient')) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private calculateDelay(
+    attempt: number,
+    currentDelay: number,
+    config: RetryConfig
+  ): number {
+    // Exponential backoff
+    let delay = currentDelay * config.backoffFactor;
+
+    // Add jitter to prevent thundering herd
+    const jitter = delay * config.jitterFactor * (Math.random() * 2 - 1);
+    delay += jitter;
+
+    // Cap at maximum delay
+    delay = Math.min(delay, config.maxDelayMs);
+
+    // Ensure minimum delay
+    delay = Math.max(delay, config.initialDelayMs);
+
+    return Math.floor(delay);
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}
+```
+
+### Circuit Breaker Pattern
+
+```typescript
+export class CircuitBreakerNode {
+  private circuitBreakers = new Map<string, CircuitBreaker>();
+
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const service = this.getNodeParameter('service', 0) as string;
+
+    // Get or create circuit breaker for this service
+    const breaker = this.getCircuitBreaker(service);
+
+    try {
+      // Execute through circuit breaker
+      const result = await breaker.execute(() => this.callService(service));
+      return [[{ json: result }]];
+    } catch (error) {
+      if (error.message === 'Circuit breaker is OPEN') {
+        // Try fallback service
+        return await this.executeFallbackService();
+      }
+      throw error;
+    }
+  }
+
+  private getCircuitBreaker(service: string): CircuitBreaker {
+    if (!this.circuitBreakers.has(service)) {
+      this.circuitBreakers.set(service, new CircuitBreaker({
+        failureThreshold: 5,
+        resetTimeout: 60000, // 1 minute
+        monitoringPeriod: 10000, // 10 seconds
+      }));
+    }
+    return this.circuitBreakers.get(service)!;
+  }
+}
+
+class CircuitBreaker {
+  private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED';
+  private failures = 0;
+  private lastFailureTime?: number;
+  private successCount = 0;
+
+  constructor(private config: CircuitBreakerConfig) {}
+
+  async execute<T>(operation: () => Promise<T>): Promise<T> {
+    // Check if circuit should be reset
+    this.checkReset();
+
+    if (this.state === 'OPEN') {
+      throw new Error('Circuit breaker is OPEN');
+    }
+
+    try {
+      const result = await operation();
+      this.onSuccess();
+      return result;
+    } catch (error) {
+      this.onFailure();
+      throw error;
+    }
+  }
+
+  private onSuccess(): void {
+    this.failures = 0;
+
+    if (this.state === 'HALF_OPEN') {
+      this.successCount++;
+      if (this.successCount >= 3) {
+        this.state = 'CLOSED';
+        this.successCount = 0;
+        console.log('Circuit breaker closed');
+      }
+    }
+  }
+
+  private onFailure(): void {
+    this.failures++;
+    this.lastFailureTime = Date.now();
+
+    if (this.failures >= this.config.failureThreshold) {
+      this.state = 'OPEN';
+      console.log('Circuit breaker opened');
+    }
+  }
+
+  private checkReset(): void {
+    if (
+      this.state === 'OPEN' &&
+      this.lastFailureTime &&
+      Date.now() - this.lastFailureTime > this.config.resetTimeout
+    ) {
+      this.state = 'HALF_OPEN';
+      this.successCount = 0;
+      console.log('Circuit breaker half-open');
+    }
+  }
+}
+```
+
+## Fallback Strategies
+
+### Multi-Level Fallback System
+
+```typescript
+export class FallbackNode {
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const strategies = [
+      { name: 'primary', fn: () => this.executePrimaryStrategy() },
+      { name: 'secondary', fn: () => this.executeSecondaryStrategy() },
+      { name: 'cache', fn: () => this.executeCacheStrategy() },
+      { name: 'default', fn: () => this.executeDefaultStrategy() },
+    ];
+
+    let lastError: Error | undefined;
+
+    for (const strategy of strategies) {
+      try {
+        this.logger.info(`Trying ${strategy.name} strategy`);
+        const result = await strategy.fn();
+
+        if (strategy.name !== 'primary') {
+          // Add metadata about fallback used
+          result.fallbackUsed = strategy.name;
+          result.degradedMode = true;
+        }
+
+        return [[{ json: result }]];
+      } catch (error) {
+        lastError = error as Error;
+        this.logger.warn(`${strategy.name} strategy failed: ${error.message}`);
+        continue;
+      }
+    }
+
+    // All strategies failed
+    throw new NodeOperationError(
+      this.getNode(),
+      'All fallback strategies exhausted',
+      { lastError }
+    );
+  }
+
+  private async executePrimaryStrategy(): Promise<any> {
+    // Primary API call
+    const response = await this.helpers.httpRequest({
+      method: 'GET',
+      url: 'https://api.primary.com/data',
+      timeout: 5000,
+    });
+    return response;
+  }
+
+  private async executeSecondaryStrategy(): Promise<any> {
+    // Fallback to secondary API
+    const response = await this.helpers.httpRequest({
+      method: 'GET',
+      url: 'https://api.backup.com/data',
+      timeout: 10000, // More generous timeout for backup
+    });
+    return response;
+  }
+
+  private async executeCacheStrategy(): Promise<any> {
+    // Try to get from cache
+    const cached = await this.getCachedData();
+
+    if (!cached) {
+      throw new Error('No cached data available');
+    }
+
+    if (this.isCacheStale(cached)) {
+      this.logger.warn('Using stale cache data');
+    }
+
+    return {
+      ...cached.data,
+      fromCache: true,
+      cacheAge: Date.now() - cached.timestamp,
+    };
+  }
+
+  private async executeDefaultStrategy(): Promise<any> {
+    // Return default/mock data
+    return {
+      data: 'Default response - service unavailable',
+      isDefault: true,
+      timestamp: new Date().toISOString(),
+    };
+  }
+}
+```
+
+### Graceful Degradation
+
+```typescript
+export class DegradableNode {
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const features = {
+      realTimeData: { priority: 1, fallback: this.getHistoricalData },
+      enrichment: { priority: 2, fallback: this.getBasicData },
+      validation: { priority: 3, fallback: this.skipValidation },
+      transformation: { priority: 4, fallback: this.basicTransformation },
+    };
+
+    const results: any = {};
+    const degradations: string[] = [];
+
+    for (const [feature, config] of Object.entries(features)) {
+      try {
+        results[feature] = await this.executeFeature(feature);
+      } catch (error) {
+        this.logger.warn(`Feature ${feature} failed, using fallback`);
+        results[feature] = await config.fallback.call(this);
+        degradations.push(feature);
+      }
+    }
+
+    if (degradations.length > 0) {
+      results._metadata = {
+        degradedFeatures: degradations,
+        degradationLevel: (degradations.length / Object.keys(features).length) * 100,
+        timestamp: new Date().toISOString(),
+      };
+    }
+
+    return [[{ json: results }]];
+  }
+
+  private async executeFeature(feature: string): Promise<any> {
+    // Simulate feature execution that might fail
+    if (Math.random() < 0.3) { // 30% failure rate for demo
+      throw new Error(`Feature ${feature} temporarily unavailable`);
+    }
+    return { [feature]: 'full_feature_data' };
+  }
+
+  private async getHistoricalData(): Promise<any> {
+    return { data: 'historical', timestamp: Date.now() - 3600000 };
+  }
+
+  private async getBasicData(): Promise<any> {
+    return { data: 'basic', enriched: false };
+  }
+
+  private async skipValidation(): Promise<any> {
+    return { validated: false, skipped: true };
+  }
+
+  private async basicTransformation(): Promise<any> {
+    return { transformed: 'basic_only' };
+  }
+}
+```
+
+## Error Recovery Patterns
+
+### Compensating Transactions
+
+```typescript
+export class CompensatingTransactionNode {
+  private completedSteps: CompletedStep[] = [];
+
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const steps = [
+      { name: 'createOrder', compensate: this.cancelOrder },
+      { name: 'chargePayment', compensate: this.refundPayment },
+      { name: 'updateInventory', compensate: this.restoreInventory },
+      { name: 'sendNotification', compensate: this.sendCancellation },
+    ];
+
+    try {
+      for (const step of steps) {
+        const result = await this.executeStep(step.name);
+        this.completedSteps.push({
+          name: step.name,
+          result,
+          compensate: step.compensate,
+        });
+      }
+
+      return [[{ json: { success: true, steps: this.completedSteps } }]];
+    } catch (error) {
+      // Rollback in reverse order
+      await this.compensate();
+      throw new NodeOperationError(
+        this.getNode(),
+        `Transaction failed at step: ${error.step}`,
+        { error, compensated: true }
+      );
+    }
+  }
+
+  private async compensate(): Promise<void> {
+    this.logger.info('Starting compensation...');
+
+    // Reverse the completed steps
+    const stepsToCompensate = [...this.completedSteps].reverse();
+
+    for (const step of stepsToCompensate) {
+      try {
+        await step.compensate.call(this, step.result);
+        this.logger.info(`Compensated: ${step.name}`);
+      } catch (error) {
+        this.logger.error(`Failed to compensate ${step.name}:`, error);
+        // Continue with other compensations
+      }
+    }
+  }
+
+  private async cancelOrder(orderData: any): Promise<void> {
+    // Compensation logic for order creation
+    await this.helpers.httpRequest({
+      method: 'DELETE',
+      url: `https://api.example.com/orders/${orderData.orderId}`,
+    });
+  }
+
+  private async refundPayment(paymentData: any): Promise<void> {
+    // Compensation logic for payment
+    await this.helpers.httpRequest({
+      method: 'POST',
+      url: 'https://api.example.com/refunds',
+      body: { transactionId: paymentData.transactionId },
+    });
+  }
+
+  private async restoreInventory(inventoryData: any): Promise<void> {
+    // Compensation logic for inventory
+    await this.helpers.httpRequest({
+      method: 'POST',
+      url: 'https://api.example.com/inventory/restore',
+      body: { items: inventoryData.items },
+    });
+  }
+
+  private async sendCancellation(notificationData: any): Promise<void> {
+    // Send cancellation notification
+    await this.helpers.httpRequest({
+      method: 'POST',
+      url: 'https://api.example.com/notifications',
+      body: {
+        type: 'order_cancelled',
+        recipientId: notificationData.recipientId
+      },
+    });
+  }
+}
+```
+
+### Dead Letter Queue Pattern
+
+```typescript
+export class DeadLetterQueueNode {
+  private dlq: FailedItem[] = [];
+  private maxRetries = 3;
+
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const items = this.getInputData();
+    const successfulItems: INodeExecutionData[] = [];
+    const failedItems: FailedItem[] = [];
+
+    // Process items with retry logic
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      let processed = false;
+
+      for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+        try {
+          const result = await this.processItem(item, i);
+          successfulItems.push({ json: result });
+          processed = true;
+          break;
+        } catch (error) {
+          if (attempt === this.maxRetries) {
+            // Add to DLQ
+            failedItems.push({
+              item,
+              error: error.message,
+              attempts: attempt,
+              timestamp: new Date().toISOString(),
+              itemIndex: i,
+            });
+          } else {
+            // Wait before retry
+            await this.delay(1000 * attempt);
+          }
+        }
+      }
+    }
+
+    // Handle DLQ items
+    if (failedItems.length > 0) {
+      await this.handleDeadLetterQueue(failedItems);
+    }
+
+    // Return results with DLQ info
+    return [[
+      ...successfulItems,
+      ...failedItems.map(f => ({
+        json: {
+          error: 'Moved to DLQ',
+          details: f,
+        },
+        error: f.error,
+      })),
+    ]];
+  }
+
+  private async handleDeadLetterQueue(items: FailedItem[]): Promise<void> {
+    // Store in persistent storage
+    await this.storeToDLQ(items);
+
+    // Send alert if threshold exceeded
+    if (items.length > 10) {
+      await this.sendAlert({
+        level: 'critical',
+        message: `${items.length} items in DLQ`,
+        items: items.slice(0, 5), // First 5 for context
+      });
+    }
+
+    // Schedule retry for DLQ items
+    await this.scheduleRetry(items);
+  }
+
+  private async storeToDLQ(items: FailedItem[]): Promise<void> {
+    // Store to database or file system
+    const fs = require('fs').promises;
+    const dlqPath = `/tmp/dlq_${Date.now()}.json`;
+
+    await fs.writeFile(dlqPath, JSON.stringify(items, null, 2));
+    this.logger.info(`Stored ${items.length} items to DLQ: ${dlqPath}`);
+  }
+
+  private async scheduleRetry(items: FailedItem[]): Promise<void> {
+    // Schedule exponential backoff retry
+    for (const item of items) {
+      const delayHours = Math.pow(2, item.attempts);
+      const retryTime = new Date(Date.now() + delayHours * 3600000);
+
+      this.logger.info(`Scheduled retry for item ${item.itemIndex} at ${retryTime}`);
+      // In real implementation, use a job queue like Bull or RabbitMQ
+    }
+  }
+}
+
+interface FailedItem {
+  item: INodeExecutionData;
+  error: string;
+  attempts: number;
+  timestamp: string;
+  itemIndex: number;
+}
+```
+
+## Production Error Monitoring
+
+### Comprehensive Error Tracking
+
+```typescript
+export class MonitoredNode {
+  private metrics = {
+    totalRequests: 0,
+    successfulRequests: 0,
+    failedRequests: 0,
+    retries: 0,
+    avgResponseTime: 0,
+    errors: new Map<string, number>(),
+  };
+
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const startTime = Date.now();
+    this.metrics.totalRequests++;
+
+    try {
+      const result = await this.executeWithMonitoring();
+      this.metrics.successfulRequests++;
+      this.updateResponseTime(Date.now() - startTime);
+      return result;
+    } catch (error) {
+      this.metrics.failedRequests++;
+      this.trackError(error);
+      await this.reportError(error, startTime);
+      throw error;
+    } finally {
+      // Report metrics periodically
+      if (this.metrics.totalRequests % 100 === 0) {
+        await this.reportMetrics();
+      }
+    }
+  }
+
+  private trackError(error: any): void {
+    const errorKey = this.getErrorKey(error);
+    const count = this.metrics.errors.get(errorKey) || 0;
+    this.metrics.errors.set(errorKey, count + 1);
+  }
+
+  private getErrorKey(error: any): string {
+    if (error.code) return `code_${error.code}`;
+    if (error.statusCode) return `http_${error.statusCode}`;
+    return `generic_${error.constructor.name}`;
+  }
+
+  private async reportError(error: any, startTime: number): Promise<void> {
+    const errorReport = {
+      timestamp: new Date().toISOString(),
+      duration: Date.now() - startTime,
+      error: {
+        message: error.message,
+        type: error.constructor.name,
+        code: error.code,
+        statusCode: error.statusCode,
+        stack: error.stack,
+      },
+      context: {
+        nodeType: this.getNode().type,
+        workflowId: this.getWorkflow().id,
+        executionId: this.getExecutionId(),
+      },
+      metrics: { ...this.metrics },
+    };
+
+    // Send to monitoring service
+    await this.sendToMonitoring(errorReport);
+  }
+
+  private async sendToMonitoring(data: any): Promise<void> {
+    // Send to DataDog, Sentry, CloudWatch, etc.
+    try {
+      await this.helpers.httpRequest({
+        method: 'POST',
+        url: process.env.MONITORING_ENDPOINT || 'https://monitoring.example.com/errors',
+        body: data,
+        headers: {
+          'X-API-Key': process.env.MONITORING_API_KEY,
+        },
+        timeout: 5000,
+      });
+    } catch (error) {
+      // Don't fail the workflow if monitoring fails
+      this.logger.error('Failed to send monitoring data:', error);
+    }
+  }
+}
+```
+
+## Best Practices Summary
+
+### Error Handling Checklist
+
+<Accordion title="Production-Ready Error Handling">
+
+1. **Always use typed errors**
+   - Create custom error classes
+   - Include context and metadata
+   - Make errors actionable
+
+2. **Implement retry strategies**
+   - Exponential backoff with jitter
+   - Circuit breaker for failing services
+   - Dead letter queue for persistent failures
+
+3. **Design for graceful degradation**
+   - Multiple fallback levels
+   - Feature flags for non-critical operations
+   - Cache fallbacks for read operations
+
+4. **Monitor and alert**
+   - Track error rates and types
+   - Set up alerting thresholds
+   - Include troubleshooting information
+
+5. **Document error scenarios**
+   - List common errors and solutions
+   - Provide runbooks for operations
+   - Include recovery procedures
+
+</Accordion>
+
+## Next Steps
+
+Master performance optimization and resource management:
+
+<Card title="Performance & Optimization" href="./performance-optimization" icon="gauge-high">
+  Optimize n8n nodes for speed, memory efficiency, and scalability
+</Card>

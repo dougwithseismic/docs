@@ -1,0 +1,1121 @@
+---
+title: Testing Strategies & CI/CD Pipelines
+description: Build reliable n8n nodes with comprehensive testing, automated quality checks, and continuous deployment pipelines
+icon: vial
+---
+
+## Testing Philosophy for n8n Nodes
+
+<Info>
+Testing n8n nodes is unique because you're testing integrations, data transformations, and error handling across distributed systems. A single bug can break entire workflows affecting business operations.
+</Info>
+
+The testing pyramid for n8n nodes:
+- **Unit Tests**: Test individual functions and transformations
+- **Integration Tests**: Test node behavior with real n8n runtime
+- **End-to-End Tests**: Test complete workflows with external services
+- **Performance Tests**: Ensure nodes handle production loads
+- **Contract Tests**: Verify API compatibility
+
+## Unit Testing
+
+### Testing Node Logic
+
+```typescript
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
+import { CustomNode } from '../src/CustomNode';
+
+describe('CustomNode', () => {
+  let node: CustomNode;
+  let executeFunctions: jest.Mocked<IExecuteFunctions>;
+
+  beforeEach(() => {
+    node = new CustomNode();
+
+    // Mock n8n execution functions
+    executeFunctions = {
+      getInputData: jest.fn(),
+      getNodeParameter: jest.fn(),
+      getCredentials: jest.fn(),
+      helpers: {
+        httpRequest: jest.fn(),
+        prepareBinaryData: jest.fn(),
+      },
+      logger: {
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+      },
+      getNode: jest.fn().mockReturnValue({
+        type: 'customNode',
+        name: 'Custom Node Test',
+      }),
+      getWorkflow: jest.fn().mockReturnValue({
+        id: 'test-workflow-id',
+        name: 'Test Workflow',
+      }),
+      getExecutionId: jest.fn().mockReturnValue('test-execution-id'),
+      continueOnFail: jest.fn().mockReturnValue(false),
+    } as any;
+  });
+
+  describe('execute', () => {
+    it('should process items correctly', async () => {
+      // Arrange
+      const inputData: INodeExecutionData[] = [
+        { json: { name: 'Alice', age: 30 } },
+        { json: { name: 'Bob', age: 25 } },
+      ];
+
+      executeFunctions.getInputData.mockReturnValue(inputData);
+      executeFunctions.getNodeParameter.mockImplementation((param: string) => {
+        switch (param) {
+          case 'operation':
+            return 'transform';
+          case 'transformType':
+            return 'uppercase';
+          default:
+            return undefined;
+        }
+      });
+
+      // Act
+      const result = await node.execute.call(executeFunctions);
+
+      // Assert
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveLength(2);
+      expect(result[0][0].json).toEqual({
+        name: 'ALICE',
+        age: 30,
+        transformed: true,
+      });
+      expect(result[0][1].json).toEqual({
+        name: 'BOB',
+        age: 25,
+        transformed: true,
+      });
+    });
+
+    it('should handle errors gracefully', async () => {
+      // Arrange
+      executeFunctions.getInputData.mockReturnValue([
+        { json: { invalid: 'data' } },
+      ]);
+      executeFunctions.continueOnFail.mockReturnValue(true);
+
+      // Act
+      const result = await node.execute.call(executeFunctions);
+
+      // Assert
+      expect(result[0][0].error).toBeDefined();
+      expect(result[0][0].error.message).toContain('Missing required field');
+      expect(executeFunctions.logger.error).toHaveBeenCalled();
+    });
+
+    it('should retry on transient failures', async () => {
+      // Arrange
+      let attempts = 0;
+      executeFunctions.helpers.httpRequest.mockImplementation(async () => {
+        attempts++;
+        if (attempts < 3) {
+          throw new Error('Connection timeout');
+        }
+        return { success: true };
+      });
+
+      executeFunctions.getNodeParameter.mockImplementation((param: string) => {
+        if (param === 'retryOnFail') return true;
+        if (param === 'maxRetries') return 3;
+        return undefined;
+      });
+
+      // Act
+      const result = await node.execute.call(executeFunctions);
+
+      // Assert
+      expect(attempts).toBe(3);
+      expect(result[0][0].json).toEqual({ success: true });
+      expect(executeFunctions.logger.warn).toHaveBeenCalledWith(
+        expect.stringContaining('Retry attempt'),
+        expect.any(Object)
+      );
+    });
+  });
+
+  describe('data validation', () => {
+    it('should validate input schema', () => {
+      // Arrange
+      const validator = node.getValidator();
+      const validData = { name: 'Test', age: 25 };
+      const invalidData = { name: 'Test', age: 'not-a-number' };
+
+      // Act & Assert
+      expect(validator.validate(validData)).toBe(true);
+      expect(validator.validate(invalidData)).toBe(false);
+      expect(validator.errors).toContainEqual(
+        expect.objectContaining({
+          path: 'age',
+          message: 'Expected number, got string',
+        })
+      );
+    });
+  });
+
+  describe('credential handling', () => {
+    it('should handle OAuth token refresh', async () => {
+      // Arrange
+      const expiredToken = {
+        accessToken: 'expired',
+        refreshToken: 'refresh-token',
+        expiresAt: Date.now() - 3600000,
+      };
+
+      executeFunctions.getCredentials.mockResolvedValue(expiredToken);
+      executeFunctions.helpers.httpRequest.mockResolvedValue({
+        access_token: 'new-token',
+        expires_in: 3600,
+      });
+
+      // Act
+      const token = await node.getAccessToken.call(executeFunctions);
+
+      // Assert
+      expect(token).toBe('new-token');
+      expect(executeFunctions.helpers.httpRequest).toHaveBeenCalledWith({
+        method: 'POST',
+        url: expect.stringContaining('/oauth/token'),
+        body: expect.objectContaining({
+          grant_type: 'refresh_token',
+          refresh_token: 'refresh-token',
+        }),
+      });
+    });
+  });
+});
+```
+
+### Testing Streaming and Async Operations
+
+```typescript
+import { Readable, Writable } from 'stream';
+import { pipeline } from 'stream/promises';
+
+describe('StreamingNode', () => {
+  let node: StreamingNode;
+
+  beforeEach(() => {
+    node = new StreamingNode();
+  });
+
+  it('should process stream without loading all data', async () => {
+    // Arrange
+    const inputStream = Readable.from([
+      { data: 'chunk1' },
+      { data: 'chunk2' },
+      { data: 'chunk3' },
+    ]);
+
+    const outputChunks: any[] = [];
+    const outputStream = new Writable({
+      objectMode: true,
+      write(chunk, encoding, callback) {
+        outputChunks.push(chunk);
+        callback();
+      },
+    });
+
+    // Act
+    await pipeline(
+      inputStream,
+      node.createTransformStream(),
+      outputStream
+    );
+
+    // Assert
+    expect(outputChunks).toHaveLength(3);
+    expect(outputChunks[0]).toEqual({ data: 'CHUNK1', processed: true });
+
+    // Verify memory usage stayed constant
+    const memoryUsage = process.memoryUsage();
+    expect(memoryUsage.heapUsed).toBeLessThan(50 * 1024 * 1024); // Under 50MB
+  });
+
+  it('should handle backpressure correctly', async () => {
+    // Arrange
+    const slowConsumer = new Writable({
+      objectMode: true,
+      highWaterMark: 2,
+      async write(chunk, encoding, callback) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        callback();
+      },
+    });
+
+    const fastProducer = Readable.from(
+      Array(100).fill({ data: 'test' }),
+      { highWaterMark: 10 }
+    );
+
+    // Act
+    const startTime = Date.now();
+    await pipeline(
+      fastProducer,
+      node.createTransformStream(),
+      slowConsumer
+    );
+    const duration = Date.now() - startTime;
+
+    // Assert - Should take ~10 seconds due to backpressure
+    expect(duration).toBeGreaterThan(9000);
+    expect(duration).toBeLessThan(11000);
+  });
+});
+```
+
+## Integration Testing
+
+### Testing with n8n Runtime
+
+<Warning>
+Integration tests must use the actual n8n runtime to ensure your node behaves correctly within workflows. Mock external services but use real n8n components.
+</Warning>
+
+```typescript
+import { WorkflowExecute } from 'n8n-core';
+import { Workflow } from 'n8n-workflow';
+import { createMockServer } from './helpers/mockServer';
+
+describe('CustomNode Integration Tests', () => {
+  let mockServer: any;
+  let workflow: Workflow;
+  let workflowExecute: WorkflowExecute;
+
+  beforeAll(async () => {
+    // Start mock server for external API
+    mockServer = await createMockServer();
+    await mockServer.listen(4000);
+  });
+
+  afterAll(async () => {
+    await mockServer.close();
+  });
+
+  beforeEach(() => {
+    // Create test workflow
+    const workflowData = {
+      nodes: [
+        {
+          id: 'start',
+          name: 'Start',
+          type: 'n8n-nodes-base.start',
+          typeVersion: 1,
+          position: [100, 100],
+        },
+        {
+          id: 'custom',
+          name: 'Custom Node',
+          type: 'customNode',
+          typeVersion: 1,
+          position: [300, 100],
+          parameters: {
+            operation: 'fetch',
+            endpoint: 'http://localhost:4000/api/data',
+          },
+          credentials: {
+            customApi: {
+              id: 'test-credential',
+              name: 'Test API',
+            },
+          },
+        },
+      ],
+      connections: {
+        'Start': {
+          main: [[{ node: 'Custom Node', type: 'main', index: 0 }]],
+        },
+      },
+    };
+
+    workflow = new Workflow({
+      id: 'test-workflow',
+      name: 'Test Workflow',
+      nodes: workflowData.nodes,
+      connections: workflowData.connections,
+      active: false,
+      nodeTypes: getNodeTypes(),
+    });
+
+    workflowExecute = new WorkflowExecute({
+      additionalData: getAdditionalData(),
+      mode: 'manual',
+      workflowData,
+    });
+  });
+
+  it('should execute workflow successfully', async () => {
+    // Arrange
+    mockServer.get('/api/data').reply(200, {
+      items: [
+        { id: 1, name: 'Item 1' },
+        { id: 2, name: 'Item 2' },
+      ],
+    });
+
+    // Act
+    const executionResult = await workflowExecute.run(workflow);
+
+    // Assert
+    expect(executionResult.finished).toBe(true);
+    expect(executionResult.data.resultData.error).toBeUndefined();
+
+    const nodeOutput = executionResult.data.resultData.runData['Custom Node'];
+    expect(nodeOutput[0].data.main[0]).toHaveLength(2);
+    expect(nodeOutput[0].data.main[0][0].json).toEqual({
+      id: 1,
+      name: 'Item 1',
+    });
+  });
+
+  it('should handle rate limiting with retry', async () => {
+    // Arrange
+    let attempts = 0;
+    mockServer.get('/api/data').reply(() => {
+      attempts++;
+      if (attempts === 1) {
+        return [429, { error: 'Rate limited' }, { 'Retry-After': '1' }];
+      }
+      return [200, { items: [{ id: 1 }] }];
+    });
+
+    // Act
+    const startTime = Date.now();
+    const executionResult = await workflowExecute.run(workflow);
+    const duration = Date.now() - startTime;
+
+    // Assert
+    expect(executionResult.finished).toBe(true);
+    expect(attempts).toBe(2);
+    expect(duration).toBeGreaterThan(1000); // Waited for retry
+  });
+
+  it('should propagate errors correctly', async () => {
+    // Arrange
+    mockServer.get('/api/data').reply(500, {
+      error: 'Internal server error',
+    });
+
+    // Act
+    const executionResult = await workflowExecute.run(workflow);
+
+    // Assert
+    expect(executionResult.finished).toBe(false);
+    expect(executionResult.data.resultData.error).toBeDefined();
+    expect(executionResult.data.resultData.error.message).toContain(
+      'Internal server error'
+    );
+  });
+
+  it('should handle webhook triggers', async () => {
+    // Arrange
+    const webhookWorkflow = new Workflow({
+      id: 'webhook-workflow',
+      name: 'Webhook Workflow',
+      nodes: [
+        {
+          id: 'webhook',
+          name: 'Webhook',
+          type: 'customWebhook',
+          typeVersion: 1,
+          position: [100, 100],
+          webhooks: [
+            {
+              name: 'default',
+              httpMethod: 'POST',
+              responseMode: 'onReceived',
+              path: 'test-webhook',
+            },
+          ],
+        },
+      ],
+      connections: {},
+      active: true,
+      nodeTypes: getNodeTypes(),
+    });
+
+    // Simulate webhook call
+    const webhookData = {
+      headers: { 'content-type': 'application/json' },
+      body: { test: 'data' },
+      query: {},
+    };
+
+    // Act
+    const result = await executeWebhook(webhookWorkflow, webhookData);
+
+    // Assert
+    expect(result.statusCode).toBe(200);
+    expect(result.data).toEqual({
+      received: true,
+      timestamp: expect.any(String),
+    });
+  });
+});
+```
+
+## End-to-End Testing
+
+### Testing Complete Workflows
+
+```typescript
+import { chromium, Browser, Page } from 'playwright';
+import { TestDataGenerator } from './helpers/testData';
+
+describe('E2E Workflow Tests', () => {
+  let browser: Browser;
+  let page: Page;
+  let testData: TestDataGenerator;
+
+  beforeAll(async () => {
+    browser = await chromium.launch({
+      headless: process.env.CI === 'true',
+    });
+    testData = new TestDataGenerator();
+  });
+
+  afterAll(async () => {
+    await browser.close();
+  });
+
+  beforeEach(async () => {
+    page = await browser.newPage();
+    await page.goto('http://localhost:5678'); // n8n instance
+    await login(page);
+  });
+
+  it('should execute data processing workflow end-to-end', async () => {
+    // Arrange - Create test data
+    const inputFile = await testData.generateCSV(1000);
+    await uploadToS3(inputFile);
+
+    // Act - Trigger workflow
+    await page.goto('http://localhost:5678/workflow/data-processing');
+    await page.click('[data-test-id="execute-workflow"]');
+
+    // Wait for execution
+    await page.waitForSelector('[data-test-id="execution-success"]', {
+      timeout: 30000,
+    });
+
+    // Assert - Verify results
+    const results = await getProcessedData();
+    expect(results).toHaveLength(1000);
+    expect(results[0]).toHaveProperty('processed', true);
+
+    // Verify side effects
+    const dbRecords = await queryDatabase('SELECT * FROM processed_items');
+    expect(dbRecords).toHaveLength(1000);
+
+    const notifications = await getEmailNotifications();
+    expect(notifications).toContainEqual(
+      expect.objectContaining({
+        subject: 'Processing Complete',
+        to: 'admin@example.com',
+      })
+    );
+  });
+
+  it('should handle error scenarios gracefully', async () => {
+    // Arrange - Create corrupted data
+    const corruptedFile = await testData.generateCorruptedCSV();
+
+    // Act - Trigger workflow with bad data
+    await triggerWorkflow({
+      workflowId: 'data-processing',
+      inputData: { file: corruptedFile },
+    });
+
+    // Wait for error handling
+    await page.waitForSelector('[data-test-id="execution-error"]');
+
+    // Assert - Verify error handling
+    const errorLog = await getErrorLog();
+    expect(errorLog).toContainEqual(
+      expect.objectContaining({
+        level: 'error',
+        message: expect.stringContaining('Corrupted data'),
+      })
+    );
+
+    // Verify error notification sent
+    const alerts = await getAlertNotifications();
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0].channel).toBe('slack');
+  });
+
+  it('should scale under load', async () => {
+    // Arrange - Generate load
+    const promises = [];
+    const concurrentRequests = 50;
+
+    // Act - Execute multiple workflows concurrently
+    for (let i = 0; i < concurrentRequests; i++) {
+      promises.push(
+        triggerWorkflow({
+          workflowId: 'simple-process',
+          inputData: { id: i },
+        })
+      );
+    }
+
+    const startTime = Date.now();
+    const results = await Promise.allSettled(promises);
+    const duration = Date.now() - startTime;
+
+    // Assert
+    const successful = results.filter(r => r.status === 'fulfilled');
+    const failed = results.filter(r => r.status === 'rejected');
+
+    expect(successful.length).toBeGreaterThan(45); // >90% success rate
+    expect(failed.length).toBeLessThan(5);
+    expect(duration).toBeLessThan(10000); // Complete within 10 seconds
+
+    // Verify system stayed healthy
+    const metrics = await getSystemMetrics();
+    expect(metrics.cpu).toBeLessThan(80); // CPU under 80%
+    expect(metrics.memory).toBeLessThan(90); // Memory under 90%
+  });
+});
+```
+
+## Performance Testing
+
+### Load and Stress Testing
+
+```typescript
+import * as k6 from 'k6';
+import { check, sleep } from 'k6';
+import http from 'k6/http';
+
+// k6 performance test script
+export const options = {
+  stages: [
+    { duration: '2m', target: 10 }, // Ramp up to 10 users
+    { duration: '5m', target: 10 }, // Stay at 10 users
+    { duration: '2m', target: 50 }, // Ramp up to 50 users
+    { duration: '5m', target: 50 }, // Stay at 50 users
+    { duration: '2m', target: 100 }, // Ramp up to 100 users
+    { duration: '5m', target: 100 }, // Stay at 100 users
+    { duration: '5m', target: 0 }, // Ramp down to 0 users
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)<500'], // 95% of requests under 500ms
+    http_req_failed: ['rate<0.1'], // Error rate under 10%
+  },
+};
+
+export default function performanceTest() {
+  // Test workflow execution
+  const payload = JSON.stringify({
+    workflowId: 'performance-test',
+    data: {
+      items: generateTestItems(100),
+    },
+  });
+
+  const params = {
+    headers: {
+      'Content-Type': 'application/json',
+      'X-N8N-API-KEY': __ENV.API_KEY,
+    },
+  };
+
+  const response = http.post(
+    'http://localhost:5678/api/v1/workflows/execute',
+    payload,
+    params
+  );
+
+  // Verify response
+  check(response, {
+    'status is 200': (r) => r.status === 200,
+    'execution completed': (r) => JSON.parse(r.body).finished === true,
+    'no errors': (r) => !JSON.parse(r.body).error,
+    'response time OK': (r) => r.timings.duration < 1000,
+  });
+
+  sleep(1);
+}
+
+export function handleSummary(data: any) {
+  return {
+    'performance-report.html': htmlReport(data),
+    'performance-metrics.json': JSON.stringify(data, null, 2),
+  };
+}
+
+function generateTestItems(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    name: `Item ${i}`,
+    data: Math.random().toString(36).substring(7),
+  }));
+}
+```
+
+## CI/CD Pipeline
+
+### GitHub Actions Workflow
+
+```yaml
+name: n8n Node CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  release:
+    types: [created]
+
+env:
+  NODE_VERSION: '18'
+  N8N_VERSION: 'latest'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Prettier
+        run: npm run format:check
+
+      - name: Type checking
+        run: npm run typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+        n8n-version: [0.220.0, 0.230.0, latest]
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install n8n
+        run: npm install -g n8n@${{ matrix.n8n-version }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit
+        env:
+          CI: true
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+          REDIS_URL: redis://localhost:6379
+          CI: true
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+
+  security:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+
+      - name: Run OWASP dependency check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'n8n-custom-node'
+          path: '.'
+          format: 'HTML'
+
+      - name: Upload dependency check results
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: reports/
+
+  performance:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup k6
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Start n8n instance
+        run: |
+          docker run -d \
+            -p 5678:5678 \
+            -e N8N_BASIC_AUTH_ACTIVE=false \
+            -e N8N_METRICS=true \
+            --name n8n \
+            n8nio/n8n:${{ env.N8N_VERSION }}
+
+      - name: Wait for n8n
+        run: |
+          until curl -f http://localhost:5678/healthz; do
+            sleep 2
+          done
+
+      - name: Run performance tests
+        run: k6 run tests/performance/load-test.js
+        env:
+          API_KEY: ${{ secrets.TEST_API_KEY }}
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-results
+          path: performance-report.html
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build node
+        run: npm run build
+
+      - name: Package node
+        run: npm pack
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: node-package
+          path: '*.tgz'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://npm.js.com/package/n8n-nodes-custom
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node-package
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to npm
+        run: npm publish *.tgz
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: '*.tgz'
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy documentation
+        run: |
+          npm run docs:build
+          npm run docs:deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Deployment completed for version ${{ github.sha }}'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        if: always()
+```
+
+### Docker Build Pipeline
+
+```dockerfile
+# Multi-stage build for production
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source code
+COPY src ./src
+COPY nodes ./nodes
+COPY credentials ./credentials
+
+# Build TypeScript
+RUN npm run build
+
+# Test stage
+FROM builder AS test
+
+# Install dev dependencies
+RUN npm ci
+
+# Copy test files
+COPY tests ./tests
+COPY jest.config.js ./
+
+# Run tests
+RUN npm run test
+
+# Security scan
+RUN npm audit --production
+
+# Production stage
+FROM node:18-alpine AS production
+
+WORKDIR /app
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Copy built application
+COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
+
+# Switch to non-root user
+USER nodejs
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node healthcheck.js
+
+# Use dumb-init to handle signals
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "dist/index.js"]
+```
+
+## Contract Testing
+
+### API Contract Validation
+
+```typescript
+import { Pact } from '@pact-foundation/pact';
+import { like, eachLike, term } from '@pact-foundation/pact/src/dsl/matchers';
+
+describe('API Contract Tests', () => {
+  const provider = new Pact({
+    consumer: 'n8n-custom-node',
+    provider: 'external-api',
+    port: 1234,
+    log: 'logs/pact.log',
+    dir: 'pacts',
+    logLevel: 'warn',
+  });
+
+  beforeAll(() => provider.setup());
+  afterEach(() => provider.verify());
+  afterAll(() => provider.finalize());
+
+  describe('Data API Contract', () => {
+    it('should fetch items with correct structure', async () => {
+      // Define expected interaction
+      await provider.addInteraction({
+        state: 'items exist',
+        uponReceiving: 'a request for items',
+        withRequest: {
+          method: 'GET',
+          path: '/api/items',
+          headers: {
+            Authorization: term({
+              generate: 'Bearer token123',
+              matcher: 'Bearer .+',
+            }),
+          },
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: {
+            items: eachLike({
+              id: like(1),
+              name: like('Item'),
+              created_at: term({
+                generate: '2024-01-01T00:00:00Z',
+                matcher: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z',
+              }),
+              metadata: like({
+                version: like(1),
+                tags: eachLike('tag'),
+              }),
+            }),
+            pagination: like({
+              page: 1,
+              per_page: 20,
+              total: 100,
+            }),
+          },
+        },
+      });
+
+      // Test the interaction
+      const response = await callApi('/api/items');
+
+      // Verify structure
+      expect(response.items).toBeDefined();
+      expect(response.items[0]).toHaveProperty('id');
+      expect(response.items[0]).toHaveProperty('name');
+      expect(response.items[0]).toHaveProperty('created_at');
+      expect(response.pagination).toHaveProperty('total');
+    });
+  });
+});
+```
+
+## Best Practices Summary
+
+### Testing Checklist
+
+<Accordion title="Comprehensive Testing Strategy">
+
+1. **Unit Testing**
+   - Test all business logic
+   - Mock external dependencies
+   - Aim for >80% code coverage
+   - Test error scenarios
+
+2. **Integration Testing**
+   - Test with real n8n runtime
+   - Mock external services
+   - Verify workflow execution
+   - Test credential handling
+
+3. **End-to-End Testing**
+   - Test complete user journeys
+   - Include UI interactions
+   - Verify side effects
+   - Test error recovery
+
+4. **Performance Testing**
+   - Load test with realistic data
+   - Monitor resource usage
+   - Test concurrent executions
+   - Identify bottlenecks
+
+5. **Security Testing**
+   - Scan for vulnerabilities
+   - Test authentication
+   - Validate input sanitization
+   - Check for secrets in code
+
+6. **CI/CD Pipeline**
+   - Automate all tests
+   - Multi-version testing
+   - Security scanning
+   - Automated deployment
+   - Rollback capability
+
+</Accordion>
+
+## Conclusion
+
+You've now mastered the complete n8n developer toolkit. From streaming and webhooks to testing and deployment, you have the skills to build production-grade n8n nodes that scale, handle errors gracefully, and integrate seamlessly with enterprise systems.
+
+<Card title="Return to Course Overview" href="./overview" icon="arrow-left">
+  Back to n8n Developer Course Overview
+</Card>

@@ -2,10 +2,14 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "WithSeismic - Internal Tools & Automation",
+
   "colors": {
     "primary": "#FF8000",
     "light": "#FFA040",
     "dark": "#CC6600"
+  },
+  "appearance": {
+    "strict": true
   },
   "favicon": "/favicon.svg",
   "seo": {
@@ -155,6 +159,7 @@
         ]
       },
       {
+        "hidden": true,
         "tab": "Pre-built Tools For Sale",
         "groups": [
           {
@@ -289,7 +294,13 @@
                   "universities/automation/n8n-developer/setup-environment",
                   "universities/automation/n8n-developer/custom-nodes-basics",
                   "universities/automation/n8n-developer/workflow-patterns",
-                  "universities/automation/n8n-developer/backup-strategies"
+                  "universities/automation/n8n-developer/backup-strategies",
+                  "universities/automation/n8n-developer/streaming-webhooks",
+                  "universities/automation/n8n-developer/dynamic-credentials",
+                  "universities/automation/n8n-developer/error-handling",
+                  "universities/automation/n8n-developer/performance-optimization",
+                  "universities/automation/n8n-developer/observability-debugging",
+                  "universities/automation/n8n-developer/testing-cicd"
                 ]
               },
               {
