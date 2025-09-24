@@ -6,14 +6,12 @@ icon: terminal
 
 # Terminal Aliases & Functions
 
-Transform your terminal from a chore into a superpower. These aliases and functions will save you thousands of keystrokes daily.
+Terminal aliases and functions to reduce typing and improve workflow.
 
 ## Setting Up Your Shell Configuration
 
 <Info>
-  **Where do I put these aliases and functions?** Everything goes in your
-  `~/.zshrc` file. This file runs every time you open a new terminal, loading
-  all your custom shortcuts automatically.
+  Add these to your `~/.zshrc` file, which loads when you open a new terminal.
 </Info>
 
 ### Where to Add These
@@ -54,13 +52,11 @@ source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 ```
 
-## Git Aliases - The Time Savers
+## Git Aliases
 
 <Info>
-  **Why create Git aliases when Git has its own alias system?** Shell aliases
-  are faster to type (no 'git' prefix needed), work with shell features like
-  pipes and redirection, and can be combined with other Unix commands
-  seamlessly.
+  Shell aliases are faster than Git's built-in aliases and integrate better with
+  shell features.
 </Info>
 
 ### Essential Git Shortcuts
@@ -111,10 +107,8 @@ alias gclean='git clean -fd'
 ```
 
 <Info>
-  **What's the difference between aliases and functions?** Aliases are simple
-  replacements for commands. Functions can accept arguments, contain logic, and
-  perform multiple operations - like `gacp` which does add, commit, and push in
-  one go.
+  Aliases are simple command replacements. Functions can accept arguments and
+  perform multiple operations.
 </Info>
 
 ### Power Functions for Git
@@ -184,10 +178,7 @@ gup() {
 ## Directory Navigation
 
 <Info>
-  **How much time do directory shortcuts really save?** If you navigate to
-  ~/Developer/projects 10 times a day, typing `proj` instead of `cd
-  ~/Developer/projects` saves 200+ keystrokes daily. That's over 70,000
-  keystrokes per year.
+  Directory shortcuts reduce typing for frequently accessed paths.
 </Info>
 
 ### Quick Movement
@@ -242,10 +233,8 @@ alias 5='cd -5'
 ## File Operations
 
 <Info>
-  **Why replace standard commands like ls and cat?** Modern replacements like
-  `eza` and `bat` provide syntax highlighting, git integration, file icons, and
-  better formatting. They're not just prettier - they convey more information
-  faster.
+  Modern replacements like `eza` and `bat` provide syntax highlighting, git
+  integration, and better formatting.
 </Info>
 
 ### Better Defaults
@@ -332,9 +321,7 @@ ql() {
 ## Development Shortcuts
 
 <Info>
-  **Should I create aliases for every npm command?** Create aliases for commands
-  you use daily. Start with basics like `ni` for install and `nr` for run, then
-  add more as you notice patterns in your workflow.
+  Create aliases for frequently used npm commands.
 </Info>
 
 ### Node.js / NPM
@@ -441,9 +428,7 @@ dbash() {
 ## Network & System
 
 <Info>
-  **What's the most useful network function here?** The `killport` function is a
-  lifesaver when development servers don't shut down properly. Instead of
-  hunting for process IDs, just type `killport 3000` and it's gone.
+  The `killport` function quickly terminates processes on specific ports.
 </Info>
 
 ### Network Utilities
@@ -580,10 +565,8 @@ urldecode() {
 ## Project Starters
 
 <Info>
-  **Are these project starter functions worth memorizing?** If you create new
-  projects weekly, absolutely. Functions like `create-next` not only scaffold
-  the project but also open VS Code and start the dev server - turning a
-  5-minute task into 10 seconds.
+  Project starter functions automate scaffolding, opening the editor, and
+  starting dev servers.
 </Info>
 
 ### Quick Project Creation
@@ -827,4 +810,3 @@ export NVM_DIR="$HOME/.nvm"
 
 ---
 
-_With these aliases and functions configured, your terminal becomes a productivity multiplier. Every command is optimized for speed and clarity._

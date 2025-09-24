@@ -6,7 +6,7 @@ icon: rocket
 
 # Mac Developer Essentials
 
-Get your Mac ready for modern development with just the essentials. This streamlined guide covers only the critical tools you need: GitHub CLI, Git, Node.js, pnpm, Cursor, Claude Code, and Powerlevel10k.
+Essential tools for Mac development: GitHub CLI, Git, Node.js, pnpm, Cursor, Claude Code, and Powerlevel10k.
 
 <Info>
 **Time Required**: 15-20 minutes for complete setup.
@@ -15,7 +15,7 @@ Get your Mac ready for modern development with just the essentials. This streaml
 ## Package Manager Setup
 
 <Info>
-  **Why start with Homebrew?** It's the foundation for installing everything else - from GitHub CLI to Node.js. One install command opens up thousands of developer tools.
+  Homebrew is a package manager for macOS that simplifies installing developer tools.
 </Info>
 
 ### Install Homebrew
@@ -41,7 +41,7 @@ eval "$(/usr/local/bin/brew shellenv)"
 ## Git & GitHub CLI
 
 <Info>
-  **Why GitHub CLI?** It lets you create PRs, manage issues, and clone repos without leaving your terminal. Combined with proper Git config, you'll never need to open GitHub in a browser for basic tasks.
+  GitHub CLI allows you to manage GitHub repositories, pull requests, and issues from the terminal.
 </Info>
 
 ### Install Git and GitHub CLI
@@ -62,13 +62,13 @@ Choose:
 - Login with web browser
 
 <Info>
-  **What about SSH keys?** GitHub CLI handles authentication for you. No need to manually set up SSH keys - `gh` manages secure connections automatically.
+  GitHub CLI handles authentication automatically, eliminating the need for manual SSH key setup.
 </Info>
 
 ## Git Configuration
 
 <Info>
-  **What Git settings are essential?** Your identity for commits and smart defaults that prevent common mistakes - like auto-tracking branches and better merge conflict display.
+  Configure your Git identity and useful defaults for better workflow.
 </Info>
 
 ### Set Your Identity
@@ -97,7 +97,7 @@ git config --global fetch.prune true
 ## Node.js & pnpm
 
 <Info>
-  **Why pnpm over npm?** It's faster, uses less disk space through hard links, and prevents phantom dependencies. Most modern projects support pnpm out of the box.
+  pnpm is a fast, disk-space efficient package manager that prevents dependency issues.
 </Info>
 
 ### Install Node.js
@@ -117,13 +117,13 @@ corepack prepare pnpm@latest --activate
 ```
 
 <Info>
-  **What about yarn or npm?** pnpm is faster and more efficient. It works with any project that supports npm, and you can still use npm or yarn when needed for specific projects.
+  pnpm works with any npm-compatible project. You can still use npm or yarn when needed.
 </Info>
 
 ## Code Editors
 
 <Info>
-  **Cursor vs Claude Code?** Cursor is a full IDE with AI built-in, great for longer coding sessions. Claude Code is a CLI tool perfect for quick edits and terminal workflows. Install both - they complement each other.
+  Cursor is an AI-powered IDE. Claude Code is a CLI tool for quick edits. They serve different use cases.
 </Info>
 
 ### Install Cursor
@@ -154,7 +154,7 @@ Claude Code is Anthropic's official CLI for Claude. Use it for:
 ## Powerlevel10k Terminal Theme
 
 <Info>
-  **Why Powerlevel10k?** It shows git status, command execution time, error codes, and more - all in your prompt. Plus it's fast and doesn't slow down your terminal like Oh My Zsh.
+  Powerlevel10k is a fast terminal theme that displays git status, execution time, and error codes in your prompt.
 </Info>
 
 ### Install Powerlevel10k
@@ -192,7 +192,7 @@ Recommended settings for developers:
 ## Verification Checklist
 
 <Info>
-  **How do I know everything is working?** Run these quick checks to verify all tools are installed and configured correctly.
+  Verify your installation with these commands:
 </Info>
 
 ```bash
@@ -222,7 +222,7 @@ gh auth status
 ## One-Command Setup
 
 <Info>
-  **Want to install everything at once?** Copy this script for a complete setup in one go.
+  Script for installing all tools at once:
 </Info>
 
 Save this as `~/setup-essentials.sh`:
@@ -230,7 +230,7 @@ Save this as `~/setup-essentials.sh`:
 ```bash
 #!/bin/bash
 
-echo "🚀 Installing Mac Developer Essentials..."
+echo "Installing Mac Developer Essentials..."
 
 # Install Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -254,7 +254,7 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
 
-echo "✅ Setup complete! Restart terminal and:"
+echo "Setup complete! Restart terminal and:"
 echo "1. Run 'p10k configure' to set up your prompt"
 echo "2. Run 'gh auth login' to connect GitHub"
 echo "3. Configure git with your name and email"
@@ -284,4 +284,3 @@ Your essentials are installed. Level up with:
 
 ---
 
-*Streamlined essentials for modern Mac development. No bloat, just the tools that matter.*
