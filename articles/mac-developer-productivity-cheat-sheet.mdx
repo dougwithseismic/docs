@@ -248,6 +248,26 @@ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 **Why it matters**: Instead of typing `git status` 50 times a day, you type `gst`. Instead of guessing git branch names, they autocomplete. Instead of a boring `$` prompt, you see exactly what branch you're on and if you have uncommitted changes.
 
+<img src="/images/articles/cheatsheet/ohmyzsh.png" alt="Oh My Zsh with autosuggestions and autocomplete in action" />
+
+**Essential Oh My Zsh Plugins:**
+
+Install these powerful plugins to supercharge your terminal:
+
+```bash
+# Auto-suggestions (gray text completions from history)
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+# Syntax highlighting (colors commands red/green for invalid/valid)
+git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+
+# Fast syntax highlighting (improved performance version)
+git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
+
+# Real-time autocomplete (dropdown menus as you type)
+git clone --depth 1 https://github.com/marlonrichert/zsh-autocomplete ~/.oh-my-zsh/custom/plugins/zsh-autocomplete
+```
+
 **Add to `~/.zshrc`:**
 ```bash
 # Better command history
@@ -256,14 +276,26 @@ SAVEHIST=10000
 setopt HIST_IGNORE_DUPS
 setopt HIST_FIND_NO_DUPS
 
-# Auto-suggestions
-git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-
-# Syntax highlighting
-git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  fast-syntax-highlighting
+  zsh-autocomplete
+)
 ```
+
+**What each plugin does:**
+- **zsh-autosuggestions**: Press `→` to accept gray suggestions from your command history
+- **zsh-syntax-highlighting**: Commands turn green when valid, red when invalid
+- **fast-syntax-highlighting**: Faster, more accurate syntax coloring
+- **zsh-autocomplete**: Real-time dropdown menus with tab completion
+
+<Info>
+**Note**: These plugins add ~1-2 seconds to terminal startup time, but the productivity gains from autosuggestions and syntax highlighting are well worth the brief wait. You'll save far more time than you lose.
+
+You can mix and match any combination of these plugins—simply remove unwanted ones from your `plugins=()` list in `.zshrc` and run `source ~/.zshrc` to apply changes instantly.
+</Info>
 
 ### Better Commands
 
