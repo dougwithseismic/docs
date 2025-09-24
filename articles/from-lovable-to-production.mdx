@@ -16,6 +16,17 @@ This guide demonstrates how you can have the best of both worlds by building a T
 
 The result is a sustainable development process where everyone on your team can contribute effectively using the tools they're most productive with.
 
+## Why This Article Exists
+
+<Warning>
+**Full transparency: This approach is technically possible but rarely advisable**
+We're sharing this knowledge because democratizing information matters. If you're hellbent on the vibe coding route with Lovable, you deserve all the information to make an informed decision. Just understand what you're signing up for.
+</Warning>
+
+After 10-15 years pivoting from performance marketing through technical marketing into full-stack engineering, I've taken so much knowledge from the community. This is about giving back - even if it means showing you a path I wouldn't personally recommend.
+
+Some teams will push boundaries and make it work. Maybe for your specific use case, this is perfect. The point is you should have the knowledge to try it and see for yourself if it's going to work or not. There's no bad decision if it's an informed one.
+
 ## Understanding the Workflow
 
 <Info>
@@ -25,13 +36,15 @@ The workflow uses Git submodules so non-technical team members can continue prot
 
 ### Real-World Example: Snacker
 
-In practice, this workflow empowers founders to stay hands-on with their product. Take Snacker, for instance - founder Shelby wanted to maintain control over the frontend experience while having a robust backend API and monorepo structure. The setup allowed him to:
+The Snacker.ai story perfectly illustrates why the Lovable-to-production path is more painful than people realize. The prototype looked solid on the surface - it had an in-browser video recorder, a substantial Supabase schema, and seemingly worked well. But underneath was a different story.
 
-- Continue building and iterating on the UI in the familiar Lovable browser environment
-- Have the security of a production-ready Hono API backend being built simultaneously
-- Gradually transition into more technical work with Cursor when ready, without disrupting the workflow
+The codebase was a spaghetti mix of localStorage hacks mixed with security-lacking Supabase functionality. Components followed different patterns - you could see where different AI prompts had generated different architectural approaches. There was no consistent state management, no unified patterns, nothing sustainable.
 
-This gradual learning curve is a hidden benefit - stakeholders can start in their comfort zone and naturally progress into more technical areas as their confidence grows.
+The founder, Shelby, was completely unaware of these issues. Why would he be? Lovable never shows you the code quality, and even if it did, non-engineers wouldn't recognize the problems. As long as it works in Lovable, that's all that matters, right?
+
+When I recommended a rebuild that would take two weeks to establish solid foundations, Shelby was stubborn: "I don't want to do the rebuild. I want to keep pushing for features." So we deferred it. The result? Every feature took three times longer to build because we had to navigate through the spaghetti.
+
+The breaking point came when Shelby said, "We need Snacker for Teams now." The idea of adding workspaces to that convoluted codebase became a massive bottleneck. What should have been straightforward - architecting patterns for teams versus solo accounts, implementing proper payment flows - became a nightmare of bolting features onto a broken foundation.
 
 Before diving into the technical steps, let's understand the overall workflow:
 
@@ -175,6 +188,12 @@ Before diving into maintenance, let's be honest about what you're signing up for
 
 ### The Hard Truth About Lovable to Production
 
+There's a lot of marketing hype out there. Every new AI tool promises that "coding is over," "everyone is a developer now," "you don't need expensive engineers anymore." It sounds too good to be true because it is too good to be true.
+
+If you get caught up in these cycles, you're quickly going to find yourself frustrated. You're paying for a subpar product essentially. People burn through their Lovable credits, get so far, then hit a plateau - maybe a caching issue, a rendering problem, something they don't even have the concepts to understand. That's it. Game over. Make or break for tons of projects.
+
+The true cost? You will hit a brick wall and not be able to go any further. If you're lucky or your scope is super narrow, if you're not building anything ambitious or of real value, you might complete a project before hitting that wall. But for anything a customer would actually pay for? Why take that risk?
+
 The biggest mistake teams make is thinking they can seamlessly slot Lovable into a professional development workflow. Here's what really happens:
 
 **The Technical Debt Avalanche**
@@ -184,12 +203,26 @@ The biggest mistake teams make is thinking they can seamlessly slot Lovable into
 - The codebase becomes unmaintainable faster than you realize
 
 **The Knowledge Gap Crisis**
-"Engineering is difficult. It's hard." The brutal reality is that someone using Lovable typically lacks the engineering background to understand what they're getting into. They're sold on the promise of building by chatting, but hit a harsh reality check when they encounter:
-- Submodule syncing issues
-- Environment variable management nightmares
-- Auto-generated code that doesn't follow any patterns
-- The need for backends, services, tests, queues, and caching
-- Security vulnerabilities they don't even know exist
+"Engineering is difficult. It's hard." The brutal reality is that someone using Lovable typically lacks the engineering background to understand what they're getting into. They're sold on the promise of building by chatting, but hit a harsh reality check when they encounter real complexity.
+
+Take Snacker's video editor. You want to record a video? Great. Store it? Sure. But then reality hits:
+- You need to process 10-20 minute videos
+- You need proxy versions for smaller file sizes
+- You can't send 500MB to Deepgram or Whisper
+- You need transcoding, caching, CDN delivery
+
+As developers, we see these requirements coming from miles away. It's our profession to know these pitfalls and navigate around them. But Lovable makes it easy to feel in control and powerful until you hit these walls. Then you realize: Lovable doesn't know how to do this. ChatGPT doesn't know how to do this. And you don't have the concepts to even know what to ask for.
+
+**The Real Financial Impact**
+A founder thinks they're saving $150-200/hour on developer costs. Here's what actually happens:
+- You put 90 hours of your time into a product (and your time is valuable too)
+- You get completely blocked by technical limitations
+- You have to pay a developer anyway, who says one of three things:
+  1. "I won't work on this mess"
+  2. "I'll rebuild it from scratch first"
+  3. "I'll work on it but charge 3x my normal rate"
+- Every feature takes 3x longer due to technical debt
+- The cost in lost velocity becomes untenable
 
 ### When This Approach Makes Sense (And When It Doesn't)
 
@@ -313,14 +346,17 @@ After taking multiple Lovable apps to paying customers, here's the reality: this
 
 ### When to Use Lovable (And When to Stop)
 
-Lovable is fantastic for:
+Think of Lovable-generated code as "dissolvable code" - it has a finite lifespan and that's okay. Lovable is fantastic for:
 - Getting ideas out quickly
-- Creating disposable prototypes
+- Creating disposable prototypes that disappear after the session
 - Testing concepts with users
 - Building demos for investors
+- Internal tools where "something cranky is better than nothing"
 - Learning what features matter
 
 But here's the critical point: **As soon as you're serious about production, let it go.**
+
+The embarrassing truth? As an engineer, I wouldn't bring another developer onto a Lovable codebase. It's not about ego - it's about respect for their time and sanity. Engineers used to clean, sustainable setups find it painful to work in AI-generated chaos. In the Snacker case, Shelby had already burned through one developer who wasn't up to the task of untangling the mess before I came in to fix both the Lovable code AND the previous developer's attempts to work with it.
 
 ### The Clean Rebuild Reality
 
@@ -354,6 +390,20 @@ If you're thinking in terms of:
 
 **Don't try to force the Lovable-to-production path.** The technical debt will crush you.
 
+## The Honest Advice for Founders
+
+If someone came to me and said "I'm thinking about building my startup with Lovable," here's what I'd tell them:
+
+"Yes, absolutely. Do it. Go for it. Try as best you can and see how far you can get. It's empowering, and I implore you to try."
+
+But understand the reality: At some point, you will paint yourself into a corner and won't be able to get out. You'll find frustration, and in that frustration you'll lose motivation and momentum. No amount of discipline will get you out of a knowledge gap.
+
+Use Lovable as an interactive prototyping tool. Get your ideas across. Use it for the exploratory process. It's more interactive than Figma, and that's fantastic. Show your developer what features should look like - that's incredibly valuable.
+
+But don't believe the marketing that promises you can build anything. You'll end up making compromises that wouldn't exist if you brought in someone experienced from the start. When you hit frustrations and can't get where you want to be, remember: software engineering is a highly specialized job. We're paid well to solve problems with knowledge that's tough and difficult. You need an expert.
+
+Don't rely on ChatGPT. Don't copy-paste solutions to your developers thinking you're on top of everything. I've seen it all. You have to trust your expert who has years of knowledge. As a founder, you're coming in as a guest into someone else's world.
+
 ## Conclusion
 
 <Info>
@@ -364,6 +414,8 @@ There's a time and place for Lovable - it's an incredible prototyping tool. But 
 This article shows you *can* take Lovable to production through creative workarounds. But after real-world experience, the honest recommendation is: **don't.**
 
 Use Lovable for what it's great at - rapid prototyping and validation. When you're ready for production, invest in proper foundations. The short-term pain of a rebuild is nothing compared to the long-term agony of maintaining a house of cards.
+
+Maybe this article will age like a wet sock in a couple of years. I hope so. But for now, the tools aren't there yet. They overpromise and underdeliver, and that ends up as a crappy experience for everyone involved.
 
 ## Frequently Asked Questions
 
