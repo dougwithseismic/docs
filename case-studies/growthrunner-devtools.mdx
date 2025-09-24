@@ -4,12 +4,12 @@ description: "How a custom Chrome DevTools extension automated 90% of analytics 
 ---
 
 <script type="application/ld+json">
-{`{
+  {`{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "GrowthRunner DevTools Chrome Extension Case Study",
   "description": "How WithSeismic built a Chrome DevTools extension that automated 90% of analytics auditing for GrowthRunner",
-  "url": "https://docs.withseismic.com/case-studies/growthrunner-devtools",
+  "url": "https://withseismic.com/case-studies/growthrunner-devtools",
   "author": {
     "@type": "Organization",
     "name": "WithSeismic"
@@ -27,10 +27,15 @@ description: "How a custom Chrome DevTools extension automated 90% of analytics 
 }`}
 </script>
 
-<img src="/images/growthrunner.png" alt="GrowthRunner DevTools Extension" className="rounded-lg" />
+<img
+  src="/images/growthrunner.png"
+  alt="GrowthRunner DevTools Extension"
+  className="rounded-lg"
+/>
 
 <Note>
-[View the full case study on Contra →](https://contra.com/p/cbWXMPeN-bespoke-tools-growth-runner-devtools-extension)
+  [View the full case study on Contra
+  →](https://contra.com/p/cbWXMPeN-bespoke-tools-growth-runner-devtools-extension)
 </Note>
 
 ## The Challenge
@@ -40,6 +45,7 @@ Complex tasks with no room for error are prime candidates for automation. When G
 GrowthRunner, the expert analytics tracking agency founded by Nitesh Sharoff, specializes in advanced analytics and tracking for iconic brands including Wagamama and Net-a-Porter. Their core business revolves around auditing analytics setups - integral to their lead generation, day-to-day implementations, and billable hours.
 
 These audits require specialists to meticulously comb through client sites, reviewing tracking events, checking each payload and implementation. This process is:
+
 - Error-prone and monotonous
 - Highly specialized with numerous edge cases
 - Critical to their business model (a misimplementation can cost clients hundreds of thousands)
@@ -50,6 +56,7 @@ These audits require specialists to meticulously comb through client sites, revi
 I partnered with GrowthRunner to create a custom DevTools extension that reduced their auditing and implementation time by 90%, automating monotonous tasks and improving overall efficiency.
 
 The automation addressed the pain point of lengthy manual auditing by:
+
 - Leveraging Chrome's Recording API to capture user journeys
 - Building a dataLayer listener that plays back recorded actions
 - Simulating typical user journeys, clicks, and navigation
@@ -59,6 +66,7 @@ The automation addressed the pain point of lengthy manual auditing by:
 ## Technical Implementation
 
 ### Tech Stack
+
 - **Framework**: Plasmo.com - A JavaScript framework for building web extensions
 - **UI**: React with Tailwind CSS for the DevTools interface
 - **Storage**: IndexedDB for images and video storage
@@ -89,12 +97,14 @@ The main technical challenges involved:
 ## Results & Impact
 
 ### Efficiency Gains
+
 - **90% reduction** in auditing time
 - Tasks reduced from **multiple hours to minutes**
 - Team capacity increased from **1 audit per day** to **10 audits per day** per team member
 - **10x increase** in throughput capacity
 
 ### Business Impact
+
 - Freed up expert team members for high-value strategic work
 - Reduced error rates in analytics implementations
 - Accelerated pitch-to-delivery cycle
@@ -103,6 +113,7 @@ The main technical challenges involved:
 ## Lessons Learned
 
 This project demonstrated that:
+
 - Bespoke automation tools can transform specialized workflows
 - Even complex, edge-case-heavy processes can be automated effectively
 - Two weeks of development can deliver months of time savings

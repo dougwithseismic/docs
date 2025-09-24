@@ -4,12 +4,12 @@ description: "How we built an automated content intelligence system that process
 ---
 
 <script type="application/ld+json">
-{`{
+  {`{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Fingers on Pulse: YouTube Content Intelligence System Case Study",
   "description": "How WithSeismic built an automated system processing 800+ YouTube channels, achieving 200x speed improvement",
-  "url": "https://docs.withseismic.com/case-studies/fingers-on-pulse-content-intelligence",
+  "url": "https://withseismic.com/case-studies/fingers-on-pulse-content-intelligence",
   "author": {
     "@type": "Organization",
     "name": "WithSeismic"
@@ -27,10 +27,15 @@ description: "How we built an automated content intelligence system that process
 }`}
 </script>
 
-<img src="/images/finger-m0.png" alt="Fingers On The Pulse Content Intelligence System" className="rounded-lg" />
+<img
+  src="/images/finger-m0.png"
+  alt="Fingers On The Pulse Content Intelligence System"
+  className="rounded-lg"
+/>
 
 <Note>
-[Read the full technical deep-dive on our blog →](https://blog.withseismic.com/fingers-on-the-pulse-how-we-ate-thousands-of-hours-of-youtube-to-shape-the-zeitgeist-with-trigger-dev/)
+  [Read the full technical deep-dive on our blog
+  →](https://blog.withseismic.com/fingers-on-the-pulse-how-we-ate-thousands-of-hours-of-youtube-to-shape-the-zeitgeist-with-trigger-dev/)
 </Note>
 
 ## The Challenge
@@ -38,6 +43,7 @@ description: "How we built an automated content intelligence system that process
 In the fast-moving world of technical education—particularly in growth marketing, MarTech, LLMs, and automation—yesterday's breakthrough is tomorrow's baseline. The half-life of technical knowledge is shrinking rapidly.
 
 A learning management system (LMS) platform specializing in this space faced a critical challenge:
+
 - **Information overload**: Thousands of new videos published daily across YouTube
 - **High latency**: Educational content lagged 3-6 months behind cutting-edge topics
 - **Resource intensive**: Content researchers spent 60% of their time just trying to stay current
@@ -55,6 +61,7 @@ The project originated in the Growth Engineering Slack community run by Mike Tay
 "Fabian knew me from my work in the community," Doug recalls. "I'm known as one of the more technical members who delivers advanced solutions rather than relying on out-of-the-box tools. The connection was natural."
 
 The appeal was multifaceted:
+
 - A technically challenging problem requiring creative solutions
 - Direct application to Doug's own YouTube content creation needs
 - Opportunity to demonstrate how AI tools create real competitive advantages
@@ -65,6 +72,7 @@ The appeal was multifaceted:
 ### The System We Built
 
 I built an automated content intelligence system that could:
+
 - Monitor 800+ YouTube channels simultaneously
 - Process thousands of hours of video content
 - Extract structured insights using AI
@@ -85,7 +93,11 @@ Channel Discovery → Video Processing → Content Analysis → Insight Storage 
 
 ### Content Discovery Flow
 
-<img src="/images/finger-m1.png" alt="Content Discovery Flow Diagram" className="rounded-lg" />
+<img
+  src="/images/finger-m1.png"
+  alt="Content Discovery Flow Diagram"
+  className="rounded-lg"
+/>
 
 ### Tech Stack
 
@@ -100,11 +112,13 @@ Channel Discovery → Video Processing → Content Analysis → Insight Storage 
 "I could have gone with traditional BullMQ and it would have worked fine," Doug explains. "But Trigger.dev stood out for its impressive UI and user experience for managing job queues. It was killing two birds with one stone."
 
 The decision came down to practical considerations:
+
 - **No Custom UI Needed**: "Do I build a UI from scratch to handle job queue work? Trigger.dev gave Fabian something he could interact with immediately - run projects, scrapes, crawls, and see what was happening in real-time."
 - **Visual Job Management**: "One of the huge benefits is their fantastic UI for visualizing job queues. Throughout the debugging process, we could retry jobs and see what was working or failing without any layer of abstraction."
 - **Free Tier & Open Source**: "Easy to set up with a free tier, plus the option to self-host if needed."
 
 Doug considered alternatives:
+
 - **Inngest**: Similar to Trigger.dev with open source and free tier options
 - **Hatchet.run**: Great for pure work orchestration with self-hosting and more control over worker relationships
 - **BullMQ**: Traditional but would require building custom monitoring
@@ -130,7 +144,9 @@ export const processYouTubeChannels = task({
     }));
 
     // Batch trigger channel scraping
-    const batchResult = await scrapeYouTubeProfile.batchTrigger(channelPayloads);
+    const batchResult = await scrapeYouTubeProfile.batchTrigger(
+      channelPayloads
+    );
 
     return {
       success: true,
@@ -145,10 +161,12 @@ export const processYouTubeChannels = task({
 ### Multi-Level Batch Processing
 
 The system processes content at two levels for maximum efficiency:
+
 - **Level 1**: Process multiple channels concurrently
 - **Level 2**: For each channel, process multiple videos concurrently
 
 This approach enables processing hundreds of videos simultaneously:
+
 - **Manual approach**: 200 videos × 30 minutes = 100 hours (2.5 work weeks)
 - **Our system**: 200 videos in parallel = ~30 minutes total
 - **Result**: 200x speedup
@@ -160,6 +178,7 @@ This approach enables processing hundreds of videos simultaneously:
 "When processing video transcripts, it really depends on the content type and how the speaker addresses the audience," Doug explains. "We used the YouTube API to get transcripts directly, which meant we didn't have speaker identification - just raw transcript data to work with."
 
 The challenges were numerous:
+
 - **Input Quality**: "You're relying on your inputs to be as clean as possible. If the transcript misspelled something or the LLM didn't understand a concept, it affected the output."
 - **Content Pollution**: "Sometimes videos had sponsors, and halfway through they'd start talking about the sponsor. That could leak into the data output, so we had to prompt specifically to handle this."
 - **Cost vs Speed Balance**: "With this volume, cost and speed become critical. Claude Sonnet was out of the question - too expensive. OpenAI's GPT-4 had smaller, faster models we could leverage."
@@ -171,6 +190,7 @@ The challenges were numerous:
 "We ran evals to find the right mix of speed, cost, and quality," Doug notes. "But evaluation doesn't have to be scary or overly scientific. Sometimes you can just stick your finger in the air and work out which way the wind is blowing. Consistently use your product, see what works and what doesn't, then tweak it."
 
 For each video, the system extracts:
+
 - **Talking Points**: Key topics discussed
 - **Category**: Primary content classification
 - **Summary**: Concise overview
@@ -193,7 +213,11 @@ const response = await generateObject({
 
 ### Content Analysis Flow
 
-<img src="/images/finger-m2.png" alt="Content Analysis Flow Diagram" className="rounded-lg" />
+<img
+  src="/images/finger-m2.png"
+  alt="Content Analysis Flow Diagram"
+  className="rounded-lg"
+/>
 
 ### Universal Content Adapter Pattern
 
@@ -213,6 +237,7 @@ interface ContentAdapter<T, U> {
 ```
 
 Key architectural decisions:
+
 - **Result Caching**: "We introduced caching so successful results weren't being called again unnecessarily"
 - **Queue System from Day One**: "Essential for handling cron jobs that watch channels and immediately process new content"
 - **Platform Agnostic**: "Each platform has its own quirks - rate limits, data formats - but they all flow through the same pipeline"
@@ -226,6 +251,7 @@ This pattern makes adding new content sources (Twitter, blogs, podcasts) straigh
 "I love doing these small passion projects," Doug reflects. "Being the person who both builds and scopes, talking directly to Fabian to understand exactly what's needed - there's no conversation chains or multiple stakeholders slowing things down."
 
 The development approach was uniquely efficient:
+
 - **Proof of Concept**: 1 week sprint
 - **Production Build**: 2 weeks total
 - **Approach**: Rapid prototyping with creative freedom
@@ -233,12 +259,14 @@ The development approach was uniquely efficient:
 "I was able to take creative liberties and make technical decisions on the fly, then pitch them to Fabian after building. I knew he would agree because we were on the same page from the start. I was almost a co-founder on this project."
 
 This autonomy enabled:
+
 - Immediate technical decisions without committee approval
 - Creative problem-solving without bureaucratic overhead
 - Direct implementation of ideas as they emerged
 - Rapid iteration based on real results
 
 The one-week POC allowed the client to:
+
 - Test the automation concept with real data
 - Validate the quality of AI-generated insights
 - Determine ROI before full investment
@@ -248,13 +276,26 @@ The one-week POC allowed the client to:
 
 ### Manual vs Automated Research Comparison
 
-<img src="/images/finger-m3.png" alt="Before: Cumbersome, desystematised, dirty" className="rounded-lg" />
-<p className="text-center text-sm text-gray-600 mt-2">Before: Cumbersome, desystematised, dirty</p>
+<img
+  src="/images/finger-m3.png"
+  alt="Before: Cumbersome, desystematised, dirty"
+  className="rounded-lg"
+/>
+<p className="text-center text-sm text-gray-600 mt-2">
+  Before: Cumbersome, desystematised, dirty
+</p>
 
-<img src="/images/finger-m4.png" alt="After: Automation utopia with a 200x increase" className="rounded-lg mt-6" />
-<p className="text-center text-sm text-gray-600 mt-2">After: Automation utopia with a 200x increase</p>
+<img
+  src="/images/finger-m4.png"
+  alt="After: Automation utopia with a 200x increase"
+  className="rounded-lg mt-6"
+/>
+<p className="text-center text-sm text-gray-600 mt-2">
+  After: Automation utopia with a 200x increase
+</p>
 
 ### Before Automation
+
 - Content research: 60% of creators' time
 - Channel coverage: 25 YouTube channels
 - Content planning: Subjective impressions
@@ -262,6 +303,7 @@ The one-week POC allowed the client to:
 - Processing speed: 1 audit per day per researcher
 
 ### After Automation
+
 - Content research: 15% of creators' time
 - Channel coverage: **800+ YouTube channels**
 - Content planning: Data-driven based on trends
@@ -271,6 +313,7 @@ The one-week POC allowed the client to:
 ### Real-World Example
 
 When OpenAI launches a new model:
+
 1. Video published on YouTube
 2. System detects within minutes
 3. Transcript processed and analyzed
@@ -281,17 +324,20 @@ When OpenAI launches a new model:
 ## Technical Challenges Solved
 
 ### YouTube API Rate Limiting
+
 - Channel-based concurrency controls
 - Batch processing optimization
 - State tracking to avoid redundancy
 - Caching to prevent unnecessary API calls
 
 ### Processing Long-Form Content
+
 - Chunked transcript processing for memory efficiency
 - Relevant section extraction to focus on key content
 - Intelligent caching system to avoid reprocessing
 
 ### Ensuring Reliability
+
 - Comprehensive error handling with graceful fallbacks
 - Detailed logging and monitoring through Trigger.dev UI
 - State tracking for resumable processing after failures
@@ -327,6 +373,7 @@ The client relationship was key to success:
 "I would love to see this evolve beyond just extracting insights," Doug enthuses. "I played around with sentiment analysis and bias checking. There's a ton of potential for content teams using this for strategic analysis of their own channels or competitor research."
 
 Future possibilities Doug explored:
+
 - **Automated Content Creation**: "Creating content off the back of insights - synopses or summaries"
 - **Done-for-You Newsletters**: "We floated the idea of collecting all YouTube content for a channel weekly and sending it as a newsletter"
 - **Sentiment & Bias Analysis**: "Understanding not just what's being said, but how and why"
@@ -339,6 +386,7 @@ Future possibilities Doug explored:
 This system demonstrates how automation can transform content research from a bottleneck into a competitive advantage. By processing the firehose of content automatically, teams can focus on what humans do best—creating engaging, nuanced learning experiences—while the system ensures they're always working with the latest information.
 
 The proof of concept validated that:
+
 - Automated content intelligence is technically feasible
 - The quality of insights meets educational standards
 - ROI justifies the investment in automation

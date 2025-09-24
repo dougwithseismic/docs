@@ -4,12 +4,12 @@ description: "How I'm scoring your engagement right now (yes, you) to identify h
 ---
 
 <script type="application/ld+json">
-{`{
+  {`{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Lead Qualifier: Real-Time Engagement Tracking System",
   "description": "Case study of WithSeismic's lead qualification system that scores visitor engagement in real-time",
-  "url": "https://docs.withseismic.com/case-studies/lead-qualifier",
+  "url": "https://withseismic.com/case-studies/lead-qualifier",
   "author": {
     "@type": "Person",
     "name": "Doug Silkstone"
@@ -256,35 +256,35 @@ Start with a visitor profile structure in localStorage that persists across sess
 ```javascript
 // Initialize visitor profile with unique ID and session tracking
 const initVisitorProfile = () => {
-  const stored = localStorage.getItem('visitor_profile');
+  const stored = localStorage.getItem("visitor_profile");
   if (stored) return JSON.parse(stored);
 
   return {
     visitorId: `visitor_${Math.random().toString(36).substring(2)}`,
     firstVisit: new Date().toISOString(),
     behavior: {
-      pages: {},  // Page-specific data
+      pages: {}, // Page-specific data
       totalPageViews: 0,
       uniquePagesViewed: 0,
       totalTimeSpent: 0,
       toolsUsed: [],
-      contentCategories: []
+      contentCategories: [],
     },
     engagement: {
       score: 0,
       level: "cold",
-      signals: []
+      signals: [],
     },
     currentSession: {
       sessionId: generateSessionId(),
       startTime: Date.now(),
-      currentPage: window.location.pathname
-    }
+      currentPage: window.location.pathname,
+    },
   };
 };
 
 const profile = initVisitorProfile();
-localStorage.setItem('visitor_profile', JSON.stringify(profile));
+localStorage.setItem("visitor_profile", JSON.stringify(profile));
 ```
 
 ### Step 2: Track Page Views and Navigation
@@ -311,7 +311,7 @@ class PageTracker {
         visitCount: 1,
         totalTimeSpent: 0,
         maxScrollDepth: 0,
-        sessions: []
+        sessions: [],
       };
       profile.behavior.uniquePagesViewed++;
     } else {
@@ -319,7 +319,7 @@ class PageTracker {
     }
 
     profile.behavior.totalPageViews++;
-    this.updateEngagement('pageView', 5);
+    this.updateEngagement("pageView", 5);
     saveProfile(profile);
   }
 }
@@ -355,7 +355,7 @@ const trackScrollDepth = () => {
       maxScroll = scrollPercent;
 
       // Award points at milestones
-      [25, 50, 75, 100].forEach(milestone => {
+      [25, 50, 75, 100].forEach((milestone) => {
         if (scrollPercent >= milestone && maxScroll < milestone + 25) {
           const points = { 25: 2, 50: 3, 75: 5, 100: 7 };
           updateEngagement(`scroll${milestone}`, points[milestone]);
@@ -365,12 +365,16 @@ const trackScrollDepth = () => {
     ticking = false;
   };
 
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      window.requestAnimationFrame(updateScroll);
-      ticking = true;
-    }
-  }, { passive: true });
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
 };
 ```
 
@@ -389,7 +393,7 @@ class TimeTracker {
 
   setupTracking() {
     // Track when tab loses/gains focus
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
         this.pause();
       } else {
@@ -398,7 +402,7 @@ class TimeTracker {
     });
 
     // Set up time milestones
-    [30, 60, 120].forEach(seconds => {
+    [30, 60, 120].forEach((seconds) => {
       setTimeout(() => {
         if (this.isActive) {
           const points = { 30: 3, 60: 5, 120: 10 };
@@ -441,7 +445,7 @@ const trackToolUsage = (toolName, data = {}) => {
     profile.behavior.toolsUsed.push(toolName);
   }
 
-  updateEngagement('toolUsed', 15);
+  updateEngagement("toolUsed", 15);
 
   // Store calculation results if applicable
   if (data.calculation) {
@@ -449,33 +453,33 @@ const trackToolUsage = (toolName, data = {}) => {
     profile.behavior.calculations.push({
       tool: toolName,
       result: data.result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    updateEngagement('calculationPerformed', 20);
+    updateEngagement("calculationPerformed", 20);
   }
 
   saveProfile(profile);
 };
 
 // Track code copying (high intent for developers)
-document.addEventListener('copy', () => {
+document.addEventListener("copy", () => {
   const selection = window.getSelection();
-  if (selection?.anchorNode?.parentElement?.closest('pre, code')) {
-    updateEngagement('codeBlockCopy', 10);
-    trackAction('code_copied', {
-      snippet: selection.toString().substring(0, 100)
+  if (selection?.anchorNode?.parentElement?.closest("pre, code")) {
+    updateEngagement("codeBlockCopy", 10);
+    trackAction("code_copied", {
+      snippet: selection.toString().substring(0, 100),
     });
   }
 });
 
 // Track contact page visits and form interactions
-if (window.location.pathname.includes('/contact')) {
-  updateEngagement('contactPageVisit', 50);
+if (window.location.pathname.includes("/contact")) {
+  updateEngagement("contactPageVisit", 50);
 
   // Track form field interactions
-  document.querySelectorAll('input, textarea').forEach(field => {
-    field.addEventListener('focus', () => {
-      updateEngagement('formInteraction', 5);
+  document.querySelectorAll("input, textarea").forEach((field) => {
+    field.addEventListener("focus", () => {
+      updateEngagement("formInteraction", 5);
     });
   });
 }
@@ -502,14 +506,14 @@ const SCORING_CONFIG = {
     calculationPerformed: 20,
     contactPageVisit: 50,
     formInteraction: 5,
-    bookingInitiated: 100
+    bookingInitiated: 100,
   },
   thresholds: {
     cold: 0,
     warm: 1000,
     hot: 2500,
-    qualified: 5000
-  }
+    qualified: 5000,
+  },
 };
 
 const updateEngagement = (eventType, customPoints = null) => {
@@ -523,13 +527,13 @@ const updateEngagement = (eventType, customPoints = null) => {
   const previousLevel = profile.engagement.level;
 
   if (score >= SCORING_CONFIG.thresholds.qualified) {
-    profile.engagement.level = 'qualified';
+    profile.engagement.level = "qualified";
   } else if (score >= SCORING_CONFIG.thresholds.hot) {
-    profile.engagement.level = 'hot';
+    profile.engagement.level = "hot";
   } else if (score >= SCORING_CONFIG.thresholds.warm) {
-    profile.engagement.level = 'warm';
+    profile.engagement.level = "warm";
   } else {
-    profile.engagement.level = 'cold';
+    profile.engagement.level = "cold";
   }
 
   // Trigger notifications on level change
@@ -552,44 +556,45 @@ const detectEngagementSignals = (profile) => {
 
   // Page engagement patterns
   if (profile.behavior.uniquePagesViewed >= 3) {
-    signals.push('multi_page_visitor');
+    signals.push("multi_page_visitor");
   }
   if (profile.behavior.uniquePagesViewed >= 5) {
-    signals.push('deep_explorer');
+    signals.push("deep_explorer");
   }
 
   // Time investment
   if (profile.behavior.totalTimeSpent >= 300) {
-    signals.push('high_time_investment');
+    signals.push("high_time_investment");
   }
-  const avgTimePerPage = profile.behavior.totalTimeSpent /
-                         profile.behavior.totalPageViews;
+  const avgTimePerPage =
+    profile.behavior.totalTimeSpent / profile.behavior.totalPageViews;
   if (avgTimePerPage >= 60) {
-    signals.push('engaged_reader');
+    signals.push("engaged_reader");
   }
 
   // Content depth
-  const deepPages = Object.values(profile.behavior.pages)
-    .filter(page => page.maxScrollDepth >= 75);
+  const deepPages = Object.values(profile.behavior.pages).filter(
+    (page) => page.maxScrollDepth >= 75
+  );
   if (deepPages.length >= 3) {
-    signals.push('deep_content_consumer');
+    signals.push("deep_content_consumer");
   }
 
   // Tool engagement
   if (profile.behavior.toolsUsed.length > 0) {
-    signals.push('tool_user');
+    signals.push("tool_user");
   }
 
   // High-intent pages
   const pageKeys = Object.keys(profile.behavior.pages);
-  if (pageKeys.some(p => p.includes('/pricing'))) {
-    signals.push('price_aware');
+  if (pageKeys.some((p) => p.includes("/pricing"))) {
+    signals.push("price_aware");
   }
-  if (pageKeys.some(p => p.includes('/contact'))) {
-    signals.push('contact_visitor');
+  if (pageKeys.some((p) => p.includes("/contact"))) {
+    signals.push("contact_visitor");
   }
-  if (pageKeys.some(p => p.includes('/case-studies'))) {
-    signals.push('case_study_reader');
+  if (pageKeys.some((p) => p.includes("/case-studies"))) {
+    signals.push("case_study_reader");
   }
 
   profile.engagement.signals = [...new Set(signals)];
@@ -607,10 +612,10 @@ const notifyQualifiedLead = async (profile) => {
   const topPages = Object.values(profile.behavior.pages)
     .sort((a, b) => b.totalTimeSpent - a.totalTimeSpent)
     .slice(0, 5)
-    .map(p => ({
+    .map((p) => ({
       path: p.path,
       time: p.totalTimeSpent,
-      depth: p.maxScrollDepth
+      depth: p.maxScrollDepth,
     }));
 
   const leadData = {
@@ -621,29 +626,29 @@ const notifyQualifiedLead = async (profile) => {
     stats: {
       pagesViewed: profile.behavior.uniquePagesViewed,
       totalTime: Math.floor(profile.behavior.totalTimeSpent / 60),
-      toolsUsed: profile.behavior.toolsUsed
+      toolsUsed: profile.behavior.toolsUsed,
     },
     topPages,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   // Send to your webhook endpoint
   try {
-    await fetch('/api/qualified-lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(leadData)
+    await fetch("/api/qualified-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(leadData),
     });
   } catch (error) {
-    console.error('Failed to notify about qualified lead:', error);
+    console.error("Failed to notify about qualified lead:", error);
   }
 
   // Also track in Google Analytics if available
   if (window.gtag) {
-    window.gtag('event', 'qualified_lead', {
+    window.gtag("event", "qualified_lead", {
       value: profile.engagement.score,
       engagement_level: profile.engagement.level,
-      signals: profile.engagement.signals.join(',')
+      signals: profile.engagement.signals.join(","),
     });
   }
 };
@@ -673,27 +678,27 @@ window.LeadTracker = {
 
   // Reset tracking data
   reset: () => {
-    localStorage.removeItem('visitor_profile');
-    console.log('Tracking data reset');
+    localStorage.removeItem("visitor_profile");
+    console.log("Tracking data reset");
     location.reload();
   },
 
   // Enable debug mode
   enableDebug: () => {
     window.LEAD_TRACKER_DEBUG = true;
-    console.log('Debug mode enabled');
-    console.log('Current profile:', getVisitorProfile());
+    console.log("Debug mode enabled");
+    console.log("Current profile:", getVisitorProfile());
   },
 
   // Test scoring
   testScoring: () => {
-    const testEvents = ['pageView', 'scroll50', 'time60s', 'toolUsed'];
-    testEvents.forEach(event => {
+    const testEvents = ["pageView", "scroll50", "time60s", "toolUsed"];
+    testEvents.forEach((event) => {
       updateEngagement(event);
       console.log(`Added ${SCORING_CONFIG.events[event]} points for ${event}`);
     });
-    console.log('New score:', getVisitorProfile().engagement.score);
-  }
+    console.log("New score:", getVisitorProfile().engagement.score);
+  },
 };
 ```
 
@@ -735,23 +740,27 @@ if (profile.engagement.score >= 5000) {
     about what they've been viewing
   </Card>
 
-  <Card title="📧 Smart Email Sequence" icon="envelope">
-    Trigger personalized email campaigns based on specific page combinations
-    viewed
-  </Card>
+{" "}
+<Card title="📧 Smart Email Sequence" icon="envelope">
+  Trigger personalized email campaigns based on specific page combinations
+  viewed
+</Card>
 
-  <Card title="🎯 CRM Enrichment" icon="database">
-    Create or update CRM records with behavioral data before the first call
-  </Card>
+{" "}
+<Card title="🎯 CRM Enrichment" icon="database">
+  Create or update CRM records with behavioral data before the first call
+</Card>
 
-  <Card title="🤖 AI Lead Scoring" icon="robot">
-    Feed behavior patterns to AI to predict conversion probability and suggest
-    next best action
-  </Card>
+{" "}
+<Card title="🤖 AI Lead Scoring" icon="robot">
+  Feed behavior patterns to AI to predict conversion probability and suggest
+  next best action
+</Card>
 
-  <Card title="📊 Custom Audiences" icon="chart">
-    Sync qualified visitors to ad platforms for retargeting with specific offers
-  </Card>
+{" "}
+<Card title="📊 Custom Audiences" icon="chart">
+  Sync qualified visitors to ad platforms for retargeting with specific offers
+</Card>
 
   <Card title="📅 Calendar Automation" icon="calendar">
     Auto-schedule follow-ups based on engagement patterns and timezone
@@ -809,7 +818,6 @@ Agencies can qualify prospects based on which case studies they read and how dee
 
 Publishers can identify super readers who are prime candidates for premium subscriptions based on article completion rates and session frequency. Track topic preferences to personalize content recommendations, and provide advertisers with real engagement metrics, not just impressions.
 
-
 ## Advanced Tracking Techniques
 
 ### Multi-Domain Tracking
@@ -817,6 +825,7 @@ Publishers can identify super readers who are prime candidates for premium subsc
 To track visitors across multiple domains or subdomains, you can share the visitor ID through cookies set at the root domain level, or pass it via URL parameters for true cross-domain tracking. This maintains context as prospects move between your marketing site, app, and documentation.
 
 ### Predictive Scoring
+
 ```javascript
 // Use engagement velocity to predict conversion
 const engagementVelocity = {
@@ -825,10 +834,10 @@ const engagementVelocity = {
     const velocityScore = profile.engagement.score / (timeElapsed / 1000 / 60);
 
     // High velocity = hot lead
-    if (velocityScore > 10) return 'high-intent';
-    if (velocityScore > 5) return 'exploring';
-    return 'browsing';
-  }
+    if (velocityScore > 10) return "high-intent";
+    if (velocityScore > 5) return "exploring";
+    return "browsing";
+  },
 };
 ```
 
@@ -849,6 +858,3 @@ Either way, your behavior is telling a story. And I'm listening.
 ---
 
 **Want to implement this for your business?** I help companies build intelligent lead qualification systems that actually work. [Let's talk about your use case →](/contact/book-consultation)
-
-
-

@@ -5,12 +5,12 @@ icon: "robot"
 ---
 
 <script type="application/ld+json">
-{`{
+  {`{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "definitely-not-a-robot: Humanizing Browser Automation",
   "description": "Case study of an npm package that makes automated browsers indistinguishable from human users",
-  "url": "https://docs.withseismic.com/case-studies/definitely-not-a-robot",
+  "url": "https://withseismic.com/case-studies/definitely-not-a-robot",
   "author": {
     "@type": "Organization",
     "name": "WithSeismic"
@@ -79,28 +79,28 @@ The package leverages puppeteer-extra with StealthPlugin and adds layers of huma
 
 ```typescript
 // Splits long movements into segments with jitter
-const distance = calculateDistance(start, end)
-const segments = Math.max(2, Math.min(50, Math.floor(distance / 10)))
+const distance = calculateDistance(start, end);
+const segments = Math.max(2, Math.min(50, Math.floor(distance / 10)));
 
 // Natural acceleration/deceleration
-const speed = 0.03 + distance * 0.001
-const acceleration = 0.002
+const speed = 0.03 + distance * 0.001;
+const acceleration = 0.002;
 
 // Bezier control points for curved paths
-const ctrlPt1 = start + Math.random() * (end - start) * 0.5
-const ctrlPt2 = end - Math.random() * (end - start) * 0.5
+const ctrlPt1 = start + Math.random() * (end - start) * 0.5;
+const ctrlPt2 = end - Math.random() * (end - start) * 0.5;
 ```
 
 #### ASCII-Based Typing Delays
 
 ```typescript
 // Larger key distance = longer delay
-const diff = Math.abs(text.charCodeAt(i) - text.charCodeAt(i - 1))
-const delay = averageDelayPerChar + (diff * 2)
+const diff = Math.abs(text.charCodeAt(i) - text.charCodeAt(i - 1));
+const delay = averageDelayPerChar + diff * 2;
 
 // Pause after punctuation
-if (['.', '!', '?'].includes(char)) {
-  delay += 200 // Natural thinking pause
+if ([".", "!", "?"].includes(char)) {
+  delay += 200; // Natural thinking pause
 }
 ```
 
@@ -114,17 +114,17 @@ if (['.', '!', '?'].includes(char)) {
 ### API Design
 
 ```typescript
-const browser = new HumanBrowser()
+const browser = new HumanBrowser();
 
 // All methods return promises for chaining
-await browser.launch({ headless: false })
-await browser.navigate('https://example.com')
-await browser.humanMove('#button', {
-  hesitationBeforeClick: true
-})
-await browser.humanType('Hello World', 100) // WPM
-await browser.jitterMouse({ jitterCount: 3 })
-await browser.wait(1000, 5000) // Random delay
+await browser.launch({ headless: false });
+await browser.navigate("https://example.com");
+await browser.humanMove("#button", {
+  hesitationBeforeClick: true,
+});
+await browser.humanType("Hello World", 100); // WPM
+await browser.jitterMouse({ jitterCount: 3 });
+await browser.wait(1000, 5000); // Random delay
 ```
 
 ---
@@ -247,29 +247,29 @@ Rather than complex ML models, simple randomization worked:
 Here's how the package handles a typical automation flow:
 
 ```typescript
-import HumanBrowser from 'definitely-not-a-robot'
+import HumanBrowser from "definitely-not-a-robot";
 
-const browser = new HumanBrowser()
+const browser = new HumanBrowser();
 
-await browser.launch({ headless: false })
-await browser.navigate('https://ui.shadcn.com')
+await browser.launch({ headless: false });
+await browser.navigate("https://ui.shadcn.com");
 
 // Search with natural movement and typing
 await browser.humanMove('input[type="search"]', {
   hesitationBeforeClick: true,
-  debug: true // Shows red path
-})
-await browser.jitterMouse({ jitterCount: 3 })
-await browser.humanType('Hello World', 86) // 86 WPM
+  debug: true, // Shows red path
+});
+await browser.jitterMouse({ jitterCount: 3 });
+await browser.humanType("Hello World", 86); // 86 WPM
 
 // Navigate with pauses
-await browser.wait(300, 500)
-await browser.humanMove('button[aria-label="Select a team"]')
+await browser.wait(300, 500);
+await browser.humanMove('button[aria-label="Select a team"]');
 
 // Careful typing for important fields
-await browser.humanType('Monster', 30) // Slow 30 WPM
+await browser.humanType("Monster", 30); // Slow 30 WPM
 
-await browser.close()
+await browser.close();
 ```
 
 ---

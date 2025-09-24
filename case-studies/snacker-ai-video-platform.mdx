@@ -4,12 +4,12 @@ description: "How productizing a video concierge service into a DIY platform gen
 ---
 
 <script type="application/ld+json">
-{`{
+  {`{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Snacker.ai: Productizing Agency Services Case Study",
   "description": "How WithSeismic helped GrowthMatch transform their video service into Snacker.ai, generating 5,000+ leads",
-  "url": "https://docs.withseismic.com/case-studies/snacker-ai-video-platform",
+  "url": "https://withseismic.com/case-studies/snacker-ai-video-platform",
   "author": {
     "@type": "Organization",
     "name": "WithSeismic"
@@ -29,7 +29,8 @@ description: "How productizing a video concierge service into a DIY platform gen
 </script>
 
 <Note>
-[Visit Snacker.ai →](https://snacker.ai) | [Learn more about GrowthMatch →](https://www.growthmatch.com/)
+  [Visit Snacker.ai →](https://snacker.ai) | [Learn more about GrowthMatch
+  →](https://www.growthmatch.com/)
 </Note>
 
 ## The Challenge
@@ -37,6 +38,7 @@ description: "How productizing a video concierge service into a DIY platform gen
 GrowthMatch, a TechStars alumni company, had successfully pivoted into a done-for-you video concierge service. They would record, help with case studies, generate content ideas, edit videos, and deliver polished content ready for publication.
 
 However, like traditional agencies, they faced a critical scaling challenge:
+
 - High overhead costs for manual video editing and production
 - Limited capacity to serve multiple clients simultaneously
 - Unable to scale without proportionally increasing headcount
@@ -61,12 +63,14 @@ Productizing the service wasn't just about creating another revenue stream. It w
 By productizing their expertise into Snacker.ai, GrowthMatch could now operate two complementary businesses:
 
 **Snacker.ai (Product)**
+
 - Automated video editing and content creation
 - Self-service onboarding
 - $0-49/month pricing tiers
 - Volume play with thousands of users
 
 **GrowthMatch (Service)**
+
 - High-touch concierge video production
 - Strategic content planning
 - $5,000-25,000/month contracts
@@ -108,6 +112,7 @@ Doug's advice for founders: "Choose partners who are genuinely passionate about 
 "The Lovable prototype was in rough shape," Doug remembers. "People don't realize that AI-generated code tends to pile features on shaky foundations. Every new user request adds another layer of conditional logic without considering the overall architecture."
 
 The prototype's problems were systemic:
+
 - If-else logic piled upon if-else logic for every user request
 - No consistent patterns between components
 - LLMs don't choose best practices or scalable solutions
@@ -122,11 +127,13 @@ The challenge wasn't just fixing the code - it was maintaining velocity while re
 Doug's approach was surgical and strategic:
 
 **Immediate Stabilization**
+
 - Moved everything into a monorepo for shared packages
 - Added Hono backend to bring order to the frontend chaos
 - Properly plumbed in all the Supabase work
 
 **Scalable Patterns Introduction**
+
 - Feature folders and consistent naming conventions
 - Data fetching patterns with React Query
 - File structure conventions
@@ -142,6 +149,7 @@ Working with a founder actively building in Lovable while stabilizing the codeba
 "Seeing the complexity firsthand was eye-opening for him. It built mutual respect - he understood why certain things took time, and I understood his urgency to ship."
 
 The technical gap was significant:
+
 - API key security and leak prevention
 - Caching and queue management concepts
 - Production-ready scaling considerations
@@ -161,6 +169,7 @@ His advice to founders considering the Lovable-to-production path:
 ### Strategic Benefits of Productization
 
 Snacker.ai became a standalone SaaS that enabled GrowthMatch to:
+
 - **Capture the Full Market**: Serve everyone from solopreneurs to Fortune 500s
 - **Create Natural Upsell Paths**: DIY users hit limits and upgrade to done-for-you
 - **Enable Team Offerings**: "Snacker for Teams" opened enterprise opportunities they couldn't handle as pure services
@@ -170,10 +179,12 @@ Snacker.ai became a standalone SaaS that enabled GrowthMatch to:
 ## Technical Implementation
 
 ### Starting Point
+
 - Inherited a Lovable prototype that needed production-ready architecture
 - Required complete AI integration and video processing pipeline
 
 ### Tech Stack
+
 - **Architecture**: Monorepo with TypeScript
 - **Frontend**: Vite + React
 - **Backend**: Hono framework
@@ -190,6 +201,7 @@ Snacker.ai became a standalone SaaS that enabled GrowthMatch to:
 The technical challenges were numerous:
 
 **Client vs. Server Rendering Trade-offs**
+
 - Client rendering: Cheaper, potentially faster, but dependent on user's machine
 - Server rendering: Consistent but expensive, requires rendering infrastructure
 - Mobile constraints: Limited processing power and screen real estate
@@ -200,6 +212,7 @@ The technical challenges were numerous:
 "iOS Safari killed our original approach," Doug recalls. "It blocks audio autoplay when stitching videos - a security feature that makes perfect sense but breaks traditional video editing workflows."
 
 The solution was creative but came with sacrifices:
+
 - Created HLS playlists instead of traditional video stitching
 - Segmented videos into timestamp-based chunks
 - Built custom playlist sections to bypass iOS restrictions
@@ -210,6 +223,7 @@ The solution was creative but came with sacrifices:
 "Video processing requires clever workarounds," Doug explains. "We record two streams simultaneously - full resolution for final output and a lightweight proxy for real-time transcription. It's the kind of complexity users never see but makes the magic possible."
 
 The transcription dilemma:
+
 - Run Whisper in the browser for privacy but sacrifice performance
 - Send to external services for speed but add latency and privacy concerns
 - Balance between client performance and feature completeness
@@ -225,6 +239,7 @@ The transcription dilemma:
 The breakthrough came through relentless internal testing:
 
 **The Dogfooding Breakthrough**
+
 - Started testing internally, trying to "trip up" the AI deliberately
 - Introduced evals for systematic testing
 - Team used the product for all their own content creation
@@ -235,12 +250,14 @@ The breakthrough came through relentless internal testing:
 ### Three Pillars of AI Integration
 
 1. **Content Ideation**
+
    - AI-generated talking points and prompts
    - Topic suggestions based on audience and goals
    - Session planning and content calendars
    - Personalized content strategies
 
 2. **Automatic Video Editing**
+
    - Removes gaps, pauses, and mistakes automatically
    - Creates coherent takes from raw recordings
    - Accepts feedback for re-editing
@@ -270,6 +287,7 @@ The breakthrough came through relentless internal testing:
 ## Results & Impact
 
 ### User Acquisition (3 months)
+
 - **20 paying customers** acquired
 - **5,000+ free users** onboarded
 - Created natural upsell funnel to GrowthMatch's premium services
@@ -277,24 +295,28 @@ The breakthrough came through relentless internal testing:
 ### The Power of Productization in Action
 
 **Lead Quality Transformation**
+
 - 5,000 free users = massive top-of-funnel awareness
 - 20 paying customers validated willingness to pay
 - Each user became a potential $5,000+/month service client
 - Content created by users acted as organic marketing
 
 **Service Business Benefits**
+
 - **Pre-qualified Leads**: Snacker users who hit limits naturally inquired about done-for-you services
 - **Reduced Sales Cycles**: Prospects already understood the value of video content
 - **Higher Close Rates**: Users had already experienced the quality through the product
 - **Premium Positioning**: "If the DIY tool is this good, imagine the full service"
 
 ### Product-Market Fit
+
 - Validated the "done for you" video editing concept
 - Proved demand for simplified video content creation
 - Successfully bridged DIY and concierge service models
 - Identified enterprise needs through "Snacker for Teams" requests
 
 ### Business Transformation
+
 - **Scaled Beyond Agency Model**: From linear growth (more people = more revenue) to scalable growth (software serves unlimited users)
 - **Created Recurring Revenue**: Predictable SaaS MRR alongside project-based service revenue
 - **Reduced CAC**: Self-service acquisition vs. enterprise sales process
@@ -304,6 +326,7 @@ The breakthrough came through relentless internal testing:
 ## What Made Snacker Different
 
 Unlike traditional video editing tools, Snacker eliminated the entire editing interface. Users simply:
+
 1. Sit down to record
 2. Get AI-powered guidance on what to say
 3. Record their video with teleprompter support
@@ -332,12 +355,14 @@ Most agencies struggle to escape the time-for-money trap. Productization solves 
 ### The Perfect Product-Service Flywheel
 
 **Product Feeds Service:**
+
 - Free users become aware of premium offerings
 - DIY limitations naturally highlight value of done-for-you
 - Product usage data reveals high-value prospects
 - Team accounts identify enterprise opportunities
 
 **Service Feeds Product:**
+
 - Service insights drive product roadmap
 - Premium client needs become product features
 - Service quality sets product quality bar

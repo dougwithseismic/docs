@@ -4,12 +4,12 @@ description: "Transform your AI-generated prototype into a scalable, maintainabl
 ---
 
 <script type="application/ld+json">
-{`{
+  {`{
   "@context": "https://schema.org",
   "@type": "Service",
   "name": "No-Code to Production Service",
   "description": "Transform AI-generated prototypes into scalable production applications",
-  "url": "https://docs.withseismic.com/services/no-code-to-production",
+  "url": "https://withseismic.com/services/no-code-to-production",
   "provider": {
     "@type": "Organization",
     "name": "WithSeismic"
@@ -46,14 +46,17 @@ description: "Transform your AI-generated prototype into a scalable, maintainabl
 </script>
 
 <Note>
-Your prototype worked. Users love it. Now it's breaking at the seams. We transform AI-generated prototypes into production-ready applications that scale.
+  Your prototype worked. Users love it. Now it's breaking at the seams. We
+  transform AI-generated prototypes into production-ready applications that
+  scale.
 </Note>
 
 ## The Hidden Cost of No-Code Success
 
 <Info>
-**When should I transition from no-code to production?**
-When you have paying users, performance issues, or need to onboard developers - typically around 1,000+ active users or $10K+ monthly revenue.
+  **When should I transition from no-code to production?** When you have paying
+  users, performance issues, or need to onboard developers - typically around
+  1,000+ active users or $10K+ monthly revenue.
 </Info>
 
 You've validated your idea with Lovable, Bolt, or Cursor. Users are signing up. Revenue is starting to flow. But here's what you don't see coming:
@@ -73,8 +76,9 @@ The AI-generated prototype that got you here won't get you there. You need produ
 ## What Makes Production Different
 
 <Info>
-**What's wrong with my AI-generated prototype code?**
-AI optimizes for immediate functionality, not maintainability. This creates technical debt that compounds until adding simple features takes weeks instead of hours.
+  **What's wrong with my AI-generated prototype code?** AI optimizes for
+  immediate functionality, not maintainability. This creates technical debt that
+  compounds until adding simple features takes weeks instead of hours.
 </Info>
 
 ### The Prototype Reality
@@ -83,9 +87,9 @@ AI-generated code optimizes for immediate functionality, not long-term maintaina
 
 ```javascript
 // What AI generates: Works today, breaks tomorrow
-if (user.type === 'premium') {
-  if (feature === 'export') {
-    if (format === 'pdf') {
+if (user.type === "premium") {
+  if (feature === "export") {
+    if (format === "pdf") {
       // 50 more nested ifs...
     }
   }
@@ -103,19 +107,22 @@ Every prototype follows the same trajectory: rapid initial progress, then expone
 ## The No Code to Production Methodology
 
 <Info>
-**How do you transform my prototype without breaking it?**
-We use a hybrid approach with git submodules, allowing you to keep building features while we rebuild the foundation - no disruption to your users.
+  **How do you transform my prototype without breaking it?** We use a hybrid
+  approach with git submodules, allowing you to keep building features while we
+  rebuild the foundation - no disruption to your users.
 </Info>
 
 ### 1. Architectural Stabilization
 
 **Immediate Triage**
+
 - Audit existing codebase for critical vulnerabilities
 - Identify breaking points and performance bottlenecks
 - Map feature dependencies and technical debt
 - Prioritize fixes based on user impact
 
 **Foundation Building**
+
 - Establish proper project structure (monorepo when appropriate)
 - Implement consistent patterns across the codebase
 - Add essential infrastructure (error handling, logging, monitoring)
@@ -124,7 +131,8 @@ We use a hybrid approach with git submodules, allowing you to keep building feat
 ### 2. Hybrid Development Strategy
 
 <Info>
-The secret: Keep shipping features while rebuilding foundations. Your users don't care about refactoring—they care about results.
+  The secret: Keep shipping features while rebuilding foundations. Your users
+  don't care about refactoring—they care about results.
 </Info>
 
 **Git Submodules Architecture**
@@ -142,6 +150,7 @@ your-app/
 ```
 
 This allows:
+
 - **Founders** continue shipping features in no-code platforms
 - **Engineers** maintain and scale core infrastructure
 - **Automated bridges** convert no-code features to production code
@@ -186,24 +195,27 @@ rules:
 Most no-code platforms create frontend-heavy applications with scattered backend logic. We systematically restructure:
 
 **Phase 1: Backend Extraction**
+
 - Pull business logic out of frontend components
 - Create proper API layer (we recommend Hono for lightweight needs)
 - Establish clear data contracts between frontend and backend
 
 **Phase 2: Service Layer Implementation**
+
 ```typescript
 // Before: Logic scattered across components
 const handlePayment = () => {
   // 200 lines of payment logic in React component
-}
+};
 
 // After: Clean service architecture
 const handlePayment = () => {
   return paymentService.process(order);
-}
+};
 ```
 
 **Phase 3: Infrastructure Scaling**
+
 - Database optimization and indexing
 - Queue implementation for background jobs
 - Caching strategy for expensive operations
@@ -217,18 +229,21 @@ We create comprehensive handoff documentation that any developer can understand:
 
 ```markdown
 ## Architecture Overview
+
 - Monorepo structure with pnpm workspaces
 - Feature-based folder organization
 - Shared component library in /packages/ui
 - API gateway pattern with Hono backend
 
 ## Development Workflow
+
 1. Features developed in Lovable (features/ submodule)
 2. Production team reviews and integrates
 3. Automated tests validate integration
 4. CI/CD deploys to staging for testing
 
 ## Key Patterns
+
 - Data fetching: React Query
 - State: Zustand stores
 - Styling: Tailwind + CVA
@@ -244,23 +259,31 @@ We create comprehensive handoff documentation that any developer can understand:
 
 ## Real Implementation: Snacker.ai Case Study
 
-<Card title="From Lovable Prototype to 5,000 Users" icon="rocket" href="/case-studies/snacker-ai-video-platform">
-See how we transformed an AI-generated video editing prototype into a production SaaS serving thousands of users with 20-second video processing.
+<Card
+  title="From Lovable Prototype to 5,000 Users"
+  icon="rocket"
+  href="/case-studies/snacker-ai-video-platform"
+>
+  See how we transformed an AI-generated video editing prototype into a
+  production SaaS serving thousands of users with 20-second video processing.
 </Card>
 
 ### The Starting Point
+
 - Inherited Lovable prototype "in rough shape"
 - If-else logic piled upon if-else logic
 - No consistent patterns between components
 - Previous Supabase setup "wasn't great"
 
 ### The Transformation
+
 1. **Week 1-2**: Stabilized architecture while maintaining feature velocity
 2. **Week 3-4**: Implemented monorepo with shared packages
 3. **Week 5-8**: Built production features (caching, queues, security)
 4. **Week 9-12**: Scaled to handle thousands of concurrent users
 
 ### The Result
+
 - 5,000+ users in 3 months
 - 20-second video processing pipeline
 - Maintained founder's ability to ship features
@@ -269,8 +292,9 @@ See how we transformed an AI-generated video editing prototype into a production
 ## Investment & Timeline
 
 <Info>
-**How much does it cost to make my prototype production-ready?**
-Production Foundation starts at $15,000 for 2-3 weeks. Scale-Ready Platform is $35,000 for 6-8 weeks with complete transformation and team handoff.
+  **How much does it cost to make my prototype production-ready?** Production
+  Foundation starts at $15,000 for 2-3 weeks. Scale-Ready Platform is $35,000
+  for 6-8 weeks with complete transformation and team handoff.
 </Info>
 
 <CardGroup cols={2}>
@@ -282,6 +306,7 @@ Production Foundation starts at $15,000 for 2-3 weeks. Scale-Ready Platform is $
     - Monorepo setup with git submodules
     - Basic patterns and developer guidelines
     - Essential infrastructure (monitoring, errors)
+
   </Card>
 
   <Card title="Scale-Ready Platform" icon="rocket">
@@ -293,6 +318,7 @@ Production Foundation starts at $15,000 for 2-3 weeks. Scale-Ready Platform is $
     - Comprehensive developer documentation
     - CI/CD pipeline and deployment automation
     - Team onboarding and knowledge transfer
+
   </Card>
 </CardGroup>
 
@@ -319,15 +345,12 @@ Production Foundation starts at $15,000 for 2-3 weeks. Scale-Ready Platform is $
     - [ ] Frontend bundle size optimized
   </Accordion>
 
-  <Accordion title="Developer Experience">
-    - [ ] Local development environment
-    - [ ] TypeScript strict mode
-    - [ ] Automated testing suite
-    - [ ] Code formatting (Prettier/ESLint)
-    - [ ] Git hooks for quality
-    - [ ] Component documentation
-    - [ ] Clear folder structure
-  </Accordion>
+{" "}
+<Accordion title="Developer Experience">
+  - [ ] Local development environment - [ ] TypeScript strict mode - [ ]
+  Automated testing suite - [ ] Code formatting (Prettier/ESLint) - [ ] Git
+  hooks for quality - [ ] Component documentation - [ ] Clear folder structure
+</Accordion>
 
   <Accordion title="Operations">
     - [ ] Error monitoring (Sentry)
@@ -345,15 +368,18 @@ Production Foundation starts at $15,000 for 2-3 weeks. Scale-Ready Platform is $
 ### The Technical Debt Trap
 
 <Warning>
-Every day you delay proper architecture, the refactoring cost doubles. What takes 2 weeks today will take 2 months next quarter.
+  Every day you delay proper architecture, the refactoring cost doubles. What
+  takes 2 weeks today will take 2 months next quarter.
 </Warning>
 
 We've seen it repeatedly:
+
 - **Month 1-3**: "We'll refactor later"
 - **Month 4-6**: "It's too complex to refactor now"
 - **Month 7+**: "We need to rebuild from scratch"
 
 The cost progression is predictable:
+
 - **Early intervention**: $15-35k
 - **6 months later**: $75-100k
 - **Complete rebuild**: $150k+
@@ -373,9 +399,11 @@ Proper architecture doesn't slow you down—it accelerates everything:
 "Should I keep building in Lovable or hire developers?"
 
 The answer: Both. Our hybrid approach lets you maintain velocity while building for scale.
+
 </Info>
 
 **Continue Using No-Code For:**
+
 - Rapid prototyping
 - UI/UX iterations
 - Marketing pages
@@ -383,6 +411,7 @@ The answer: Both. Our hybrid approach lets you maintain velocity while building 
 - Internal tools
 
 **Use Production Engineering For:**
+
 - Core business logic
 - Performance-critical paths
 - Security-sensitive features
@@ -392,6 +421,7 @@ The answer: Both. Our hybrid approach lets you maintain velocity while building 
 ## Getting Started
 
 ### Assessment Phase
+
 - Code audit and architecture review
 - Performance profiling
 - Security vulnerability scan
@@ -399,6 +429,7 @@ The answer: Both. Our hybrid approach lets you maintain velocity while building 
 - Prioritized action plan
 
 ### Foundation Phase
+
 - Monorepo setup
 - Core patterns implementation
 - Critical fixes deployment
@@ -406,6 +437,7 @@ The answer: Both. Our hybrid approach lets you maintain velocity while building 
 - CI/CD pipeline setup
 
 ### Scale Phase
+
 - Service layer extraction
 - Performance optimization
 - Infrastructure hardening
@@ -469,4 +501,4 @@ Your prototype proved the concept. Now let's build the company.
 
 ---
 
-*WithSeismic specializes in the critical transition from prototype to production. We've transformed Lovable prototypes into scalable platforms serving thousands of users. Our hybrid approach maintains your shipping velocity while building enterprise-grade foundations.*
+_WithSeismic specializes in the critical transition from prototype to production. We've transformed Lovable prototypes into scalable platforms serving thousands of users. Our hybrid approach maintains your shipping velocity while building enterprise-grade foundations._

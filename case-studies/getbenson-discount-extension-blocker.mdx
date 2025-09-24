@@ -4,12 +4,12 @@ description: "How getBenson's technology prevents discount extensions like Honey
 ---
 
 <script type="application/ld+json">
-{`{
+  {`{
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "getBenson: Blocking Discount Extensions Case Study",
   "description": "How WithSeismic built getBenson to save e-commerce stores 15% in lost margins by blocking discount extensions",
-  "url": "https://docs.withseismic.com/case-studies/getbenson-discount-extension-blocker",
+  "url": "https://withseismic.com/case-studies/getbenson-discount-extension-blocker",
   "author": {
     "@type": "Organization",
     "name": "WithSeismic"
@@ -27,7 +27,11 @@ description: "How getBenson's technology prevents discount extensions like Honey
 }`}
 </script>
 
-<img src="/images/benson.png" alt="getBenson Pricing Calculator" className="rounded-lg" />
+<img
+  src="/images/benson.png"
+  alt="getBenson Pricing Calculator"
+  className="rounded-lg"
+/>
 
 ## The Origin Story
 
@@ -56,6 +60,7 @@ Every e-commerce store faces an invisible profit leak: browser extensions like H
 - **Brand Devaluation**: Training customers to never pay full price
 
 The numbers are staggering:
+
 - 100+ million users have Honey installed
 - Average margin loss: 12-15% per transaction
 - Affiliate commission theft: $2.4B annually across e-commerce
@@ -102,17 +107,20 @@ The breakthrough came when we approached the problem like reverse engineering an
 ### How It Works
 
 **Detection Layer**
+
 - API-based fingerprinting of exposed extension files
 - Real-time identification of 50+ discount extensions
 - Browser-level detection that extensions can't hide from
 
 **Protection Layer**
+
 - Shadow DOM implementation for checkout isolation
 - Blocks extension access to protected elements
 - Maintains separation between extension and checkout worlds
 - Preserves normal checkout flow for legitimate customers
 
 **Intelligence Layer**
+
 - Analytics dashboard for impact measurement
 - Extension usage tracking by customer segment
 - A/B testing capabilities for measuring true impact
@@ -125,16 +133,19 @@ getBenson integrates seamlessly with any e-commerce platform:
 ### Platform Support
 
 **Shopify/Shopify Plus**
+
 - One-line script installation
 - Automatic theme integration
 - Compatible with all checkout flows
 
 **WooCommerce**
+
 - WordPress plugin available
 - Hooks into checkout process
 - Full compatibility with payment gateways
 
 **Custom Platforms**
+
 - JavaScript SDK for any checkout flow
 - Server-side validation API
 - Webhook notifications for blocked attempts
@@ -161,18 +172,21 @@ This insight shaped getBenson's evolution from pure blocking tool to comprehensi
 ## Results & Impact
 
 <Note>
-These results are based on aggregate data from e-commerce stores using getBenson's protection technology.
+  These results are based on aggregate data from e-commerce stores using
+  getBenson's protection technology.
 </Note>
 
 ### Case Study: Fashion Brand ($50M Revenue)
 
 **Before getBenson:**
+
 - 67% of orders had discount codes applied
 - Average discount: 18%
 - Honey commissions: $180K/month
 - Email-exclusive codes used by 89% of non-subscribers
 
 **After getBenson:**
+
 - Discount usage dropped to 31% (legitimate customers only)
 - Average discount: 11% (targeted segments only)
 - Saved $215K/month in margins and commissions
@@ -181,11 +195,13 @@ These results are based on aggregate data from e-commerce stores using getBenson
 ### Case Study: Electronics Retailer ($120M Revenue)
 
 **Challenge:**
+
 - Black Friday codes leaked before launch
 - Influencer attribution completely broken
 - 15% margins on already-thin electronics
 
 **Solution with getBenson:**
+
 - Prevented early code activation
 - Restored influencer tracking accuracy to 94%
 - Protected VIP early-access sales
@@ -194,6 +210,7 @@ These results are based on aggregate data from e-commerce stores using getBenson
 ### Industry-Wide Impact
 
 Across 500+ getBenson customers:
+
 - **$450M** in saved margins annually
 - **35%** reduction in discount code usage
 - **92%** of stolen affiliate commissions recovered
@@ -206,16 +223,19 @@ Across 500+ getBenson customers:
 Beyond blocking, getBenson enables sophisticated pricing strategies:
 
 **Segment-Specific Pricing**
+
 - Show different prices to different customer segments
 - Protect wholesale/B2B pricing from retail customers
 - Maintain price discrimination without leakage
 
 **Time-Based Promotions**
+
 - Flash sales that actually end
 - Early bird pricing that stays exclusive
 - Countdown timers that can't be gamed
 
 **Geographic Pricing**
+
 - Region-specific pricing without VPN workarounds
 - Currency-based discounts protected from arbitrage
 - International promotion management
@@ -236,18 +256,21 @@ getBenson doesn't just block—it restores proper attribution:
 getBenson uses a multi-layered approach that's both robust and invisible to legitimate users:
 
 **Client-Side Protection**
+
 - Obfuscated JavaScript that's resistant to reverse engineering
 - WebAssembly modules for performance-critical operations
 - Shadow DOM isolation for checkout elements
 - MutationObserver networks detecting extension tampering
 
 **Server-Side Validation**
+
 - API verification of every discount application
 - Machine learning models identifying suspicious patterns
 - Rate limiting on code attempts
 - Honeypot codes that trigger instant blocking
 
 **Edge Network**
+
 - CloudFlare Workers for sub-10ms response times
 - Global CDN ensuring no checkout delays
 - Automatic failover to ensure 100% uptime
@@ -256,13 +279,12 @@ getBenson uses a multi-layered approach that's both robust and invisible to legi
 ### Privacy & Compliance
 
 getBenson is built with privacy-first principles:
+
 - GDPR/CCPA compliant
 - No personal data collection
 - No cookies required
 - Transparent to end users
 - No impact on page load speed
-
-
 
 ## The Unexpected End
 
@@ -306,9 +328,7 @@ This shift from "blocking the enemy" to "measuring the impact" represents a fund
   <Step title="Week 2: Activation">
     Enable blocking with recommended settings
   </Step>
-  <Step title="Week 3: Optimization">
-    Fine-tune based on collected data
-  </Step>
+  <Step title="Week 3: Optimization">Fine-tune based on collected data</Step>
   <Step title="Week 4: ROI Report">
     Full analysis of saved revenue and recovered commissions
   </Step>
@@ -318,16 +338,20 @@ This shift from "blocking the enemy" to "measuring the impact" represents a fund
 
 <AccordionGroup>
   <Accordion title="Will this hurt my conversion rate?">
-    No. Data shows conversion rates typically increase 5-15% because extensions no longer tell customers to shop elsewhere when they can't find codes.
+    No. Data shows conversion rates typically increase 5-15% because extensions
+    no longer tell customers to shop elsewhere when they can't find codes.
   </Accordion>
   <Accordion title="Is this legal?">
-    Absolutely. Merchants have every right to control how their website functions and what third-party scripts can access their checkout.
+    Absolutely. Merchants have every right to control how their website
+    functions and what third-party scripts can access their checkout.
   </Accordion>
   <Accordion title="What if extensions adapt?">
-    getBenson uses machine learning and continuous updates. The system has successfully blocked extensions through 200+ attempted workarounds.
+    getBenson uses machine learning and continuous updates. The system has
+    successfully blocked extensions through 200+ attempted workarounds.
   </Accordion>
   <Accordion title="Can customers tell they're being blocked?">
-    No. The checkout appears completely normal. Extensions simply can't interact with protected elements.
+    No. The checkout appears completely normal. Extensions simply can't interact
+    with protected elements.
   </Accordion>
 </AccordionGroup>
 
