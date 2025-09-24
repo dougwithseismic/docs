@@ -15,15 +15,26 @@ icon: graduation-cap
     "@type": "Organization",
     "name": "WithSeismic"
   },
-  "hasCourse": {
-    "@type": "Course",
-    "name": "Automation University",
-    "description": "Learn to automate workflows and build internal tools",
-    "provider": {
-      "@type": "Organization",
-      "name": "WithSeismic"
+  "hasCourse": [
+    {
+      "@type": "Course",
+      "name": "Automation University",
+      "description": "Learn to automate workflows and build internal tools",
+      "provider": {
+        "@type": "Organization",
+        "name": "WithSeismic"
+      }
+    },
+    {
+      "@type": "Course",
+      "name": "Mac Developer Productivity",
+      "description": "Master macOS productivity tools and workflows for developers",
+      "provider": {
+        "@type": "Organization",
+        "name": "WithSeismic"
+      }
     }
-  }
+  ]
 }`}
 </script>
 
@@ -39,14 +50,25 @@ Transform your skills with our comprehensive learning program designed for moder
 
 ## What Programs Are Available?
 
-<Card
-  title="Automation University"
-  icon="robot"
-  href="/universities/automation/introduction"
->
-  Learn to automate workflows and build internal tools that save hours of manual
-  work
-</Card>
+<CardGroup cols={2}>
+  <Card
+    title="Automation University"
+    icon="robot"
+    href="/universities/automation/introduction"
+  >
+    Learn to automate workflows and build internal tools that save hours of manual
+    work
+  </Card>
+
+  <Card
+    title="Mac Developer Productivity"
+    icon="laptop"
+    href="/universities/mac-developer/introduction"
+  >
+    Master macOS productivity with essential tools, shortcuts, and workflows for
+    developers
+  </Card>
+</CardGroup>
 
 ## Why Should I Choose WithSeismic Universities?
 

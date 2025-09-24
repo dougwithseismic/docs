@@ -190,3 +190,49 @@ These aren't your typical ChatGPT wrappers. We're talking about production-ready
 <Info>
   **Performance Note**: All speed claims are based on real-world production usage. Actual performance depends on your specific use case, infrastructure, and optimization level.
 </Info>
+
+---
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Why focus on speed for AI agents when accuracy matters more?">
+    Speed enables different use cases entirely. A 30-second AI agent can only handle batch processing, but a 3-second agent can provide real-time responses, handle high-volume workflows, and create interactive user experiences. Speed often determines whether an AI solution is viable for production use.
+  </Accordion>
+
+  <Accordion title="How do you choose between different fast AI models?">
+    Use the tiered approach: Grok-2 Fast or Claude Haiku for 80% of initial processing, Claude Sonnet for complex reasoning when needed, and GPT-4/Claude Opus only for critical decisions. Route requests based on complexity, cost sensitivity, and speed requirements.
+  </Accordion>
+
+  <Accordion title="What's the cost difference between fast and premium models?">
+    Fast models typically cost 5-10x less than premium models. For example, Claude Haiku costs about 1/10th of Claude Opus per token. At scale, this can mean the difference between a profitable and unprofitable AI application.
+  </Accordion>
+
+  <Accordion title="How reliable are these speed claims compared to standard models?">
+    All speed claims are based on real production usage. Grok-2 Fast is genuinely 3-5x faster than GPT-4 for comparable tasks, Groq delivers 500+ tokens/sec consistently, and ElevenLabs Turbo maintains sub-300ms voice generation. Performance varies by use case but improvements are measurable.
+  </Accordion>
+
+  <Accordion title="Which models work best for multi-modal agent workflows?">
+    Combine specialized models: GPT-4V for vision when needed, Whisper v3 Turbo for audio transcription, ElevenLabs for voice synthesis, and fast text models like Grok-2 or Claude Haiku for processing. Each handles its specialty optimally rather than using one general model.
+  </Accordion>
+
+  <Accordion title="How do you handle model routing and fallback strategies?">
+    Implement intelligent routing based on request complexity, cost thresholds, and performance requirements. If a fast model fails or produces poor results, automatically escalate to a more capable model. Cache successful responses to avoid repeated processing.
+  </Accordion>
+
+  <Accordion title="What infrastructure considerations matter for fast AI agents?">
+    Use serverless platforms like Fireworks AI for auto-scaling, implement result caching to avoid redundant calls, batch similar requests when possible, and choose providers with low-latency endpoints near your users. Infrastructure architecture often matters more than model selection.
+  </Accordion>
+
+  <Accordion title="How do you measure and optimize agent performance in production?">
+    Track end-to-end latency, cost per request, success rates, and user satisfaction scores. Monitor for degradation over time, A/B test different model combinations, and continuously optimize routing logic based on real performance data.
+  </Accordion>
+
+  <Accordion title="What are the most common pitfalls when building fast AI agents?">
+    Over-engineering the initial solution, not implementing proper error handling and fallbacks, underestimating the importance of prompt optimization for speed, and failing to monitor cost accumulation at scale. Start simple and optimize based on actual usage patterns.
+  </Accordion>
+
+  <Accordion title="How do you ensure quality doesn't suffer when prioritizing speed?">
+    Use evaluation frameworks to test model performance on your specific tasks, implement confidence scoring to catch low-quality outputs, maintain human review for critical decisions, and continuously monitor output quality metrics in production.
+  </Accordion>
+</AccordionGroup>

@@ -216,6 +216,42 @@ The success of Indy.ai came from perfect alignment:
   20,000+ users • 4.6 stars
 </Card>
 
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="How does the extension avoid being blocked by LinkedIn?">
+    We use extremely conservative rate limiting (one request per second), read-only operations, and focus on analyzing content from the user's own network. This approach respects LinkedIn's terms and avoids automation flags.
+  </Accordion>
+
+  <Accordion title="What makes the crowdsourcing approach effective?">
+    Each user adds coverage of their unique network. With 20,000+ users, we can discover opportunities that would be impossible for a centralized system to find. The network effect creates a natural moat.
+  </Accordion>
+
+  <Accordion title="Could this approach work for other marketplaces?">
+    Absolutely. The crowdsourced discovery pattern applies to any inventory challenge - job boards, product marketplaces, or service directories. The key is leveraging users' natural browsing behavior.
+  </Accordion>
+
+  <Accordion title="How long did it take to build and launch?">
+    The working prototype was delivered in one week, production-ready extension in 2-3 weeks total. The beauty of Chrome extensions is rapid iteration and testing with real users.
+  </Accordion>
+
+  <Accordion title="What was the biggest technical challenge?">
+    Creating seamless authentication across LinkedIn, X, and Contra without requiring users to re-login or configure anything. We solved this with network request validation.
+  </Accordion>
+
+  <Accordion title="How do you measure the quality of discovered opportunities?">
+    We use LLMs to analyze job descriptions and filter for relevant opportunities. Users can rate discoveries, creating a feedback loop that improves accuracy over time.
+  </Accordion>
+
+  <Accordion title="Could this approach scale to millions of users?">
+    Yes, the distributed architecture means more users actually improves performance and coverage. Each new user adds unique network access without increasing server load.
+  </Accordion>
+
+  <Accordion title="What prevents competitors from copying this?">
+    The network effect is the moat - having 20,000 users actively discovering creates coverage competitors can't match overnight. Plus, the LLM tuning and filtering improves with scale.
+  </Accordion>
+</AccordionGroup>
+
 ## Technologies Used
 
 <CardGroup cols={3}>

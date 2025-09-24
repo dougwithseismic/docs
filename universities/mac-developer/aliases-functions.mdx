@@ -1,0 +1,830 @@
+---
+title: "Terminal Aliases & Functions"
+description: "Time-saving terminal aliases and functions that make command-line work faster and more enjoyable"
+icon: terminal
+---
+
+# Terminal Aliases & Functions
+
+Transform your terminal from a chore into a superpower. These aliases and functions will save you thousands of keystrokes daily.
+
+## Setting Up Your Shell Configuration
+
+<Info>
+  **Where do I put these aliases and functions?** Everything goes in your
+  `~/.zshrc` file. This file runs every time you open a new terminal, loading
+  all your custom shortcuts automatically.
+</Info>
+
+### Where to Add These
+
+Add all aliases and functions to your `~/.zshrc` file:
+
+```bash
+# Open your config
+code ~/.zshrc
+
+# After making changes, reload
+source ~/.zshrc
+
+# Or use this alias (add it first!)
+alias reload='source ~/.zshrc'
+```
+
+### Organization Tips
+
+Structure your `.zshrc` like this:
+
+```bash
+# 1. Powerlevel10k
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+# 2. Environment Variables
+export EDITOR='code'
+export PATH="$HOME/.local/bin:$PATH"
+
+# 3. Aliases
+# ... aliases go here ...
+
+# 4. Functions
+# ... functions go here ...
+
+# 5. Plugin Sources (at the end)
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+```
+
+## Git Aliases - The Time Savers
+
+<Info>
+  **Why create Git aliases when Git has its own alias system?** Shell aliases
+  are faster to type (no 'git' prefix needed), work with shell features like
+  pipes and redirection, and can be combined with other Unix commands
+  seamlessly.
+</Info>
+
+### Essential Git Shortcuts
+
+```bash
+# Status and Information
+alias gs='git status'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gl='git log --oneline --graph --decorate -10'
+alias gll='git log --oneline --graph --decorate --all'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gr='git remote -v'
+
+# Branch Operations
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gbd='git branch -d'
+alias gbD='git branch -D'
+alias gm='git merge'
+alias gmm='git merge main'
+
+# Commit Operations
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gca='git commit --amend'
+alias gcan='git commit --amend --no-edit'
+
+# Push and Pull
+alias gp='git pull'
+alias gpu='git push'
+alias gpuf='git push --force-with-lease'
+alias gpuo='git push --set-upstream origin $(git branch --show-current)'
+
+# Stash Operations
+alias gst='git stash'
+alias gsta='git stash apply'
+alias gstp='git stash pop'
+alias gstl='git stash list'
+alias gstd='git stash drop'
+
+# Reset Operations
+alias grh='git reset HEAD~1'
+alias grhs='git reset --soft HEAD~1'
+alias grhh='git reset --hard HEAD~1'
+alias gclean='git clean -fd'
+```
+
+<Info>
+  **What's the difference between aliases and functions?** Aliases are simple
+  replacements for commands. Functions can accept arguments, contain logic, and
+  perform multiple operations - like `gacp` which does add, commit, and push in
+  one go.
+</Info>
+
+### Power Functions for Git
+
+```bash
+# Add, commit, and push in one command
+gacp() {
+    if [ -z "$1" ]; then
+        echo "Usage: gacp 'commit message'"
+        return 1
+    fi
+    git add .
+    git commit -m "$1"
+    git push
+}
+
+# Add and commit (without push)
+gac() {
+    if [ -z "$1" ]; then
+        echo "Usage: gac 'commit message'"
+        return 1
+    fi
+    git add .
+    git commit -m "$1"
+}
+
+# Quick commit with timestamp
+gacn() {
+    git add .
+    git commit -m "Update: $(date '+%Y-%m-%d %H:%M:%S')"
+}
+
+# Interactive rebase last n commits
+greb() {
+    if [ -z "$1" ]; then
+        echo "Usage: greb [number of commits]"
+        return 1
+    fi
+    git rebase -i HEAD~$1
+}
+
+# Clone and cd into directory
+gclone() {
+    git clone "$1" && cd "$(basename "$1" .git)"
+}
+
+# Show git log for specific file
+glog() {
+    git log --follow -p -- "$1"
+}
+
+# Undo last commit but keep changes
+gundo() {
+    git reset --soft HEAD~1
+}
+
+# Update branch from main
+gup() {
+    current=$(git branch --show-current)
+    git checkout main
+    git pull
+    git checkout $current
+    git merge main
+}
+```
+
+## Directory Navigation
+
+<Info>
+  **How much time do directory shortcuts really save?** If you navigate to
+  ~/Developer/projects 10 times a day, typing `proj` instead of `cd
+  ~/Developer/projects` saves 200+ keystrokes daily. That's over 70,000
+  keystrokes per year.
+</Info>
+
+### Quick Movement
+
+```bash
+# Go up directories
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+
+# Go to common directories
+alias dl='cd ~/Downloads'
+alias dt='cd ~/Desktop'
+alias dev='cd ~/Developer'
+alias docs='cd ~/Documents'
+
+# Go to specific project directories (customize these!)
+alias proj='cd ~/Developer/projects'
+alias work='cd ~/Developer/work'
+alias personal='cd ~/Developer/personal'
+```
+
+### Directory Functions
+
+```bash
+# Create and enter directory
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
+
+# Go to git root
+groot() {
+    cd $(git rev-parse --show-toplevel)
+}
+
+# Go back to previous directory
+alias back='cd -'
+
+# List directory stack
+alias dirs='dirs -v'
+
+# Quick directory switching with stack
+alias 1='cd -1'
+alias 2='cd -2'
+alias 3='cd -3'
+alias 4='cd -4'
+alias 5='cd -5'
+```
+
+## File Operations
+
+<Info>
+  **Why replace standard commands like ls and cat?** Modern replacements like
+  `eza` and `bat` provide syntax highlighting, git integration, file icons, and
+  better formatting. They're not just prettier - they convey more information
+  faster.
+</Info>
+
+### Better Defaults
+
+```bash
+# List files (using eza for better output)
+alias ls='eza --icons'
+alias l='eza --icons'
+alias ll='eza -la --icons --git'
+alias la='eza -a --icons'
+alias lt='eza --tree --level=2 --icons'
+alias ltt='eza --tree --level=3 --icons'
+
+# If eza not installed, fallback to standard
+# alias ll='ls -alFh'
+# alias la='ls -A'
+# alias l='ls -CF'
+
+# Better commands (install with brew first)
+alias cat='bat --style=plain --paging=never'
+alias find='fd'
+alias grep='rg'
+alias top='htop'
+alias du='ncdu'
+alias df='df -h'
+
+# Safety nets
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# File operations
+alias mkdir='mkdir -pv'
+alias less='less -R'
+alias tree='tree -C'
+```
+
+### File Functions
+
+```bash
+# Extract any archive
+extract() {
+    if [ -f $1 ]; then
+        case $1 in
+            *.tar.bz2)   tar xjf $1     ;;
+            *.tar.gz)    tar xzf $1     ;;
+            *.bz2)       bunzip2 $1     ;;
+            *.rar)       unrar e $1     ;;
+            *.gz)        gunzip $1      ;;
+            *.tar)       tar xf $1      ;;
+            *.tbz2)      tar xjf $1     ;;
+            *.tgz)       tar xzf $1     ;;
+            *.zip)       unzip $1       ;;
+            *.Z)         uncompress $1  ;;
+            *.7z)        7z x $1        ;;
+            *)     echo "'$1' cannot be extracted" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Create a backup of a file
+backup() {
+    cp "$1" "$1.backup-$(date +%Y%m%d-%H%M%S)"
+}
+
+# Find files by name
+ff() {
+    find . -type f -name "*$1*"
+}
+
+# Find directories by name
+fd() {
+    find . -type d -name "*$1*"
+}
+
+# Quick look (preview on Mac)
+ql() {
+    qlmanage -p "$@" &>/dev/null
+}
+```
+
+## Development Shortcuts
+
+<Info>
+  **Should I create aliases for every npm command?** Create aliases for commands
+  you use daily. Start with basics like `ni` for install and `nr` for run, then
+  add more as you notice patterns in your workflow.
+</Info>
+
+### Node.js / NPM
+
+```bash
+# NPM shortcuts
+alias ni='npm install'
+alias nis='npm install --save'
+alias nid='npm install --save-dev'
+alias nig='npm install -g'
+alias nr='npm run'
+alias nrs='npm run start'
+alias nrd='npm run dev'
+alias nrb='npm run build'
+alias nrt='npm run test'
+alias nrw='npm run watch'
+
+# Yarn shortcuts
+alias yi='yarn install'
+alias ya='yarn add'
+alias yad='yarn add -D'
+alias yr='yarn run'
+alias ys='yarn start'
+alias yd='yarn dev'
+alias yb='yarn build'
+alias yt='yarn test'
+
+# PNPM shortcuts
+alias pi='pnpm install'
+alias pa='pnpm add'
+alias pad='pnpm add -D'
+alias pr='pnpm run'
+alias pd='pnpm dev'
+
+# Node functions
+node-clean() {
+    find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+    echo "All node_modules directories removed"
+}
+
+# List global packages
+alias npmg='npm list -g --depth=0'
+```
+
+### Python
+
+```bash
+# Virtual environment
+alias ve='python3 -m venv venv'
+alias va='source venv/bin/activate'
+alias vd='deactivate'
+
+# Pip shortcuts
+alias pipi='pip install'
+alias pipr='pip install -r requirements.txt'
+alias pipf='pip freeze > requirements.txt'
+alias pipu='pip install --upgrade pip'
+
+# Django shortcuts
+alias dj='python manage.py'
+alias djr='python manage.py runserver'
+alias djm='python manage.py makemigrations'
+alias djmig='python manage.py migrate'
+alias djs='python manage.py shell'
+alias djc='python manage.py createsuperuser'
+```
+
+### Docker
+
+```bash
+# Container operations
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias di='docker images'
+alias dex='docker exec -it'
+alias dl='docker logs'
+alias dlf='docker logs -f'
+
+# Cleanup
+alias dclean='docker system prune -af --volumes'
+alias drm='docker rm $(docker ps -aq)'
+alias drmi='docker rmi $(docker images -q)'
+alias drmf='docker rm -f $(docker ps -aq)'
+
+# Docker Compose
+alias dcu='docker-compose up'
+alias dcud='docker-compose up -d'
+alias dcd='docker-compose down'
+alias dcr='docker-compose restart'
+alias dcl='docker-compose logs'
+alias dclf='docker-compose logs -f'
+alias dcb='docker-compose build'
+
+# Docker functions
+dsh() {
+    docker exec -it $1 /bin/sh
+}
+
+dbash() {
+    docker exec -it $1 /bin/bash
+}
+```
+
+## Network & System
+
+<Info>
+  **What's the most useful network function here?** The `killport` function is a
+  lifesaver when development servers don't shut down properly. Instead of
+  hunting for process IDs, just type `killport 3000` and it's gone.
+</Info>
+
+### Network Utilities
+
+```bash
+# IP addresses
+alias myip='curl -s http://ipecho.net/plain; echo'
+alias localip='ipconfig getifaddr en0'
+alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+
+# Network functions
+ports() {
+    lsof -PiTCP -sTCP:LISTEN
+}
+
+port() {
+    lsof -i :$1
+}
+
+# Kill port
+killport() {
+    lsof -ti:$1 | xargs kill -9
+}
+
+# Flush DNS
+alias flush-dns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+
+# Speed test
+alias speedtest='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
+
+# Serve current directory
+alias serve='python3 -m http.server'
+alias serve-php='php -S localhost:8000'
+```
+
+### System Maintenance
+
+```bash
+# System info
+alias cpu='top -l 1 | grep "CPU usage"'
+alias mem='top -l 1 | grep "PhysMem"'
+
+# Cleanup
+cleanup() {
+    echo "🧹 Starting cleanup..."
+
+    # Homebrew
+    brew cleanup
+    brew autoremove
+
+    # NPM
+    npm cache clean --force 2>/dev/null
+
+    # Yarn
+    yarn cache clean 2>/dev/null
+
+    # PNPM
+    pnpm store prune 2>/dev/null
+
+    # Docker
+    docker system prune -f 2>/dev/null
+
+    echo "✅ Cleanup complete!"
+}
+
+# Update everything
+update-all() {
+    echo "📦 Updating Homebrew..."
+    brew update && brew upgrade
+
+    echo "📦 Updating global NPM packages..."
+    npm update -g
+
+    echo "📦 Updating Powerlevel10k..."
+    git -C ~/powerlevel10k pull
+
+    echo "✅ All updates complete!"
+}
+
+# System maintenance
+alias empty-trash='rm -rf ~/.Trash/*'
+alias show-hidden='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder'
+alias hide-hidden='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder'
+```
+
+## Utility Functions
+
+### Useful Helpers
+
+```bash
+# Weather
+weather() {
+    curl "wttr.in/${1:-}"
+}
+
+# Calculator
+calc() {
+    echo "$*" | bc -l
+}
+
+# Google from terminal
+google() {
+    open "https://www.google.com/search?q=$*"
+}
+
+# Generate random password
+genpass() {
+    openssl rand -base64 ${1:-16}
+}
+
+# Show PATH in readable format
+path() {
+    echo $PATH | tr ':' '\n'
+}
+
+# Markdown preview
+mdpreview() {
+    pandoc "$1" | lynx -stdin
+}
+
+# JSON pretty print
+alias json='python -m json.tool'
+
+# URL encode/decode
+urlencode() {
+    python -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1]))" "$1"
+}
+
+urldecode() {
+    python -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1]))" "$1"
+}
+```
+
+## Project Starters
+
+<Info>
+  **Are these project starter functions worth memorizing?** If you create new
+  projects weekly, absolutely. Functions like `create-next` not only scaffold
+  the project but also open VS Code and start the dev server - turning a
+  5-minute task into 10 seconds.
+</Info>
+
+### Quick Project Creation
+
+```bash
+# React app
+create-react() {
+    npx create-react-app $1
+    cd $1
+    code .
+    npm start
+}
+
+# Next.js app
+create-next() {
+    npx create-next-app@latest $1
+    cd $1
+    code .
+    npm run dev
+}
+
+# Vite app
+create-vite() {
+    npm create vite@latest $1
+    cd $1
+    npm install
+    code .
+    npm run dev
+}
+
+# Node.js API
+create-node() {
+    mkdir $1 && cd $1
+    npm init -y
+    npm install express cors dotenv
+    npm install -D nodemon
+
+    cat > index.js << 'EOF'
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({ message: 'API is running!' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+EOF
+
+    cat > .env << 'EOF'
+PORT=3000
+EOF
+
+    # Update package.json scripts
+    npm pkg set scripts.start="node index.js"
+    npm pkg set scripts.dev="nodemon index.js"
+
+    echo "node_modules/\n.env\n*.log" > .gitignore
+
+    code .
+}
+
+# Python Flask app
+create-flask() {
+    mkdir $1 && cd $1
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install flask python-dotenv
+
+    cat > app.py << 'EOF'
+from flask import Flask, jsonify
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return jsonify({"message": "Flask API is running!"})
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, port=port)
+EOF
+
+    cat > .env << 'EOF'
+PORT=5000
+EOF
+
+    cat > requirements.txt << 'EOF'
+flask
+python-dotenv
+EOF
+
+    echo "__pycache__/\n*.pyc\nvenv/\n.env" > .gitignore
+
+    code .
+}
+```
+
+## The Complete .zshrc Template
+
+Here's everything together:
+
+```bash
+# ============================================
+# Powerlevel10k
+# ============================================
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+# ============================================
+# Environment Variables
+# ============================================
+export EDITOR='code'
+export PATH="$HOME/.local/bin:$PATH"
+export LANG=en_US.UTF-8
+
+# ============================================
+# History Configuration
+# ============================================
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt SHARE_HISTORY
+
+# ============================================
+# All Aliases and Functions from Above
+# ============================================
+# [Insert all the aliases and functions here]
+
+# ============================================
+# Plugin Sources (at the end)
+# ============================================
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# FZF
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Powerlevel10k instant prompt (keep at end)
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+```
+
+## Quick Reference
+
+### Most Used Shortcuts
+
+| Command      | What It Does             | Keystrokes Saved |
+| ------------ | ------------------------ | ---------------- |
+| `gacp "msg"` | Git add, commit, push    | 40+              |
+| `gac "msg"`  | Git add, commit          | 20+              |
+| `gs`         | Git status               | 8                |
+| `mkcd dir`   | Make and enter directory | 10               |
+| `..`         | Go up one directory      | 6                |
+| `ll`         | List files with details  | 8                |
+| `ni`         | NPM install              | 10               |
+| `nr dev`     | NPM run dev              | 8                |
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Will these aliases work on Linux or WSL?">
+    Most will work perfectly on Linux/WSL. The Mac-specific ones (like `qlmanage` for Quick Look) won't work, but the vast majority are cross-platform. The core git, npm, and navigation aliases work everywhere.
+  </Accordion>
+
+{" "}
+<Accordion title="What if an alias conflicts with an existing command?">
+  You can check for conflicts with `which [command]` or `type [command]`. If
+  there's a conflict, either choose a different alias name or use `\command` to
+  call the original (e.g., `\ls` for the real ls).
+</Accordion>
+
+{" "}
+<Accordion title="How do I remember all these aliases?">
+  You don't need to! Start with 5-10 that solve your biggest pain points. Use
+  `alias` to list all aliases, or create a `aliases-help` function that shows
+  your most-used ones. They'll become muscle memory within a week.
+</Accordion>
+
+{" "}
+<Accordion title="Can I use these with bash instead of zsh?">
+  Yes, but you'll need to put them in `~/.bashrc` instead of `~/.zshrc`. Some
+  syntax might need minor adjustments, particularly for functions and array
+  operations.
+</Accordion>
+
+{" "}
+<Accordion title="Do aliases slow down my terminal?">
+  No, aliases have virtually no performance impact. They're simple text
+  replacements. Even with hundreds of aliases, your terminal will start
+  instantly. Functions are also lightweight unless they do heavy computation.
+</Accordion>
+
+{" "}
+<Accordion title="Should I version control my .zshrc file?">
+  Yes! Create a dotfiles repository on GitHub. This lets you sync configurations
+  across machines and restore your setup instantly on new computers. Just be
+  careful not to commit sensitive information.
+</Accordion>
+
+{" "}
+<Accordion title="What's the difference between .zshrc and .zprofile?">
+  `.zshrc` runs for every new terminal session (interactive shells). `.zprofile`
+  runs once at login. Put aliases and functions in `.zshrc`, and PATH exports in
+  `.zprofile` or both.
+</Accordion>
+
+{" "}
+<Accordion title="Can I organize aliases into separate files?">
+  Absolutely! Create files like `~/.aliases`, `~/.functions`, and source them in
+  your `.zshrc` with `source ~/.aliases`. This keeps things organized and makes
+  sharing specific configs easier.
+</Accordion>
+
+{" "}
+<Accordion title="How do I temporarily disable an alias?">
+  Use `unalias [name]` to remove it for the current session, or comment it out
+  in `.zshrc` with `#` for permanent removal. You can also use `\command` to
+  bypass an alias once.
+</Accordion>
+
+  <Accordion title="What if a function isn't working?">
+    Check syntax with `which [function-name]` or `type [function-name]`. Make sure you've sourced your `.zshrc` after changes with `source ~/.zshrc` or opened a new terminal. Add `echo` statements for debugging.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+_With these aliases and functions configured, your terminal becomes a productivity multiplier. Every command is optimized for speed and clarity._

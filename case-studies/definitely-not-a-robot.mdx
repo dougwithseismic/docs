@@ -279,3 +279,49 @@ await browser.close();
 While this tool can bypass bot detection, it's designed for legitimate use cases: testing, research, monitoring, and accessibility. The project includes clear disclaimers about responsible use and explicitly discourages malicious applications.
 
 As we note in the README: "Beep Boop. We don't condone this behaviour." — But sometimes you need to test your production site without getting blocked.
+
+---
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="How does this package make automation look human?">
+    It introduces deliberate imperfection through Bezier curve mouse movements, variable typing speeds based on key distances, random micro-movements during idle time, natural hesitation before clicks, and randomized delays. This contrasts with typical automation that moves in straight lines and acts with mechanical precision.
+  </Accordion>
+
+  <Accordion title="What makes the Bezier curve mouse movement effective?">
+    Instead of straight-line robot movements, the package calculates curved paths that arc naturally like a human hand would move. The algorithm splits long movements into segments with jitter, applies natural acceleration and deceleration, and uses control points to create realistic curved paths that vary each time.
+  </Accordion>
+
+  <Accordion title="How does the typing simulation work?">
+    Typing delays are calculated based on ASCII character distances - larger key distances result in longer delays, just like real typing. The system adds natural pauses after punctuation marks and allows you to set WPM (words per minute) rates that match human typing speeds, typically 40 WPM by default.
+  </Accordion>
+
+  <Accordion title="What is the debug mode and why is it important?">
+    Debug mode shows red path visualization so you can see exactly how the mouse moves across the screen. This was crucial during development to verify that Bezier curves look natural, spot mechanical patterns instantly, and tune parameters visually. It helps developers optimize their automation to look truly human.
+  </Accordion>
+
+  <Accordion title="What are legitimate use cases for this tool?">
+    The package is designed for QA testing on production sites without triggering bot detection, web scraping for research and data collection, building reliable automation workflows, monitoring competitor sites, and accessibility testing. It's built for legitimate automation needs that get blocked by overzealous bot detection.
+  </Accordion>
+
+  <Accordion title="How does it compare to regular Puppeteer automation?">
+    Regular Puppeteer automation moves in straight lines, clicks at exact intervals, types at consistent speeds, and acts with mechanical precision. This package adds human unpredictability - curved mouse paths, variable delays, natural hesitation, idle movements, and typing patterns based on key distances.
+  </Accordion>
+
+  <Accordion title="What technical foundation makes the human simulation work?">
+    The package uses mathematical foundations like Bezier curves and easing functions, observation of actual human movement patterns, debug-first development with visual feedback, modular design for different behaviors, and TypeScript for catching edge cases. Simple randomization proved more effective than complex ML models.
+  </Accordion>
+
+  <Accordion title="How does the jitter movement system work?">
+    The jitter system creates 3-95 pixel random movements that return to the original position, simulating the natural hand tremor humans have during idle time. It's configurable for intensity and count, adding another layer of human-like behavior that bots typically lack.
+  </Accordion>
+
+  <Accordion title="What makes this approach better than existing bot detection evasion?">
+    Instead of trying to hide automation signatures, this package embraces human imperfection as a feature. It focuses on making the automation genuinely behave like a human rather than just masking bot fingerprints. The mathematical approach to movement and timing patterns creates convincing human simulation.
+  </Accordion>
+
+  <Accordion title="How can developers get started with this package?">
+    Install via npm as 'definitely-not-a-robot', import the HumanBrowser class, and use methods like humanMove(), humanType(), and jitterMouse(). The package includes TypeScript types, clear documentation, working examples, and a demo automation of shadcn/ui interface. The GitHub repository has complete implementation details.
+  </Accordion>
+</AccordionGroup>

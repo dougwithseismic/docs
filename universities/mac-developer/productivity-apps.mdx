@@ -1,0 +1,421 @@
+---
+title: "Productivity Apps Setup"
+description: "Configure Raycast, HyperKey, SuperWhisper and other essential productivity apps that transform how you work on Mac"
+icon: rocket
+---
+
+# Productivity Apps Setup
+
+These essential apps will transform how you interact with your Mac. Each one solves a real problem developers face daily.
+
+<Info>
+**The Power Trio**: Raycast (launcher), HyperKey (keyboard modifier), and SuperWhisper (voice input). Together they create a frictionless development environment.
+</Info>
+
+## Raycast - Command Center for Everything
+
+<Info>
+  **Why replace Spotlight with Raycast?** Spotlight just searches. Raycast does everything - launch apps, kill processes, manage clipboard, run scripts, control system settings, and integrate with developer tools like GitHub and npm. It's like having a command line for your entire Mac.
+</Info>
+
+### What It Does
+Raycast replaces Spotlight with a powerful command palette that can control every aspect of your Mac. Think of it as a universal remote control for your computer.
+
+### Installation
+
+```bash
+brew install --cask raycast
+```
+
+Or download from [raycast.com](https://raycast.com)
+
+### Initial Setup
+
+1. **Disable Spotlight** to free up `Cmd+Space`:
+   - System Settings → Keyboard → Keyboard Shortcuts → Spotlight
+   - Uncheck "Show Spotlight search"
+
+2. **Set Raycast Hotkey**:
+   - Open Raycast Preferences
+   - Set hotkey to `Cmd+Space`
+
+<Info>
+  **Which Raycast extensions are must-haves for developers?** Start with GitHub for repo management, Kill Process for stuck ports, Clipboard History to never lose code snippets, and Coffee to prevent sleep during long builds.
+</Info>
+
+### Essential Extensions to Install
+
+Open Raycast and search for these in the Extension Store:
+
+#### Development Extensions
+- **GitHub** - Search repos, create issues, view PRs
+- **Linear** - Task management
+- **Kill Process** - Find and kill any process
+- **Port Manager** - Kill processes by port
+- **Brew** - Install/update packages
+- **npm Search** - Search npm packages
+
+#### Productivity Extensions
+- **Clipboard History** - Never lose copied text
+- **Window Management** - Snap windows with keyboard
+- **System** - Control system settings
+- **Coffee** - Prevent your Mac from sleeping
+- **Color Picker** - Grab colors from anywhere
+- **Quick Event** - Create calendar events
+
+#### Utility Extensions
+- **Calculate** - Quick calculations
+- **Timezone Converter** - Convert times
+- **Lorem Ipsum** - Generate placeholder text
+- **URL Shortener** - Shorten links
+- **Search Emoji** - Find emoji by name
+
+### Power User Commands
+
+<Info>
+  **How do I use these commands?** Press `Cmd+Space` to open Raycast, then type any command. For example: `Cmd+Space` → type "kill port 3000" → Enter. Everything happens through the same `Cmd+Space` launcher.
+</Info>
+
+These built-in commands are game-changers:
+
+| Command | What It Does |
+|---------|--------------|
+| `kill [app]` | Force quit any application |
+| `kill port 3000` | Kill process on specific port |
+| `ip` | Show your IP addresses |
+| `empty trash` | Empty trash without confirmation |
+| `quit all apps` | Close everything at once |
+| `restart` | Restart your Mac |
+| `sleep` | Put Mac to sleep |
+| `lock` | Lock screen immediately |
+| `caffeinate` | Prevent sleep temporarily (requires Coffee extension) |
+| `eject all` | Eject all drives |
+
+<Info>
+  **Can I create my own Raycast commands?** Yes! Write custom scripts in any language (bash, Python, Node.js) and Raycast will run them. Perfect for automating repetitive tasks specific to your workflow.
+</Info>
+
+### Custom Scripts
+
+Create your own commands. Example: Kill all Docker containers
+
+1. Create Script: Raycast → Create Script Command
+2. Add this bash script:
+
+```bash
+#!/bin/bash
+# @raycast.title Kill All Docker Containers
+# @raycast.mode silent
+# @raycast.packageName Docker
+# @raycast.icon 🐳
+
+docker kill $(docker ps -q)
+docker rm $(docker ps -aq)
+echo "All Docker containers killed and removed"
+```
+
+### Quicklinks
+
+Set up quick web searches:
+
+1. Raycast Preferences → Extensions → Quicklinks
+2. Add these useful ones:
+
+| Name | URL | Keyword |
+|------|-----|---------|
+| NPM | `https://www.npmjs.com/search?q={query}` | npm |
+| GitHub | `https://github.com/search?q={query}` | gh |
+| MDN | `https://developer.mozilla.org/search?q={query}` | mdn |
+| Stack Overflow | `https://stackoverflow.com/search?q={query}` | so |
+
+## HyperKey - Unlock Your Caps Lock
+
+<Info>
+  **What's the point of HyperKey?** Your Caps Lock key is prime keyboard real estate doing nothing useful. HyperKey turns it into a "Hyper" modifier (Cmd+Option+Ctrl+Shift), giving you hundreds of new keyboard shortcuts that won't conflict with existing ones.
+</Info>
+
+### What It Does
+Transforms your useless Caps Lock key into a powerful modifier (Cmd+Option+Ctrl+Shift) that gives you endless shortcut possibilities.
+
+### Installation
+
+Download from [hyperkey.app](https://hyperkey.app) (Free)
+
+### Setup
+
+1. Launch HyperKey
+2. Grant accessibility permissions when prompted
+3. Caps Lock is now your Hyper key!
+
+<Info>
+  **How do I set up HyperKey shortcuts?** After installing HyperKey, your Caps Lock becomes the Hyper key. Then use System Settings or Raycast to assign Hyper+[key] combinations to any action. No conflicts with existing shortcuts!
+</Info>
+
+### Configure System Shortcuts
+
+System Settings → Keyboard → Keyboard Shortcuts → App Shortcuts
+
+Add these global shortcuts:
+
+| Application | Menu Title | Shortcut |
+|-------------|------------|----------|
+| All Applications | Minimize | Hyper+M |
+| All Applications | Zoom | Hyper+Z |
+| Terminal | New Window | Hyper+T |
+| Finder | New Finder Window | Hyper+F |
+| Safari | New Window | Hyper+B |
+
+### Raycast + HyperKey Integration
+
+<Info>
+  **Should I set up HyperKey shortcuts right away?** Start with just `Cmd+Space` for everything. Once you're comfortable and notice which apps/commands you use most, then add HyperKey shortcuts for those specific items using Raycast's hotkey feature.
+</Info>
+
+Once you're comfortable with Raycast, set up direct shortcuts:
+
+1. **In Raycast preferences** → Extensions → Search for any command
+2. **Click the hotkey field** next to the command
+3. **Press Hyper + [your chosen key]**
+
+Recommended shortcuts to set up (after you're comfortable):
+
+| Extension/App | Hotkey | Purpose |
+|---------------|--------|---------|
+| Clipboard History | Hyper+V | Quick paste from history |
+| VS Code | Hyper+C | Open VS Code instantly |
+| Terminal | Hyper+T | New terminal window |
+| Browser | Hyper+B | Open browser |
+| GitHub | Hyper+G | GitHub search |
+| Slack | Hyper+S | Switch to Slack |
+
+**Remember**: Start with `Cmd+Space` for everything. Add HyperKey shortcuts only for your most-used items after a week or two of using Raycast.
+
+## SuperWhisper - Voice to Text Everywhere
+
+<Info>
+  **Why use SuperWhisper instead of Mac's built-in dictation?** SuperWhisper uses OpenAI's Whisper model for superior accuracy, especially with technical terms. It works offline, supports custom vocabulary, and transcribes much faster than Apple's dictation.
+</Info>
+
+### What It Does
+AI-powered transcription that works in any app. Faster and more accurate than native dictation.
+
+### Installation
+
+Download from [superwhisper.com](https://superwhisper.com) (Free version available, Pro upgrade optional)
+
+### Setup
+
+1. Launch SuperWhisper
+2. Grant microphone and accessibility permissions
+3. Set activation to `Hyper+Space`
+4. Choose your mode:
+   - **Fast Mode** - Quick transcription
+   - **Super Mode** - Higher accuracy (recommended)
+
+<Info>
+  **What settings should I use for best results?** Enable auto-paste to type automatically, use Super Mode for accuracy with technical terms, and add your project-specific vocabulary to the custom words list.
+</Info>
+
+### Configuration
+
+Preferences to set:
+
+- **Auto-paste**: Enable (types transcription automatically)
+- **Sound effects**: Disable (less distraction)
+- **Show window**: Minimal
+- **Language**: English (or your preference)
+- **Custom words**: Add technical terms, project names
+
+### Use Cases
+
+- **Code comments**: Explain complex logic naturally
+- **Git commits**: Describe changes conversationally
+- **Documentation**: Write docs 3x faster
+- **Slack/Email**: Reply without typing
+- **Search queries**: Speak instead of type
+
+### Pro Tips
+
+- End sentences with punctuation words: "period", "comma", "question mark"
+- Say "new line" or "new paragraph" for formatting
+- Use for brainstorming - speak thoughts then edit
+
+## Bonus: Proxyman - Network Debugging
+
+<Info>
+  **When do you need Proxyman?** When you're debugging APIs, analyzing network performance, or need to see exactly what data your app is sending and receiving. Essential for API development, debugging mobile apps, and understanding third-party integrations.
+</Info>
+
+### What It Does
+Intercept, inspect, and modify HTTP/HTTPS requests from any app. Essential for API development and debugging.
+
+### Installation
+
+```bash
+brew install --cask proxyman
+```
+
+### Key Features
+
+- **SSL Proxying**: Decrypt HTTPS traffic
+- **Request/Response Inspector**: See headers, body, cookies
+- **Breakpoints**: Pause and modify requests
+- **Map Local/Remote**: Replace responses with local files
+- **Multiple Filters**: By domain, method, status code
+- **GraphQL Support**: Parse and inspect GraphQL queries
+
+### Developer Use Cases
+
+1. **API Debugging**:
+   - See exact request/response data
+   - Identify failed requests
+   - Check authentication headers
+
+2. **Performance Analysis**:
+   - Find slow endpoints
+   - Monitor request waterfalls
+   - Identify unnecessary calls
+
+3. **Testing**:
+   - Mock API responses
+   - Test error handling
+   - Simulate slow networks
+
+<Info>
+  **Is Proxyman hard to set up?** No - just install the SSL certificate (one click), enable the proxy, and you're capturing traffic. The hardest part is remembering to turn it off when you're done debugging!
+</Info>
+
+### Quick Setup
+
+1. Install Proxyman certificate for SSL decryption
+2. Enable proxy on your device/simulator
+3. Start capturing traffic
+4. Use filters to focus on your app
+
+### Pro Tips
+
+- Use **Pin** to keep important requests visible
+- Create **Presets** for common debugging scenarios
+- Use **Diff** to compare requests
+- Enable **Block List** to hide noisy requests
+
+## Quick Reference Card
+
+<Info>
+  **How do these apps work together in practice?** They create a seamless workflow - Raycast for launching and commands, HyperKey for instant shortcuts, SuperWhisper for voice input, and Proxyman for debugging. Each tool handles its domain perfectly.
+</Info>
+
+### Daily Workflow with These Apps
+
+**Morning Start:**
+1. `Cmd+Space` (Raycast) → Launch any app instantly
+2. `Hyper+V` (Clipboard History) → Access paste history
+3. Check Proxyman for overnight API errors
+
+**During Development:**
+1. `Cmd+Space` → Type app name or command (use for everything initially)
+2. `Cmd+Space` → `kill port 3000` → Kill stuck server
+3. `Hyper+Space` (SuperWhisper) → Dictate code comments
+4. Once comfortable: `Hyper+G` → Quick GitHub search (after setting up shortcut)
+5. Proxyman → Debug API calls in real-time
+
+**Quick Actions (start with Cmd+Space for all):**
+- `Cmd+Space` → "terminal" → Open Terminal
+- `Cmd+Space` → "finder" → Open Finder
+- `Cmd+Space` → "calendar" → Check calendar
+- `Cmd+Space` → Any app or command
+
+**After you're comfortable (optional shortcuts):**
+- `Hyper+T` → Terminal (set up in Raycast hotkeys)
+- `Hyper+C` → VS Code (set up in Raycast hotkeys)
+- `Hyper+G` → GitHub (set up in Raycast hotkeys)
+
+**Maintenance:**
+- Check Proxyman for unexpected network calls
+- Use Raycast to manage running processes
+
+## Installation Script
+
+Save as `install-productivity.sh`:
+
+```bash
+#!/bin/bash
+
+echo "🚀 Installing productivity apps..."
+
+# Install via Homebrew
+brew install --cask \
+  raycast \
+  proxyman
+
+echo "✅ Homebrew apps installed!"
+echo ""
+echo "Manual installations needed:"
+echo "1. HyperKey: https://hyperkey.app (Free)"
+echo "2. SuperWhisper: https://superwhisper.com (Free version available)"
+echo ""
+echo "Configuration steps:"
+echo "1. Disable Spotlight hotkey in System Settings"
+echo "2. Set Raycast to Cmd+Space"
+echo "3. Configure HyperKey shortcuts"
+echo "4. Set SuperWhisper to Hyper+Space"
+```
+
+## The Result
+
+With these apps configured, you'll have:
+
+- **Instant everything** with Raycast - launch apps, run scripts, search files
+- **Voice-powered coding** with SuperWhisper - dictate faster than you type
+- **Infinite shortcuts** with HyperKey - every key combination at your fingertips
+- **Network transparency** with Proxyman - see every API call
+
+Total investment: $0 - all tools have free versions. Upgrade to Pro versions if you want additional features.
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Do I need to install all these apps?">
+    No, start with Raycast as it provides the most immediate productivity boost. Add HyperKey if you want more keyboard shortcuts, SuperWhisper if you prefer voice input, and Proxyman when you need to debug network requests.
+  </Accordion>
+
+  <Accordion title="Will Raycast slow down my Mac?">
+    No, Raycast is incredibly lightweight and actually faster than Spotlight. It uses minimal RAM and CPU, with most extensions running on-demand only when you invoke them.
+  </Accordion>
+
+  <Accordion title="Can I use my existing Spotlight shortcuts with Raycast?">
+    Yes! Just disable Spotlight's Cmd+Space shortcut in System Settings, then set Raycast to use Cmd+Space. All your muscle memory transfers instantly.
+  </Accordion>
+
+  <Accordion title="What if I accidentally trigger Caps Lock while typing?">
+    HyperKey has a built-in delay - quick taps still work as Escape (or can be disabled entirely), while holding it activates the Hyper modifier. You can adjust the timing in HyperKey preferences.
+  </Accordion>
+
+  <Accordion title="Does SuperWhisper work offline?">
+    Yes! SuperWhisper can work completely offline using the built-in models. The offline mode is perfect for privacy-sensitive content or when you're without internet.
+  </Accordion>
+
+  <Accordion title="Can SuperWhisper transcribe technical jargon and code?">
+    Yes, SuperWhisper handles technical terms well, especially in Super Mode. You can also add custom vocabulary for project-specific terms, function names, or domain language.
+  </Accordion>
+
+  <Accordion title="Will Proxyman intercept all my traffic?">
+    Only when you explicitly enable it. Proxyman doesn't run in the background by default. When active, you can use filters to capture only specific apps or domains.
+  </Accordion>
+
+  <Accordion title="Can I sync Raycast extensions across multiple Macs?">
+    Yes! Sign in with your Raycast account and your extensions, preferences, and snippets sync automatically across all your devices.
+  </Accordion>
+
+  <Accordion title="Are there alternatives to these apps?">
+    Yes - Alfred instead of Raycast, Karabiner-Elements instead of HyperKey, Whisper Transcription instead of SuperWhisper, and Charles Proxy instead of Proxyman. We recommend our choices for their simplicity and developer focus.
+  </Accordion>
+
+  <Accordion title="How much disk space do these apps use?">
+    Minimal - Raycast (~100MB), HyperKey (~10MB), SuperWhisper (~500MB with models), Proxyman (~150MB). Together they're less than 1GB, a tiny footprint for massive productivity gains.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+*Next: Configure [Terminal Aliases & Functions](./aliases-functions) to speed up your command-line workflow.*

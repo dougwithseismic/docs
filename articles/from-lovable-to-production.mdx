@@ -365,4 +365,48 @@ This article shows you *can* take Lovable to production through creative workaro
 
 Use Lovable for what it's great at - rapid prototyping and validation. When you're ready for production, invest in proper foundations. The short-term pain of a rebuild is nothing compared to the long-term agony of maintaining a house of cards.
 
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="How does the Lovable + Turborepo workflow maintain collaboration after handoff?">
+    The workflow uses Git submodules so non-technical team members can continue prototyping in Lovable while developers build production infrastructure around it. This avoids the traditional one-time handoff model, allowing both workflows to coexist without disrupting each other while maintaining collaborative development.
+  </Accordion>
+
+  <Accordion title="What do I need before starting a Lovable to production transition?">
+    You'll need a Lovable app ready for handoff, basic Git/GitHub knowledge, familiarity with monorepo concepts, Cursor IDE, and Node.js with pnpm installed. Most importantly, you need realistic expectations about the complexity you're taking on.
+  </Accordion>
+
+  <Accordion title="What's the overall setup process for transitioning from Lovable to production?">
+    The process involves connecting Lovable to GitHub, creating a Turborepo monorepo, adding the Lovable app as a Git submodule, building a production backend, and configuring the entire system to work together. Each step introduces complexity that compounds over time.
+  </Accordion>
+
+  <Accordion title="How can you share components across a Lovable + Turborepo setup?">
+    Create shared UI packages that both your Lovable app and other monorepo apps can use, ensuring consistency and reusability. However, this requires maintaining compatibility between Lovable's generated code and your custom components, which often breaks during updates.
+  </Accordion>
+
+  <Accordion title="What are the main advantages of this Turborepo + Lovable approach?">
+    Benefits include continuous collaboration between non-technical and technical team members, gradual migration from Lovable to custom code, shared codebase management, proper version control, and easy scalability. However, these benefits come with significant maintenance overhead.
+  </Accordion>
+
+  <Accordion title="What are the hidden challenges nobody talks about with Lovable in production?">
+    The brutal reality includes technical debt avalanche from AI-generated code, knowledge gap crises when non-engineers hit deployment complexity, submodule syncing hell, environment variable chaos, and the "ten chess games" problem of managing multiple competing standards simultaneously.
+  </Accordion>
+
+  <Accordion title="How do you keep Lovable changes and code changes in sync?">
+    Lovable automatically pushes to GitHub, then you pull changes to your submodule. For technical changes, you make them directly in code and they sync back to Lovable. However, conflicts between Lovable changes and manual edits often require manual resolution and can result in lost work.
+  </Accordion>
+
+  <Accordion title="When should you use Lovable and when should you stop?">
+    Use Lovable for getting ideas out quickly, creating disposable prototypes, testing concepts with users, building demos, and learning what features matter. Stop as soon as you're serious about production. A clean rebuild typically takes 2-3 weeks and saves months of technical debt.
+  </Accordion>
+
+  <Accordion title="Why does deployment become a nightmare with Lovable apps?">
+    Lovable apps aren't built for multiple environments, contain hardcoded values, expose secrets in client-side bundles, and make assumptions that don't match production needs. Runtime surprises include CORS issues, memory leaks, and performance problems that only appear under real-world conditions.
+  </Accordion>
+
+  <Accordion title="What's the honest recommendation for taking Lovable to production?">
+    Don't. Use Lovable for rapid prototyping and validation, then invest in proper foundations with experienced engineers. The short-term pain of a rebuild is nothing compared to the long-term agony of maintaining a house of cards. Engineering is difficult, and production requires different standards than prototypes.
+  </Accordion>
+</AccordionGroup>
+
 Engineering is difficult. It's hard. And that's exactly why you need experienced engineers when the stakes are real.

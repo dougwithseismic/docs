@@ -392,6 +392,54 @@ The proof of concept validated that:
 - ROI justifies the investment in automation
 - The system scales to handle massive content volumes
 
+---
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="How does this system achieve 200x faster processing than manual research?">
+    The key is multi-level batch processing. Instead of analyzing videos sequentially (manual approach: 200 videos × 30 minutes = 100 hours), our system processes hundreds of videos in parallel simultaneously. This reduces the total processing time from weeks to under 30 minutes through concurrent execution.
+  </Accordion>
+
+  <Accordion title="What makes Trigger.dev better than traditional job queue systems like BullMQ?">
+    Trigger.dev provided an exceptional UI for managing and monitoring job queues without building custom dashboards. It eliminated the horror stories of Redis memory issues, silent job failures, and complex dead-letter queue configurations. The visual job management and retry capabilities were crucial for debugging the complex batch processing workflows.
+  </Accordion>
+
+  <Accordion title="How accurate is the AI analysis of video transcripts?">
+    The system balances cost, speed, and quality using OpenAI's GPT-4o models. We handle common issues like sponsor content pollution and transcript inaccuracies through specific prompting. The evaluation approach focuses on consistent dogfooding - continuously using the product to identify what works and iterating based on real-world performance rather than theoretical metrics.
+  </Accordion>
+
+  <Accordion title="Can this system work with platforms other than YouTube?">
+    Yes, it's designed with a Universal Content Adapter pattern from day one. The system already processes LinkedIn content via Apify and can easily be extended to Twitter, blogs, podcasts, or any content platform. Each platform has its own adapter but flows through the same unified processing pipeline.
+  </Accordion>
+
+  <Accordion title="How does the system handle YouTube API rate limits at scale?">
+    We implement channel-based concurrency controls, batch processing optimization, and intelligent caching to avoid redundant API calls. The system tracks state to prevent unnecessary requests and uses result caching so successful operations aren't repeated, maximizing efficiency within API constraints.
+  </Accordion>
+
+  <Accordion title="What specific insights does the AI extract from each video?">
+    For each video, the system extracts talking points (key topics discussed), category classification, concise summaries, relevant keywords and concepts, and actionable learnings. This structured data enables trend analysis and helps educational content creators understand what's being discussed across their industry in real-time.
+  </Accordion>
+
+  <Accordion title="How quickly can the system detect and process new industry developments?">
+    The system monitors 800+ channels continuously and can detect new content within minutes of publication. When major announcements happen (like OpenAI launching a new model), the complete cycle from detection to processed insights takes about 20 minutes, enabling same-day or even same-hour content creation responses.
+  </Accordion>
+
+  <Accordion title="What was the development timeline for this system?">
+    The proof of concept was built in just 1 week, with the full production system completed in 2 weeks total. The rapid development was possible due to direct client communication, creative technical freedom, and leveraging existing expertise with similar content processing systems.
+  </Accordion>
+
+  <Accordion title="How does this compare to manual content research processes?">
+    Manual research consumed 60% of content creators' time, could only monitor 25 channels, resulted in 3-6 month content lag, and produced inconsistent analysis. The automated system reduced research time to 15% of creators' workload while monitoring 800+ channels with same-day insights and consistent, structured analysis.
+  </Accordion>
+
+  <Accordion title="What future enhancements are possible with this system?">
+    The architecture enables automated content creation, done-for-you newsletters summarizing weekly channel content, sentiment and bias analysis, competitive intelligence deep-dives, and strategic analysis tools. The foundation supports expanding beyond content monitoring into active content strategy and creation assistance.
+  </Accordion>
+</AccordionGroup>
+
+---
+
 ## Technologies Used
 
 <CardGroup cols={3}>

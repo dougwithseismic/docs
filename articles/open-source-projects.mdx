@@ -162,6 +162,50 @@ Creates a secure tunnel that allows cloud platforms to execute local code, acces
   Connect automation to local code
 </Card>
 
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Why did you choose TypeScript for the MCP server template?">
+    TypeScript provides zero-config setup with production-ready type safety that catches errors during development rather than runtime. Most MCP implementations are over-engineered academic exercises that ignore practical deployment needs. Our TypeScript-based approach eliminates configuration complexity while ensuring reliable tool integrations and transport layers that actually work in production environments.
+  </Accordion>
+
+  <Accordion title="How long does it take to get the Chrome extension template up and running?">
+    You can start coding in 30 seconds instead of spending 30 minutes on setup. The template combines React 18, Tailwind CSS, TypeScript, and Vite with hot reload for everything - popup, content scripts, and background workers. This eliminates the typical Chrome extension development pain points and gets you building features immediately rather than wrestling with configuration.
+  </Accordion>
+
+  <Accordion title="What makes Site to Swagger different from other API reverse engineering tools?">
+    Site to Swagger takes a practical approach by working with HAR files from browser DevTools that most developers are already familiar with. Instead of requiring specialized knowledge, it analyzes the network requests you can see in your browser and generates complete Swagger/OpenAPI documentation with automatic auth detection and schema inference. It's reverse engineering made accessible.
+  </Accordion>
+
+  <Accordion title="How does the 'Definitely Not a Robot' tool make automation undetectable?">
+    The tool adds layers of human-like behavior that standard Puppeteer lacks: natural curved mouse movements instead of straight lines, human-like typing with realistic typos and corrections, random micro-pauses that mimic natural hesitation, and browser fingerprint spoofing to avoid detection signatures. These behavioral patterns help automation pass sophisticated bot detection systems.
+  </Accordion>
+
+  <Accordion title="What's the concept behind building tools specifically for Cursor IDE?">
+    It's recursive productivity optimization - building tools with Cursor to make Cursor faster, so we can build even better tools faster. The philosophy is that great development environments should be extensible and customizable. By creating tools that enhance our primary IDE, we're investing in our own productivity multiplier rather than working around limitations.
+  </Accordion>
+
+  <Accordion title="How does GTM Crawler bridge cloud automation with local execution?">
+    GTM Crawler creates a secure tunnel that allows cloud platforms like Clay.com, N8n, or Make.com to execute code on your local machine. This solves the common problem where cloud automation platforms are powerful but can't access your local resources, specialized tools, GPU computing power, or private databases. The crawler makes local capabilities available to cloud workflows securely.
+  </Accordion>
+
+  <Accordion title="Are these projects suitable for production use or just experimental?">
+    All projects are designed for production use, not academic exercises. They're actively maintained, MIT licensed, and built to solve real problems we've encountered in client work. Each tool represents battle-tested solutions that have proven valuable in actual development workflows. They're starting points for serious projects, not proof-of-concept demos.
+  </Accordion>
+
+  <Accordion title="How do you maintain consistency across multiple open source projects?">
+    Each project follows the same philosophy: solve real problems with minimal configuration and maximum practical value. We prioritize developer experience, clear documentation, and production-ready defaults. The tools are designed to work well independently but also complement each other when used together in development workflows.
+  </Accordion>
+
+  <Accordion title="What's your approach to community contributions and feedback?">
+    Issues and PRs are genuinely welcome across all projects. These tools emerged from real development pain points, and the best improvements often come from others facing similar challenges. We maintain active repositories, respond to issues promptly, and incorporate valuable community feedback. The goal is building better tools together, not just publishing code.
+  </Accordion>
+
+  <Accordion title="How do you decide which projects to open source versus keeping proprietary?">
+    We open source tools that solve common developer problems without revealing competitive advantages in our client work. If a tool makes development faster, easier, or more reliable for everyone, it becomes open source. Proprietary work focuses on specific business solutions and industry expertise rather than general-purpose development utilities.
+  </Accordion>
+</AccordionGroup>
+
 ---
 
 _All projects are MIT licensed and actively maintained. Issues and PRs welcome._

@@ -1,0 +1,422 @@
+---
+title: "Mac Developer Productivity Cheat Sheet"
+description: "Essential keyboard shortcuts and commands for Mac developers. Master these shortcuts to code faster and navigate like a pro."
+icon: keyboard
+---
+
+# Mac Developer Productivity Cheat Sheet
+
+<Note>
+**Quick Reference**: This cheat sheet contains the most useful keyboard shortcuts and commands for Mac developers. For complete setup instructions including installations and configurations, see our [Mac Developer Essentials](./initial-setup).
+</Note>
+
+Master these shortcuts and watch your productivity soar. Every shortcut here is battle-tested and actually useful in daily development work.
+
+<Info>
+**The 80/20 Rule**: These shortcuts represent the 20% of Mac features that deliver 80% of productivity gains. Master these first before exploring further.
+</Info>
+
+## Essential Mac Shortcuts
+
+<Info>
+  **Which Mac shortcuts should I learn first?** Start with `Cmd+Space` (Spotlight/Raycast), `Cmd+Tab` (app switching), `Cmd+Shift+.` (show hidden files), and `Space` (Quick Look). These four alone will transform your workflow.
+</Info>
+
+### Finder & File Management
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Cmd + Shift + .` | Show/hide hidden files | View `.env`, `.git`, config files |
+| `Cmd + Shift + G` | Go to folder | Jump to any path directly |
+| `Cmd + K` | Connect to server | Mount network drives |
+| `Cmd + I` | Get info | Check file permissions, sizes |
+| `Cmd + Option + I` | Inspector window | Live file info as you browse |
+| `Space` | Quick Look preview | Preview files without opening |
+| `Cmd + Y` | Quick Look slideshow | Browse multiple files quickly |
+| `Cmd + Delete` | Move to trash | Delete files |
+| `Cmd + Shift + Delete` | Empty trash | Permanently delete |
+| `Cmd + D` | Duplicate file | Create copies |
+| `Cmd + Shift + N` | New folder | Create directories |
+| `Cmd + Option + V` | Move file (after copy) | Move instead of copy |
+
+### System Navigation
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Cmd + Tab` | Switch apps | Navigate between applications |
+| `Cmd + ~` | Switch windows | Multiple windows in same app |
+| `Cmd + H` | Hide current app | Declutter screen |
+| `Cmd + Option + H` | Hide all other apps | Focus on current app |
+| `Cmd + M` | Minimize window | Send to dock |
+| `Cmd + W` | Close window | Close without quitting |
+| `Cmd + Q` | Quit application | Fully close app |
+| `Cmd + Option + Esc` | Force quit | Unresponsive apps |
+| `Cmd + Space` | Spotlight/Raycast | Launch anything |
+| `Ctrl + Up` | Mission Control | See all windows |
+| `Ctrl + Down` | App windows | See current app windows |
+
+### Screenshots & Recording
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Cmd + Shift + 3` | Full screenshot | Capture entire screen |
+| `Cmd + Shift + 4` | Area screenshot | Select specific area |
+| `Cmd + Shift + 4 + Space` | Window screenshot | Capture specific window |
+| `Cmd + Shift + 5` | Screenshot menu | All capture options |
+| `Cmd + Ctrl + Shift + 3` | Copy screenshot | To clipboard (no file) |
+| `Cmd + Ctrl + Shift + 4` | Copy area screenshot | To clipboard (no file) |
+
+### Text Editing (System-Wide)
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Cmd + Left/Right` | Beginning/end of line | Navigate lines |
+| `Option + Left/Right` | Jump by word | Navigate words |
+| `Cmd + Up/Down` | Beginning/end of document | Navigate documents |
+| `Option + Delete` | Delete word | Quick word deletion |
+| `Cmd + Delete` | Delete to line start | Clear line quickly |
+| `Fn + Delete` | Forward delete | Delete right |
+| `Cmd + A` | Select all | Select everything |
+| `Cmd + Z` | Undo | Revert changes |
+| `Cmd + Shift + Z` | Redo | Reapply changes |
+
+## Terminal Productivity
+
+<Info>
+  **Why learn terminal shortcuts when I can use arrow keys?** Terminal shortcuts like `Ctrl+A` (beginning) and `Ctrl+E` (end) keep your hands on the home row, making you 3-5x faster. No reaching for arrow keys means smoother flow.
+</Info>
+
+### Navigation Shortcuts
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Ctrl + A` | Beginning of line | Jump to start |
+| `Ctrl + E` | End of line | Jump to end |
+| `Ctrl + U` | Clear to line start | Clear backwards |
+| `Ctrl + K` | Clear to line end | Clear forwards |
+| `Ctrl + W` | Delete word backward | Remove last word |
+| `Alt + D` | Delete word forward | Remove next word |
+| `Ctrl + Y` | Paste deleted text | Restore deleted |
+| `Ctrl + L` | Clear screen | Clean view |
+| `Ctrl + R` | Search history | Find old commands |
+| `Ctrl + C` | Kill process | Stop execution |
+| `Ctrl + Z` | Suspend process | Pause execution |
+| `Ctrl + D` | Exit/EOF | Close terminal |
+
+### Command History
+
+| Command | Action | When to Use |
+|---------|---------|-------------|
+| `!!` | Repeat last command | Quick re-run |
+| `!$` | Last argument of previous | Reuse arguments |
+| `!*` | All arguments of previous | Reuse all args |
+| `!n` | Run command n from history | Run specific |
+| `!-n` | Run n commands ago | Recent command |
+| `!string` | Run last command starting with | Find by prefix |
+| `^old^new` | Replace in last command | Quick fix |
+| `history` | Show command history | Review commands |
+
+### Directory Navigation
+
+| Command | Action | When to Use |
+|---------|---------|-------------|
+| `cd -` | Previous directory | Toggle directories |
+| `cd ~` | Home directory | Go home |
+| `cd /` | Root directory | System root |
+| `pushd [dir]` | Save and change directory | Remember location |
+| `popd` | Return to saved directory | Go back |
+| `dirs` | Show directory stack | View saved dirs |
+
+## VS Code Shortcuts
+
+<Info>
+  **What's the most important VS Code shortcut?** `Cmd+P` for Quick Open. It's faster than any file tree navigation. Type a few letters of any file name and you're there instantly. Second is `Cmd+Shift+P` for the command palette.
+</Info>
+
+### Essential Navigation
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Cmd + P` | Quick open | Open any file |
+| `Cmd + Shift + P` | Command palette | Run any command |
+| `Cmd + Shift + E` | Explorer | File tree |
+| `Cmd + Shift + F` | Search in files | Global search |
+| `Cmd + Shift + D` | Debug panel | Debugging |
+| `Cmd + Shift + G` | Source control | Git panel |
+| `Cmd + Shift + X` | Extensions | Manage extensions |
+| `Cmd + J` | Toggle terminal | Show/hide terminal |
+| `Cmd + B` | Toggle sidebar | More space |
+| `Cmd + \` | Split editor | Side by side |
+| `Cmd + 1/2/3` | Focus editor group | Switch panes |
+
+### Code Editing
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Cmd + /` | Toggle comment | Comment code |
+| `Option + Shift + F` | Format document | Clean formatting |
+| `Cmd + D` | Select next match | Multi-select |
+| `Cmd + Shift + L` | Select all matches | Select all occurrences |
+| `Cmd + Shift + K` | Delete line | Remove line |
+| `Option + Up/Down` | Move line | Reorder code |
+| `Option + Shift + Up/Down` | Copy line | Duplicate |
+| `Cmd + Enter` | Insert line below | New line |
+| `Cmd + Shift + Enter` | Insert line above | New line above |
+| `Cmd + [` | Outdent | Decrease indent |
+| `Cmd + ]` | Indent | Increase indent |
+| `Cmd + Shift + [` | Fold region | Collapse code |
+| `Cmd + Shift + ]` | Unfold region | Expand code |
+
+<Info>
+  **When should I use multi-cursor editing?** Anytime you're making the same change in multiple places - renaming variables, adding prefixes, formatting lists. It turns a 2-minute task into 10 seconds.
+</Info>
+
+### Multi-Cursor
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Option + Click` | Add cursor | Multiple cursors |
+| `Cmd + Option + Up/Down` | Add cursor above/below | Column selection |
+| `Cmd + U` | Undo cursor | Remove last cursor |
+| `Escape` | Exit multi-cursor | Single cursor |
+| `Cmd + Shift + I` | Insert cursor at line ends | End of selection |
+
+### Search & Replace
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Cmd + F` | Find | Search in file |
+| `Cmd + H` | Replace | Find and replace |
+| `Cmd + Shift + H` | Replace in files | Global replace |
+| `F3` / `Shift + F3` | Next/Previous match | Navigate results |
+| `Alt + Enter` | Select all matches | Multi-select results |
+
+## Git Command Shortcuts
+
+<Info>
+  **Are these Git shortcuts worth setting up?** If you use Git daily (and you should), these shortcuts save hundreds of keystrokes per day. The `gacp` shortcut alone (add, commit, push) replaces three commands with one.
+</Info>
+
+### Status & Information
+
+| Command | Action | Full Command |
+|---------|---------|--------------|
+| `gs` | Git status | `git status` |
+| `gd` | Git diff | `git diff` |
+| `gds` | Diff staged | `git diff --staged` |
+| `gl` | Git log short | `git log --oneline -10` |
+| `gll` | Git log graph | `git log --graph --all` |
+| `gb` | Git branches | `git branch` |
+| `gba` | All branches | `git branch -a` |
+
+### Common Operations
+
+| Command | Action | Full Command |
+|---------|---------|--------------|
+| `gac "msg"` | Add all & commit | `git add . && git commit -m` |
+| `gacp "msg"` | Add, commit & push | `git add . && git commit -m && git push` |
+| `gco branch` | Checkout | `git checkout` |
+| `gcb branch` | Create & checkout | `git checkout -b` |
+| `gp` | Pull | `git pull` |
+| `gpu` | Push | `git push` |
+| `gstash` | Stash changes | `git stash` |
+| `gpop` | Apply stash | `git stash pop` |
+
+## Chrome DevTools
+
+<Info>
+  **Which DevTools shortcuts are essential for debugging?** Master `Cmd+Option+I` to open DevTools, `Cmd+K` to clear console, and the F8-F11 debugging keys. These cover 90% of debugging scenarios.
+</Info>
+
+### Essential Shortcuts
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `Cmd + Option + I` | Open DevTools | Inspect page |
+| `Cmd + Option + J` | Console | JavaScript console |
+| `Cmd + Option + C` | Inspect element | Select element |
+| `Cmd + Shift + C` | Device mode | Mobile view |
+| `Cmd + ]` / `[` | Next/Previous panel | Navigate panels |
+| `Cmd + K` | Clear console | Clean console |
+| `Cmd + Shift + P` | Command menu | Run commands |
+| `Cmd + P` | Open file | Source files |
+| `Cmd + Shift + D` | Dock position | Move DevTools |
+| `Escape` | Toggle drawer | Show console |
+
+### Debugging
+
+| Shortcut | Action | When to Use |
+|----------|---------|-------------|
+| `F8` | Resume | Continue execution |
+| `F10` | Step over | Next line |
+| `F11` | Step into | Enter function |
+| `Shift + F11` | Step out | Exit function |
+| `Cmd + \` | Toggle breakpoint | Set/remove break |
+| `Cmd + Shift + E` | Console in context | Evaluate at breakpoint |
+
+## Productivity Apps Shortcuts
+
+<Info>
+  **How do productivity app shortcuts fit with system shortcuts?** They extend system capabilities. Raycast replaces Spotlight with superpowers, HyperKey turns Caps Lock into a modifier for custom shortcuts. They fill gaps Apple left.
+</Info>
+
+### Raycast (Spotlight Replacement)
+
+| Command | Action | When to Use |
+|---------|---------|-------------|
+| `Cmd + Space` | Launch Raycast | Open launcher |
+| Type app name | Launch app | Quick launch |
+| `kill port 3000` | Kill process on port | Stop servers |
+| `ip` | Show IP address | Network info |
+| `clipboard history` | Clipboard manager | Paste history |
+| `switch audio` | Audio output | Change speakers |
+| `caffeine` | Prevent sleep | Keep awake |
+
+### HyperKey (Caps Lock Modifier)
+
+| Shortcut | Suggested Mapping | Purpose |
+|----------|------------------|---------|
+| `Hyper + Space` | Voice input | Transcription |
+| `Hyper + T` | Terminal | Open terminal |
+| `Hyper + C` | Calendar | Quick calendar |
+| `Hyper + S` | Slack | Communication |
+| `Hyper + F` | Finder | File browser |
+| `Hyper + B` | Browser | Web browser |
+| `Hyper + 1-9` | Project folders | Quick access |
+
+## Quick Terminal Commands
+
+<Info>
+  **Should I memorize all these terminal commands?** No - learn them as needed. Start with `ls`, `cd`, `grep`, and `kill`. Add others when you find yourself googling the same command repeatedly.
+</Info>
+
+### File Operations
+
+| Command | Action | Example |
+|---------|---------|---------|
+| `ls -la` | List all files | `ls -la ~/Documents` |
+| `tree` | Directory tree | `tree -L 2` |
+| `find . -name` | Find files | `find . -name "*.js"` |
+| `grep -r` | Search in files | `grep -r "TODO" .` |
+| `cat` | View file | `cat package.json` |
+| `head -n` | First n lines | `head -20 file.txt` |
+| `tail -n` | Last n lines | `tail -20 log.txt` |
+| `wc -l` | Line count | `wc -l *.js` |
+
+### Process Management
+
+| Command | Action | Example |
+|---------|---------|---------|
+| `ps aux` | List processes | `ps aux | grep node` |
+| `kill -9 PID` | Force kill | `kill -9 12345` |
+| `killall` | Kill by name | `killall node` |
+| `lsof -i :PORT` | Port usage | `lsof -i :3000` |
+| `top` | System monitor | `top -o cpu` |
+
+### Network
+
+| Command | Action | Example |
+|---------|---------|---------|
+| `ping` | Test connection | `ping google.com` |
+| `curl` | HTTP request | `curl -X GET api.com` |
+| `wget` | Download file | `wget file-url.com` |
+| `netstat -an` | Network stats | `netstat -an | grep LISTEN` |
+| `ifconfig` | Network config | `ifconfig en0` |
+
+## macOS Power User Tips
+
+### Mission Control Gestures
+
+| Gesture | Action | When to Use |
+|---------|---------|-------------|
+| Three finger swipe up | Mission Control | See all windows |
+| Three finger swipe down | App Exposé | Current app windows |
+| Three finger swipe left/right | Switch desktops | Change spaces |
+| Pinch with thumb + 3 fingers | Launchpad | App grid |
+| Spread with thumb + 3 fingers | Show desktop | Hide all windows |
+
+### Quick Actions
+
+| Action | Shortcut | Purpose |
+|--------|----------|---------|
+| Force Click | Deep press trackpad | Preview/lookup |
+| Two finger tap | Right click | Context menu |
+| Three finger tap | Lookup | Dictionary/preview |
+| Four finger tap | Notification Center | Notifications |
+
+## The Daily Workflow
+
+<Info>
+  **How do I build these shortcuts into muscle memory?** Practice the daily workflow consciously for one week. Force yourself to use shortcuts even when it feels slower at first. By week two, you'll be flying.
+</Info>
+
+### Morning Routine
+1. `Cmd + Space` → Launch Raycast
+2. Type app name → Launch your IDE
+3. `Cmd + J` → Open terminal in VS Code
+4. `gs` → Check git status
+5. `gp` → Pull latest changes
+
+### During Development
+- `Cmd + P` → Quick file switching
+- `Cmd + Shift + F` → Search across project
+- `Cmd + D` → Multi-select for refactoring
+- `gacp "message"` → Quick commits
+- `Cmd + J` → Toggle terminal
+
+### Debugging Session
+- `Cmd + Option + I` → Open DevTools
+- `F8` → Resume execution
+- `F10` → Step through code
+- `Cmd + K` → Clear console
+- `killport 3000` → Kill stuck processes
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="How many shortcuts should I learn at once?">
+    Start with 5-10 that solve your biggest pain points. Use them exclusively for a week until they're automatic. Then add 5 more. Within a month, you'll have 20-30 shortcuts in muscle memory - enough to transform your workflow.
+  </Accordion>
+
+  <Accordion title="Do these shortcuts work on all Mac keyboards?">
+    Yes, but some differ slightly. MacBook keyboards lack some keys (like Page Up/Down), external keyboards may have different Function key behavior. The core Cmd/Option/Ctrl shortcuts work everywhere.
+  </Accordion>
+
+  <Accordion title="What if a shortcut doesn't work in my app?">
+    Apps can override system shortcuts. Check the app's preferences for custom keybindings. You can often reassign shortcuts in System Settings → Keyboard → Shortcuts → App Shortcuts.
+  </Accordion>
+
+  <Accordion title="Should I remap my keyboard keys?">
+    Consider remapping Caps Lock to Escape or Control if you don't use HyperKey. Many developers swap Control and Caps Lock for easier terminal use. Use Karabiner-Elements for complex remapping.
+  </Accordion>
+
+  <Accordion title="How do I find an app's shortcuts?">
+    Most apps list shortcuts next to menu items. Press and hold `Cmd` in many apps to see available shortcuts. CheatSheet app shows all shortcuts for the current app when you hold `Cmd`.
+  </Accordion>
+
+  <Accordion title="Are these shortcuts the same on Windows/Linux?">
+    No, but there are patterns. Cmd on Mac usually maps to Ctrl on Windows/Linux. Option maps to Alt. Some shortcuts are completely different (like screenshots). Learn the concepts, adapt the keys.
+  </Accordion>
+
+  <Accordion title="Which shortcuts save the most time?">
+    Based on usage data: `Cmd+Tab` (app switching), `Cmd+Space` (launcher), `Cmd+C/V` (copy/paste), `Cmd+Z` (undo), and `Cmd+W` (close). These five account for 50%+ of shortcut usage.
+  </Accordion>
+
+  <Accordion title="Can I create my own shortcuts?">
+    Yes! System Settings → Keyboard → Shortcuts lets you add app-specific shortcuts. Raycast and Keyboard Maestro enable system-wide custom shortcuts. BetterTouchTool adds gesture-based shortcuts.
+  </Accordion>
+
+  <Accordion title="What's the difference between Cmd and Ctrl in terminal?">
+    In Terminal, Ctrl is used for terminal control (Ctrl+C to stop processes), while Cmd is used for app control (Cmd+N for new window). This split prevents conflicts between terminal and app commands.
+  </Accordion>
+
+  <Accordion title="Should I print this cheat sheet?">
+    No - use it digitally with Cmd+F to search. Better yet, create your personal cheat sheet with only the shortcuts you actually use. Keep it in Apple Notes or as a pinned tab for quick reference.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+**Remember**: Productivity isn't about memorizing every shortcut—it's about mastering the ones you use daily. Start with 5-10 shortcuts, use them until they're muscle memory, then gradually add more.
+
+*Want to set up your Mac for maximum productivity? Check our complete [Mac Developer Essentials](./initial-setup) for installations, configurations, and automation scripts.*

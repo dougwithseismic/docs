@@ -292,11 +292,19 @@
             "group": "Mac Developer Productivity University",
             "icon": "laptop",
             "pages": [
-              "universities/productivity/introduction",
+              "universities/mac-developer/introduction",
               {
-                "group": "Essential Mac Skills",
+                "group": "Mac Setup Guide",
                 "pages": [
-                  "articles/mac-developer-productivity-cheat-sheet"
+                  "universities/mac-developer/initial-setup",
+                  "universities/mac-developer/productivity-apps",
+                  "universities/mac-developer/aliases-functions"
+                ]
+              },
+              {
+                "group": "Quick References",
+                "pages": [
+                  "universities/mac-developer/mac-developer-productivity-cheat-sheet"
                 ]
               }
             ]

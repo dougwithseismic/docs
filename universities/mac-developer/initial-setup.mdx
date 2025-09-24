@@ -1,0 +1,287 @@
+---
+title: "Mac Developer Essentials"
+description: "Essential developer tools for Mac - GitHub CLI, Git, Node.js, pnpm, Cursor, Claude Code, and Powerlevel10k"
+icon: rocket
+---
+
+# Mac Developer Essentials
+
+Get your Mac ready for modern development with just the essentials. This streamlined guide covers only the critical tools you need: GitHub CLI, Git, Node.js, pnpm, Cursor, Claude Code, and Powerlevel10k.
+
+<Info>
+**Time Required**: 15-20 minutes for complete setup.
+</Info>
+
+## Package Manager Setup
+
+<Info>
+  **Why start with Homebrew?** It's the foundation for installing everything else - from GitHub CLI to Node.js. One install command opens up thousands of developer tools.
+</Info>
+
+### Install Homebrew
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+After installation, add Homebrew to your PATH:
+
+**For Apple Silicon Macs (M1/M2/M3):**
+```bash
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+**For Intel Macs:**
+```bash
+echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/usr/local/bin/brew shellenv)"
+```
+
+## Git & GitHub CLI
+
+<Info>
+  **Why GitHub CLI?** It lets you create PRs, manage issues, and clone repos without leaving your terminal. Combined with proper Git config, you'll never need to open GitHub in a browser for basic tasks.
+</Info>
+
+### Install Git and GitHub CLI
+
+```bash
+brew install git gh
+```
+
+### Authenticate GitHub CLI
+
+```bash
+gh auth login
+```
+
+Choose:
+- GitHub.com
+- HTTPS
+- Login with web browser
+
+<Info>
+  **What about SSH keys?** GitHub CLI handles authentication for you. No need to manually set up SSH keys - `gh` manages secure connections automatically.
+</Info>
+
+## Git Configuration
+
+<Info>
+  **What Git settings are essential?** Your identity for commits and smart defaults that prevent common mistakes - like auto-tracking branches and better merge conflict display.
+</Info>
+
+### Set Your Identity
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
+### Essential Git Defaults
+
+```bash
+# Set main as default branch
+git config --global init.defaultBranch main
+
+# Auto-setup remote tracking
+git config --global push.autoSetupRemote true
+
+# Better merge conflict display
+git config --global merge.conflictstyle diff3
+
+# Prune deleted remote branches
+git config --global fetch.prune true
+```
+
+## Node.js & pnpm
+
+<Info>
+  **Why pnpm over npm?** It's faster, uses less disk space through hard links, and prevents phantom dependencies. Most modern projects support pnpm out of the box.
+</Info>
+
+### Install Node.js
+
+```bash
+brew install node
+```
+
+### Install pnpm
+
+```bash
+npm install -g pnpm
+
+# Enable corepack (Node's official package manager manager)
+corepack enable
+corepack prepare pnpm@latest --activate
+```
+
+<Info>
+  **What about yarn or npm?** pnpm is faster and more efficient. It works with any project that supports npm, and you can still use npm or yarn when needed for specific projects.
+</Info>
+
+## Code Editors
+
+<Info>
+  **Cursor vs Claude Code?** Cursor is a full IDE with AI built-in, great for longer coding sessions. Claude Code is a CLI tool perfect for quick edits and terminal workflows. Install both - they complement each other.
+</Info>
+
+### Install Cursor
+
+```bash
+brew install --cask cursor
+```
+
+Cursor is a fork of VS Code with AI capabilities built in. It includes:
+- AI code completion
+- Chat with your codebase
+- Natural language code editing
+
+### Install Claude Code
+
+```bash
+npm install -g @anthropic/claude-code
+
+# Authenticate
+claude-code auth
+```
+
+Claude Code is Anthropic's official CLI for Claude. Use it for:
+- Quick file edits from terminal
+- Code generation
+- Interactive coding assistance
+
+## Powerlevel10k Terminal Theme
+
+<Info>
+  **Why Powerlevel10k?** It shows git status, command execution time, error codes, and more - all in your prompt. Plus it's fast and doesn't slow down your terminal like Oh My Zsh.
+</Info>
+
+### Install Powerlevel10k
+
+```bash
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >> ~/.zshrc
+```
+
+### Add Helpful Zsh Plugins
+
+```bash
+# Auto-suggestions as you type
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+echo "source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ~/.zshrc
+
+# Syntax highlighting for commands
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
+echo "source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ~/.zshrc
+```
+
+### Configure Your Theme
+
+Restart terminal and run:
+```bash
+p10k configure
+```
+
+Recommended settings for developers:
+- **Prompt Style**: Lean (clean and fast)
+- **Character Set**: Unicode
+- **Prompt Height**: One line
+- **Prompt Spacing**: Compact
+
+## Verification Checklist
+
+<Info>
+  **How do I know everything is working?** Run these quick checks to verify all tools are installed and configured correctly.
+</Info>
+
+```bash
+# Package manager
+brew --version
+
+# Version control
+git --version
+gh --version
+
+# Node.js and pnpm
+node --version
+pnpm --version
+
+# Editors (if installed)
+cursor --version
+claude-code --version
+
+# Check git config
+git config --get user.name
+git config --get user.email
+
+# Test GitHub CLI
+gh auth status
+```
+
+## One-Command Setup
+
+<Info>
+  **Want to install everything at once?** Copy this script for a complete setup in one go.
+</Info>
+
+Save this as `~/setup-essentials.sh`:
+
+```bash
+#!/bin/bash
+
+echo "🚀 Installing Mac Developer Essentials..."
+
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Git and GitHub CLI
+brew install git gh
+
+# Node.js
+brew install node
+npm install -g pnpm
+
+# Code editors
+brew install --cask cursor
+npm install -g @anthropic/claude-code
+
+# Powerlevel10k
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+
+# Zsh plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
+
+echo "✅ Setup complete! Restart terminal and:"
+echo "1. Run 'p10k configure' to set up your prompt"
+echo "2. Run 'gh auth login' to connect GitHub"
+echo "3. Configure git with your name and email"
+```
+
+Make it executable and run:
+```bash
+chmod +x ~/setup-essentials.sh
+~/setup-essentials.sh
+```
+
+## Next Steps
+
+Your essentials are installed. Level up with:
+
+<CardGroup cols={3}>
+  <Card title="Productivity Apps" href="./productivity-apps" icon="rocket">
+    Raycast, HyperKey, and SuperWhisper for next-level productivity
+  </Card>
+  <Card title="Terminal Aliases" href="./aliases-functions" icon="terminal">
+    Time-saving shortcuts and custom functions
+  </Card>
+  <Card title="Keyboard Shortcuts" href="./mac-developer-productivity-cheat-sheet" icon="keyboard">
+    Master Mac keyboard shortcuts
+  </Card>
+</CardGroup>
+
+---
+
+*Streamlined essentials for modern Mac development. No bloat, just the tools that matter.*
