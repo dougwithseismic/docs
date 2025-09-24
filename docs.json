@@ -58,6 +58,12 @@
             ]
           },
           {
+            "group": "Our Service",
+            "pages": [
+              "services/growth-gap-discovery"
+            ]
+          },
+          {
             "group": "What We Build",
             "pages": [
               "build/mvp",
