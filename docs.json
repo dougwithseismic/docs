@@ -60,7 +60,7 @@
           {
             "group": "Our Service",
             "pages": [
-              "services/growth-gap-discovery"
+              "services/solution-discovery"
             ]
           },
           {
@@ -262,14 +262,20 @@
             ]
           },
           {
+            "group": "Creators",
+            "pages": [
+              "articles/death-of-the-teleprompter",
+              "articles/corner-cutters-guide-building-future",
+              "articles/great-job-search-delusion",
+              "articles/importance-of-being-overlooked"
+            ]
+          },
+          {
             "group": "Insights",
             "pages": [
               "articles/programmatic-acquisition-playbook",
               "articles/fingers-on-the-pulse",
-              "articles/great-job-search-delusion",
-              "articles/importance-of-being-overlooked",
               "articles/from-lovable-to-production",
-              "articles/corner-cutters-guide-building-future",
               "articles/storybook-for-automation"
             ]
           }
