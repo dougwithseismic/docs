@@ -3,36 +3,33 @@ title: "Lesson 2: Building Custom n8n Nodes"
 description: Create powerful custom nodes to extend n8n's capabilities
 ---
 
-## Why Do Custom Nodes Transform Your n8n Experience?
+## Overview
 
 <Info>
-Custom nodes unlock n8n's full potential by enabling integration with proprietary APIs, implementing custom business logic, and optimizing complex workflows into single, reusable components.
+**Why custom nodes matter**
+Unlock n8n's full potential - integrate proprietary APIs, implement custom business logic, and optimize complex workflows into single, reusable components instead of chaining 20 nodes together.
 </Info>
 
-When you first start with n8n, you're limited to the pre-built nodes. That works great until you need to integrate with your company's proprietary API, implement custom business logic, or optimize a complex workflow that's using 20 nodes when it could use just one. Custom nodes change everything.
+Pre-built nodes work great until you need to integrate your company's proprietary API or implement custom business logic. Custom nodes change everything - build exactly what you need instead of waiting for official support.
 
-Custom nodes are your escape hatch from limitations. Instead of waiting for the n8n team to build support for your specific use case, you build it yourself. Instead of chaining together multiple nodes with complex logic, you encapsulate that logic in a single, reusable component.
-
-## What Will We Build in This Lesson?
+## What You'll Build
 
 <Info>
-We'll build two custom nodes: an HTTP Bin Node for learning basic structure and API interactions, and a Data Processor Node for complex data transformations and business logic.
+**Lesson projects**
+Two custom nodes demonstrating progression: HTTP Bin Node for basic structure and API interactions, Data Processor Node for complex transformations and business logic.
 </Info>
 
-In this lesson, we'll create two custom nodes that demonstrate different complexity levels:
+1. **HTTP Bin Node** - Testing node for learning structure, parameters, and API calls
+2. **Data Processor Node** - Production-grade transformation node with filtering, aggregation, and data manipulation
 
-1. **HTTP Bin Node**: A testing node that interacts with httpbin.org - perfect for learning the basics of node structure, parameters, and API calls
-2. **Data Processor Node**: A powerful transformation node that can filter, aggregate, and manipulate data - showing you how to build nodes that solve real business problems
+You'll understand the patterns and principles to build any node you can imagine.
 
-By the end of this lesson, you won't just have two working nodes - you'll understand the patterns and principles to build any node you can imagine.
-
-## How Does n8n Node Architecture Work?
+## Node Architecture Fundamentals
 
 <Info>
-Every n8n node is a TypeScript class implementing the INodeType interface, with a description object defining the UI and an execute function containing the business logic.
+**Core structure**
+Every n8n node is a TypeScript class implementing INodeType interface - description object defines the UI, execute function contains business logic.
 </Info>
-
-Before we write any code, we need to understand what makes a node tick. Every n8n node is a TypeScript class that implements the `INodeType` interface.
 
 ```typescript
 // Basic node structure
@@ -59,62 +56,57 @@ export class MyCustomNode implements INodeType {
 }
 ```
 
-Let's break down what each part does:
+Key components:
 
-- **description**: This object defines how your node appears in n8n's UI - its name, category, and configuration options
-- **displayName**: What users see in the node panel
-- **name**: The internal identifier (must be unique across all nodes)
-- **group**: Determines where the node appears in the node panel categories
-- **inputs/outputs**: Defines how many connections the node accepts and produces
-- **properties**: The configuration fields users can set (we'll add these soon)
-- **execute()**: The heart of your node - this function runs when the workflow executes
+- **description** - Defines UI appearance, name, category, and configuration options
+- **displayName** - What users see in the node panel
+- **name** - Internal identifier (must be unique)
+- **group** - Node panel category placement
+- **inputs/outputs** - Connection count the node accepts/produces
+- **properties** - Configuration fields users can set
+- **execute()** - Core logic that runs during workflow execution
 
-n8n handles all the complex stuff - workflow execution, error handling, data passing between nodes - while you focus on your node's specific logic.
+n8n handles workflow execution, error handling, and data passing - you focus on node-specific logic.
 
-## How Do I Set Up My Development Environment?
+## Development Environment Setup
 
 <Info>
-Set up a professional development environment by initializing a Node.js project, configuring TypeScript for n8n compatibility, and setting up the package.json with proper n8n configuration.
+**Project initialization**
+Create professional development setup - initialize Node.js project, configure TypeScript for n8n compatibility, and set up package.json with proper n8n configuration.
 </Info>
-
-Now we'll set up a proper development environment for building custom nodes. We're creating a professional development setup that you can use for all your future node projects.
 
 ### Step 1: Initialize Your Node Project
 
-First, we'll create a new project directory and set up the basic structure. Each command here has a purpose:
-
 ```bash
-# Create project directory - this will house all your custom nodes
+# Create project directory
 mkdir n8n-nodes-custom && cd n8n-nodes-custom
 
-# Initialize package.json - creates the project manifest
+# Initialize package.json
 npm init -y
 
-# Install n8n dependencies - these provide the types and utilities we need
+# Install n8n dependencies
 npm install n8n-core n8n-workflow
 
-# Install development dependencies - TypeScript for type safety
+# Install development dependencies
 npm install -D @types/node typescript
 ```
 
-Why these specific packages? The `n8n-core` and `n8n-workflow` packages contain all the interfaces and helper functions your nodes will use. TypeScript isn't strictly required, but it gives you intellisense and catches errors before runtime - invaluable when working with n8n's APIs.
+The `n8n-core` and `n8n-workflow` packages provide interfaces and helper functions. TypeScript gives you intellisense and catches errors before runtime.
 
-### Step 2: Configure TypeScript for n8n Development
-
-TypeScript configuration is crucial for n8n compatibility. Create a `tsconfig.json` file:
+### Step 2: Configure TypeScript
 
 ```json
 {
   "compilerOptions": {
-    "lib": ["es2020"],        // Use modern JavaScript features
-    "target": "es2019",       // Compile to ES2019 for n8n compatibility
-    "module": "commonjs",     // n8n uses CommonJS modules
+    "lib": ["es2020"],
+    "target": "es2019",
+    "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "declaration": true,      // Generate .d.ts files for type checking
-    "outDir": "./dist",       // Compiled files go here
-    "rootDir": "./src",       // Source files go here
-    "strict": true,           // Enable all strict type checking
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
     "skipLibCheck": true
   },
   "include": ["src/**/*"],
@@ -122,11 +114,9 @@ TypeScript configuration is crucial for n8n compatibility. Create a `tsconfig.js
 }
 ```
 
-Each of these settings matters. The ES2019 target ensures compatibility with n8n's runtime, while CommonJS modules are required for n8n's node loading system. The strict flag will save you hours of debugging by catching type errors early.
+ES2019 target ensures n8n compatibility. CommonJS modules required for n8n's loading system. Strict flag catches type errors early.
 
-### Step 3: Configure Your Package for n8n Integration
-
-The most important part of your `package.json` is the n8n configuration section. Update it like this:
+### Step 3: Configure Package for n8n
 
 ```json
 {
@@ -156,33 +146,27 @@ The most important part of your `package.json` is the n8n configuration section.
 }
 ```
 
-The `n8n` section tells n8n where to find your nodes and credentials. When n8n starts up, it reads this section and loads your custom nodes into the node panel, making them appear alongside the built-in ones.
+The `n8n` section tells n8n where to find your nodes and credentials. When n8n starts up, it loads your custom nodes into the node panel alongside built-in ones.
 
-## How Do I Build My First Custom Node?
+## Building Your First Node
 
 <Info>
-We'll build an HTTP Bin node that makes different types of HTTP requests, handles dynamic parameters, processes responses, and provides a user-friendly configuration interface.
+**HTTP Bin node project**
+Build a node that makes HTTP requests, handles dynamic parameters, processes responses, and provides user-friendly configuration - perfect for learning core patterns.
 </Info>
 
-Now for the exciting part - let's build our first real node! We'll create an HTTP Bin node that interacts with httpbin.org, a service designed for testing HTTP requests. This is perfect for learning because it's simple enough to understand but complex enough to teach you the important patterns.
+Let's build an HTTP Bin node that interacts with httpbin.org - simple enough to understand but complex enough to teach important patterns.
 
-### Step 1: Understanding What We're Building
+### What This Node Will Do
 
-Before diving into code, let's understand what our HTTP Bin node will do:
-- Make different types of HTTP requests (GET, POST, PUT, DELETE)
+- Make HTTP requests (GET, POST, PUT, DELETE)
 - Accept dynamic parameters and request bodies
 - Handle responses and errors gracefully
-- Provide a user-friendly configuration interface
+- Provide user-friendly configuration
 
-This node will teach you how to:
-- Define node properties that appear in the UI
-- Handle user inputs and parameters
-- Make external API calls
-- Process and return data to the workflow
+You'll learn to define UI properties, handle user inputs, make API calls, and process data.
 
-### Step 2: Creating the Node Structure
-
-Create the file `src/nodes/HttpBin/HttpBin.node.ts`. We'll build this step by step:
+### Creating the Node Structure
 
 ```typescript
 import {

@@ -3,40 +3,39 @@ title: "Lesson 1: Setting Up Your n8n Development Environment"
 description: Configure a complete n8n development environment for building custom nodes and workflows
 ---
 
-## What Will I Learn in This Lesson?
+## Overview
 
 <Info>
-You'll learn to set up a complete n8n development environment using Railway (fastest), local options (Docker, npm), CLI tools, and database configurations for building custom nodes and workflows.
+**What you'll learn**
+Set up a complete n8n development environment using Railway for quick deployment, Docker for local development, and configure CLI tools and databases for building custom nodes.
 </Info>
 
-Let's get your development environment ready for building on n8n.
+Get your development environment ready for building custom nodes and production workflows.
 
-## What's the Fastest Way to Get Started?
+## Quick Start with Railway
 
 <Info>
-Railway provides the fastest setup - a production-ready n8n instance in 2 minutes with PostgreSQL, Redis, workers, automatic SSL, and built-in monitoring.
+**Fastest deployment path**
+Production-ready n8n instance in 2 minutes with PostgreSQL, Redis, workers, automatic SSL, and built-in monitoring included.
 </Info>
-
-The fastest way to get started with n8n is using Railway - you'll have a production-ready instance in 2 minutes with PostgreSQL, Redis, and workers all configured.
 
 <Card title="Deploy n8n on Railway" href="/universities/automation/no-code/n8n-self-hosting" icon="rocket">
   One-click deploy with automatic SSL, managed databases, and scaling
 </Card>
 
-Railway handles all the infrastructure complexity so you can focus on building workflows and custom nodes. It includes:
+Railway handles infrastructure complexity so you can focus on building:
 - Automatic HTTPS/SSL
 - PostgreSQL database
 - Redis for queue management
 - Worker processes for scaling
 - Built-in monitoring and logs
 
-## How Can I Run n8n Locally for Development?
+## Local Development Setup
 
 <Info>
-For local development, you can use Docker (recommended), Docker Compose, npm/yarn installation, or build from source code, each offering different levels of control and setup complexity.
+**Development options**
+Docker (recommended), Docker Compose, npm/yarn, or source code - each offering different levels of control and complexity.
 </Info>
-
-If you prefer to run n8n locally for development, here are the quick start options:
 
 <Tabs>
   <Tab title="Docker (Recommended)">
@@ -148,10 +147,11 @@ If you prefer to run n8n locally for development, here are the quick start optio
   </Tab>
 </Tabs>
 
-## How Do I Set Up the n8n CLI?
+## n8n CLI Setup
 
 <Info>
-The n8n CLI provides essential commands for starting n8n, creating custom nodes, and managing workflows. Install it globally with npm for development.
+**Command line tools**
+Essential commands for starting n8n, creating custom nodes, and managing workflows. Install globally with npm for development access.
 </Info>
 
 ```bash
@@ -168,10 +168,11 @@ n8n export:workflow --all # Export all workflows
 n8n import:workflow --input=file.json # Import workflows
 ```
 
-## How Do I Configure Different Databases?
+## Database Configuration
 
 <Info>
-PostgreSQL is recommended for production, while MySQL is also supported. Both can be set up with Docker and configured via environment variables.
+**Database options**
+PostgreSQL recommended for production, MySQL also supported. Both set up easily with Docker and configured via environment variables.
 </Info>
 
 ### PostgreSQL Setup (Recommended for Production)
@@ -217,13 +218,12 @@ export DB_MYSQLDB_USER=n8n
 export DB_MYSQLDB_PASSWORD=n8n
 ```
 
-## What Environment Variables Should I Configure?
+## Environment Variables
 
 <Info>
-Environment variables control n8n's behavior including database connections, security settings, execution modes, logging, and custom extensions. Create a .env file for development.
+**Configuration settings**
+Control n8n's behavior - database connections, security, execution modes, logging, and custom extensions. Use .env file for development configuration.
 </Info>
-
-Create `.env` file for your development setup:
 
 ```bash
 # Basic Configuration
@@ -265,10 +265,11 @@ N8N_PERSONALIZATION_ENABLED=false
 ```
 
 
-## How Do I Test My n8n Setup?
+## Testing Your Setup
 
 <Info>
-Test your setup by checking the health endpoint, creating test workflows, and enabling development features like tunnels and verbose logging.
+**Verification steps**
+Check the health endpoint, create test workflows, and enable development features like tunnels and verbose logging to confirm everything works.
 </Info>
 
 ### 1. Verify n8n is Running
@@ -321,10 +322,11 @@ N8N_LOG_LEVEL=debug n8n start
 N8N_WATCH=true n8n start
 ```
 
-## What Are Common Setup Issues and Solutions?
+## Troubleshooting
 
 <Info>
-Common issues include port conflicts, database connection failures, and custom node loading problems. Each has specific troubleshooting steps and solutions.
+**Common issues**
+Port conflicts, database connection failures, and custom node loading problems - each with specific solutions and troubleshooting steps.
 </Info>
 
 <AccordionGroup>
@@ -368,13 +370,12 @@ Common issues include port conflicts, database connection failures, and custom n
   </Accordion>
 </AccordionGroup>
 
-## What Should I Do Next?
+## Next Steps
 
 <Info>
-With your environment set up, you can start building custom nodes or learning advanced workflow patterns. Additional resources include official documentation and community support.
+**Ready to build**
+With your environment configured, move on to building custom nodes or learning advanced workflow patterns.
 </Info>
-
-Now that your environment is set up, you're ready to start building!
 
 <CardGroup cols={2}>
   <Card title="Build Your First Node" href="./custom-nodes-basics" icon="hammer">
