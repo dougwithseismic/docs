@@ -82,7 +82,7 @@ Channel Discovery → Video Processing → Content Analysis → Insight Storage 
 
 I built this using Trigger.dev for job orchestration, Hono as the backend framework, OpenAI GPT-4 for content analysis, and the YouTube Data API for content retrieval.
 
-### Why I Chose Trigger.dev
+### Why We Chose Trigger.dev
 
 I could have gone with traditional BullMQ and it would have worked fine. But Trigger.dev stood out for its impressive UI and user experience for managing job queues. It was killing two birds with one stone.
 
@@ -196,13 +196,13 @@ I made several key architectural decisions upfront. We introduced caching so suc
 
 This pattern makes adding new content sources like Twitter, blogs, or podcasts straightforward. All sources flow through the same processing pipeline while maintaining platform-specific optimizations.
 
-## How I Built It
+## How We Built It
 
 I love doing these small passion projects. Being the person who both builds and scopes, talking directly to Fabian to understand exactly what's needed - there's no conversation chains or multiple stakeholders slowing things down.
 
 I delivered a proof of concept in one week, then completed the full production build in two weeks total. The approach was rapid prototyping with creative freedom.
 
-I was able to take creative liberties and make technical decisions on the fly, then pitch them to Fabian after building. We knew he would agree because we were on the same page from the start. We was almost a co-founder on this project.
+We were able to take creative liberties and make technical decisions on the fly, then pitch them to Fabian after building. We knew he would agree because we were on the same page from the start. We were almost a co-founder on this project.
 
 This autonomy enabled immediate technical decisions without committee approval, creative problem-solving without bureaucratic overhead, and rapid iteration based on real results.
 
@@ -244,7 +244,7 @@ The technical challenges fell into three main categories.
 
 **Ensuring Reliability**: I built comprehensive error handling with graceful fallbacks, detailed logging and monitoring through Trigger.dev's UI, state tracking for resumable processing after failures, and result caching to maintain progress despite interruptions.
 
-## What I Learned
+## What We Learned
 
 The scope was tight, the delivery was painless. My expertise from similar projects meant this was bread and butter for me. We really enjoyed doing it, which always makes things easier.
 
