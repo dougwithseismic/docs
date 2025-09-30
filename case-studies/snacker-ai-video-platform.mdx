@@ -33,17 +33,13 @@ description: "How productizing a video concierge service into a DIY platform gen
   →](https://www.growthmatch.com/)
 </Note>
 
-## The Challenge
+## How It Started
 
 GrowthMatch, a TechStars alumni company, had successfully pivoted into a done-for-you video concierge service. They would record, help with case studies, generate content ideas, edit videos, and deliver polished content ready for publication.
 
-However, like traditional agencies, they faced a critical scaling challenge:
+## Understanding the Problem
 
-- High overhead costs for manual video editing and production
-- Limited capacity to serve multiple clients simultaneously
-- Unable to scale without proportionally increasing headcount
-- Clients' team members couldn't collaborate on content creation
-- Missing opportunities from prospects who weren't ready for full-service pricing
+Like traditional agencies, they faced a critical scaling challenge. High overhead costs for manual video editing and production, limited capacity to serve multiple clients simultaneously, unable to scale without proportionally increasing headcount, clients' team members couldn't collaborate on content creation, and missing opportunities from prospects who weren't ready for full-service pricing.
 
 They needed a self-service solution that could maintain their quality standards while enabling massive scale.
 
@@ -76,77 +72,59 @@ By productizing their expertise into Snacker.ai, GrowthMatch could now operate t
 - $5,000-25,000/month contracts
 - Premium positioning for enterprise clients
 
-## The Solution
+## Building the Solution
 
 ### When Content Creators Collide
 
-The partnership between Doug (WithSeismic) and Shelby (GrowthMatch) began in an unexpected place - the Cursor forums. Shelby had noticed Doug's work and reached out with a vision that immediately resonated.
+The partnership between Shelby and me began in an unexpected place - the Cursor forums. Shelby had noticed my work and reached out with a vision that immediately resonated.
 
-"Shelby knew exactly what he wanted and was looking for the right person to execute his vision," Doug recalls. "The moment he explained the problem, it clicked. As a YouTube creator myself, I'd been struggling with the same issue - how to produce more video content, faster, without sacrificing quality."
+Shelby knew exactly what he wanted and was looking for the right person to execute his vision. The moment he explained the problem, it clicked. As a YouTube creator myself, I'd been struggling with the same issue - how to produce more video content, faster, without sacrificing quality.
 
 This wasn't just another client project. The alignment was perfect: a founder who understood the vision meeting a developer who lived the problem daily.
 
-#### The WithSeismic Partnership Philosophy
+### How I Work
 
-"When I'm excited about a project, the language naturally shifts from 'your product' to 'our product,'" Doug explains. "It becomes a true partnership where I'm as invested in the outcome as the founder."
+When I'm excited about a project, the language naturally shifts from "your product" to "our product." It becomes a true partnership where I'm as invested in the outcome as the founder.
 
-The WithSeismic approach is distinctive:
+My approach is distinctive:
 
-**Deep Domain Immersion**
-"I immerse myself completely in the problem space. I research competitors, try existing tools, and experience the pain points firsthand. This hands-on approach sets WithSeismic apart from typical dev agencies that might have talented engineers but don't assign people who truly understand the domain."
+**Deep Domain Immersion**: I immerse myself completely in the problem space. I research competitors, try existing tools, and experience the pain points firsthand. This hands-on approach sets me apart from typical dev agencies that might have talented engineers but don't assign people who truly understand the domain.
 
-**Beyond Engineering**
-"Clients hire me for engineering, but they get much more - growth strategy, product design, marketing insights, and user experience expertise. This multi-disciplinary approach is rare but essential for early-stage products."
+**Beyond Engineering**: Clients hire me for engineering, but they get much more - growth strategy, product design, marketing insights, and user experience expertise. This multi-disciplinary approach is rare but essential for early-stage products.
 
-**Opinionated Partnership**
-"I'm opinionated and will challenge decisions when necessary. If competitors have better solutions or if there's a smarter approach, I'll speak up. This can create friction, but it's ultimately valuable - founders need someone who cares enough to push back."
+**Opinionated Partnership**: I'm opinionated and will challenge decisions when necessary. If competitors have better solutions or if there's a smarter approach, I'll speak up. This can create friction, but it's ultimately valuable - founders need someone who cares enough to push back.
 
-Doug's advice for founders: "Choose partners who are genuinely passionate about your problem space. Look for expertise, ambition tempered with pragmatism, and curiosity. Most importantly, find someone who sees it as 'our' problem to solve, not 'your' problem to fix."
+My advice for founders: Choose partners who are genuinely passionate about your problem space. Look for expertise, ambition tempered with pragmatism, and curiosity. Most importantly, find someone who sees it as "our" problem to solve, not "your" problem to fix.
 
-"Find someone who lives in your problem space," Doug emphasizes. "When developers genuinely care about the problem they're solving, everything moves faster and the solutions are better. This wasn't just a job for me - I was solving my own pain point as a content creator."
+Find someone who lives in your problem space. When developers genuinely care about the problem they're solving, everything moves faster and the solutions are better. This wasn't just a job for me - I was solving my own pain point as a content creator.
 
 ### The Technical Challenge
 
 #### From Lovable Prototype to Production Reality
 
-"The Lovable prototype was in rough shape," Doug remembers. "People don't realize that AI-generated code tends to pile features on shaky foundations. Every new user request adds another layer of conditional logic without considering the overall architecture."
+The Lovable prototype was in rough shape. People don't realize that AI-generated code tends to pile features on shaky foundations. Every new user request adds another layer of conditional logic without considering the overall architecture.
 
-The prototype's problems were systemic:
+The prototype's problems were systemic: if-else logic piled upon if-else logic for every user request, no consistent patterns between components, LLMs don't choose best practices or scalable solutions, and a previous developer had attempted Supabase setup but it wasn't great.
 
-- If-else logic piled upon if-else logic for every user request
-- No consistent patterns between components
-- LLMs don't choose best practices or scalable solutions
-- A previous developer had attempted Supabase setup but "it wasn't great"
-
-"I picked up a mess, honestly."
+I picked up a mess, honestly.
 
 #### The Refactoring Balancing Act
 
-The challenge wasn't just fixing the code - it was maintaining velocity while rebuilding the foundation. "Every developer's instinct is to start fresh," Doug admits. "But you have to be pragmatic. Customers care about results, not code elegance. The key is finding the balance between technical debt and shipping speed."
+The challenge wasn't just fixing the code - it was maintaining velocity while rebuilding the foundation. Every developer's instinct is to start fresh, but you have to be pragmatic. Customers care about results, not code elegance. The key is finding the balance between technical debt and shipping speed.
 
-Doug's approach was surgical and strategic:
+My approach was surgical and strategic:
 
-**Immediate Stabilization**
+**Immediate Stabilization**: Moved everything into a monorepo for shared packages, added Hono backend to bring order to the frontend chaos, and properly plumbed in all the Supabase work.
 
-- Moved everything into a monorepo for shared packages
-- Added Hono backend to bring order to the frontend chaos
-- Properly plumbed in all the Supabase work
+**Scalable Patterns Introduction**: Feature folders and consistent naming conventions, data fetching patterns with React Query, file structure conventions, and shared components and utilities.
 
-**Scalable Patterns Introduction**
-
-- Feature folders and consistent naming conventions
-- Data fetching patterns with React Query
-- File structure conventions
-- Shared components and utilities
-
-**Future-Proofing for Lovable**
-"The founder needed to keep shipping features while I stabilized the codebase," Doug explains. "I created guardrails - detailed prompts, code examples, and architectural patterns - so his Lovable additions wouldn't undermine the foundation we were building."
+**Future-Proofing for Lovable**: The founder needed to keep shipping features while I stabilized the codebase. I created guardrails - detailed prompts, code examples, and architectural patterns - so his Lovable additions wouldn't undermine the foundation we were building.
 
 #### The Education Challenge
 
-Working with a founder actively building in Lovable while stabilizing the codebase presented unique challenges. "The knowledge gap was significant," Doug admits. "I taught Shelby the basics - using Cursor, running terminal commands, understanding deployment. These fundamentals that developers take for granted were completely foreign to him."
+Working with a founder actively building in Lovable while stabilizing the codebase presented unique challenges. The knowledge gap was significant. I taught Shelby the basics - using Cursor, running terminal commands, understanding deployment. These fundamentals that developers take for granted were completely foreign to him.
 
-"Seeing the complexity firsthand was eye-opening for him. It built mutual respect - he understood why certain things took time, and I understood his urgency to ship."
+Seeing the complexity firsthand was eye-opening for him. It built mutual respect - he understood why certain things took time, and I understood his urgency to ship.
 
 The technical gap was significant:
 
@@ -155,16 +133,15 @@ The technical gap was significant:
 - Production-ready scaling considerations
 - Security implications of LLM-based features
 
-"Lovable prototypes aren't production-ready," Doug emphasizes. "Security, scalability, performance - these aren't just nice-to-haves. With LLM-based features, you're dealing with API keys, rate limits, caching strategies. These concepts are critical but invisible to non-technical founders."
+Lovable prototypes aren't production-ready. Security, scalability, performance - these aren't just nice-to-haves. With LLM-based features, you're dealing with API keys, rate limits, caching strategies. These concepts are critical but invisible to non-technical founders.
 
 #### The Rebuild Dilemma
 
-"I advocated for a clean rebuild - it would have taken just two additional weeks to build on solid foundations," Doug reveals. "But ultimately, the client makes the call. My role is to advise strongly but respect their decision."
+I advocated for a clean rebuild - it would have taken just two additional weeks to build on solid foundations. But ultimately, the client makes the call. My role is to advise strongly but respect their decision.
 
-His advice to founders considering the Lovable-to-production path:
-"Don't let perfect be the enemy of good - ship and iterate. But be strategic about technical debt. Trust your technical partners. We want your project to succeed as much as you do."
+My advice to founders considering the Lovable-to-production path: Don't let perfect be the enemy of good - ship and iterate. But be strategic about technical debt. Trust your technical partners. We want your project to succeed as much as you do.
 
-"Incremental refactoring became my strategy," Doug concludes. "I had a clear vision of proper architecture and gradually moved the codebase toward it. Shelby's determination to ship kept us moving forward despite the technical challenges."
+Incremental refactoring became my strategy. I had a clear vision of proper architecture and gradually moved the codebase toward it. Shelby's determination to ship kept us moving forward despite the technical challenges.
 
 ### Strategic Benefits of Productization
 
@@ -196,7 +173,7 @@ Snacker.ai became a standalone SaaS that enabled GrowthMatch to:
 
 **The Browser Video Battlefield**
 
-"Browser-based video editing is rare for good reasons," Doug explains. "The tools exist - Remotion, WebCodecs API, Diffusion Studio - but you're battling hardware limitations, viewport constraints, and browser security models."
+Browser-based video editing is rare for good reasons. The tools exist - Remotion, WebCodecs API, Diffusion Studio - but you're battling hardware limitations, viewport constraints, and browser security models.
 
 The technical challenges were numerous:
 
@@ -209,43 +186,31 @@ The technical challenges were numerous:
 
 **The iOS Audio Blocking Crisis**
 
-"iOS Safari killed our original approach," Doug recalls. "It blocks audio autoplay when stitching videos - a security feature that makes perfect sense but breaks traditional video editing workflows."
+iOS Safari killed our original approach. It blocks audio autoplay when stitching videos - a security feature that makes perfect sense but breaks traditional video editing workflows.
 
-The solution was creative but came with sacrifices:
-
-- Created HLS playlists instead of traditional video stitching
-- Segmented videos into timestamp-based chunks
-- Built custom playlist sections to bypass iOS restrictions
-- Lost Remotion's advanced animation capabilities in the process
+The solution was creative but came with sacrifices: created HLS playlists instead of traditional video stitching, segmented videos into timestamp-based chunks, built custom playlist sections to bypass iOS restrictions, and lost Remotion's advanced animation capabilities in the process.
 
 **Proxy Processing for Speed**
 
-"Video processing requires clever workarounds," Doug explains. "We record two streams simultaneously - full resolution for final output and a lightweight proxy for real-time transcription. It's the kind of complexity users never see but makes the magic possible."
+Video processing requires clever workarounds. We record two streams simultaneously - full resolution for final output and a lightweight proxy for real-time transcription. It's the kind of complexity users never see but makes the magic possible.
 
-The transcription dilemma:
+The transcription dilemma: run Whisper in the browser for privacy but sacrifice performance, send to external services for speed but add latency and privacy concerns, balance between client performance and feature completeness.
 
-- Run Whisper in the browser for privacy but sacrifice performance
-- Send to external services for speed but add latency and privacy concerns
-- Balance between client performance and feature completeness
-
-"Every browser limitation has a workaround, but each workaround involves trade-offs. Building for the web means accepting compromises at every level of the stack."
+Every browser limitation has a workaround, but each workaround involves trade-offs. Building for the web means accepting compromises at every level of the stack.
 
 ## The AI-Powered Workflow
 
 ### Cracking the AI Editing Code
 
-"Teaching an LLM to edit video from transcripts alone was challenging," Doug explains. "Everyone has different speaking styles and preferences for pacing. The AI needs to understand context and intent from text alone - no visual or audio cues."
+Teaching an LLM to edit video from transcripts alone was challenging. Everyone has different speaking styles and preferences for pacing. The AI needs to understand context and intent from text alone - no visual or audio cues.
 
 The breakthrough came through relentless internal testing:
 
 **The Dogfooding Breakthrough**
 
-- Started testing internally, trying to "trip up" the AI deliberately
-- Introduced evals for systematic testing
-- Team used the product for all their own content creation
-- "If we could make it work for all of our content, customers were going to be happy with that too"
+Started testing internally, trying to "trip up" the AI deliberately. Introduced evals for systematic testing. The team used the product for all their own content creation. If we could make it work for all of our content, customers were going to be happy with that too.
 
-"When our internal team couldn't break the AI editing anymore, we knew we had something special," Doug recalls. "We became our own best case study."
+When our internal team couldn't break the AI editing anymore, we knew we had something special. We became our own best case study.
 
 ### Three Pillars of AI Integration
 
@@ -368,30 +333,25 @@ Most agencies struggle to escape the time-for-money trap. Productization solves 
 - Service quality sets product quality bar
 - Client success stories become product marketing
 
-## Lessons Learned
+## What I Learned
 
 ### The Future of Browser-Based Video
 
-"The future of browser video is exciting," Doug reflects. "As WebCodecs becomes more widely adopted and tools like Remotion advance client-side rendering, we might finally see web apps rival native applications for video editing."
+The future of browser video is exciting. As WebCodecs becomes more widely adopted and tools like Remotion advance client-side rendering, we might finally see web apps rival native applications for video editing.
 
-For Doug, video represents something bigger than just content:
-
-"Video remains the most authentic form of personal branding. Through my YouTube channel, I've built genuine connections by sharing what I'm passionate about. When prospects reach out already understanding my values and expertise, it validates the power of video content."
+For me, video represents something bigger than just content. Video remains the most authentic form of personal branding. Through my YouTube channel, I've built genuine connections by sharing what I'm passionate about. When prospects reach out already understanding my values and expertise, it validates the power of video content.
 
 ### The Lovable Reality Check
 
-"The Lovable-to-production journey revealed a crucial education gap," Doug emphasizes. "The marketing promises that 'everyone can code' and 'engineers are optional' simply aren't true."
+The Lovable-to-production journey revealed a crucial education gap. The marketing promises that "everyone can code" and "engineers are optional" simply aren't true.
 
 The reality is more nuanced:
 
-**The Spaghetti Corner**
-"Without proper architecture, you'll inevitably hit a wall. Features pile on features until the codebase becomes unmaintainable. Experienced engineers recognize this pattern - it's what happens when you build without planning."
+**The Spaghetti Corner**: Without proper architecture, you'll inevitably hit a wall. Features pile on features until the codebase becomes unmaintainable. Experienced engineers recognize this pattern - it's what happens when you build without planning.
 
-**The Marketing vs. Reality**
-"When tech CEOs claim AI will write 90% of code, remember they're selling products. The hype from major AI companies is ultimately about market positioning and investor narratives."
+**The Marketing vs. Reality**: When tech CEOs claim AI will write 90% of code, remember they're selling products. The hype from major AI companies is ultimately about market positioning and investor narratives.
 
-**The Human Element**
-"Don't skip learning the fundamentals. The satisfaction of truly understanding and creating something yourself far exceeds the convenience of delegating your thinking to an AI model."
+**The Human Element**: Don't skip learning the fundamentals. The satisfaction of truly understanding and creating something yourself far exceeds the convenience of delegating your thinking to an AI model.
 
 ### Core Lessons
 
@@ -404,21 +364,19 @@ The reality is more nuanced:
 - **Architecture Matters**: Eventually you'll hit the wall if foundations aren't solid - plan for scale from day one
 - **Dogfood Relentlessly**: If your own team won't use it, customers won't either
 
-## The WithSeismic Difference
+## Why This Partnership Worked
 
-### Why This Partnership Worked
+The Snacker project exemplified what makes a successful engagement:
 
-The Snacker project exemplified what makes a successful WithSeismic engagement:
-
-1. **Founder-Developer Alignment**: Both Shelby and Doug were content creators who understood the problem viscerally
-2. **Technical Expertise Meets Domain Knowledge**: Doug brought both engineering skills and YouTube creator experience
+1. **Founder-Developer Alignment**: Both Shelby and I were content creators who understood the problem viscerally
+2. **Technical Expertise Meets Domain Knowledge**: I brought both engineering skills and YouTube creator experience
 3. **Partnership Over Transaction**: The relationship evolved from "hiring a developer" to "building together"
-4. **Freedom to Question and Innovate**: Doug was empowered to challenge decisions and suggest better approaches
-5. **Multi-disciplinary Value**: Beyond code, Doug contributed to growth strategy, product design, and marketing
+4. **Freedom to Question and Innovate**: I was empowered to challenge decisions and suggest better approaches
+5. **Multi-disciplinary Value**: Beyond code, I contributed to growth strategy, product design, and marketing
 
-Interestingly, while Shelby ran a video concierge service, his direct involvement was limited to using Descript for basic editing. This gap between running the business and understanding the technical complexities made Doug's hands-on creator experience invaluable.
+Interestingly, while Shelby ran a video concierge service, his direct involvement was limited to using Descript for basic editing. This gap between running the business and understanding the technical complexities made my hands-on creator experience invaluable.
 
-"Finding that perfect founder-developer symbiosis makes everything worthwhile," Doug reflects. "It's why I choose this path over traditional employment - the opportunity to truly partner in building something meaningful."
+Finding that perfect founder-developer symbiosis makes everything worthwhile. It's why I choose this path over traditional employment - the opportunity to truly partner in building something meaningful.
 
 ## Frequently Asked Questions
 
@@ -483,6 +441,6 @@ Interestingly, while Shelby ran a video concierge service, his direct involvemen
 
 The Snacker project represents more than just a successful productization - it's a blueprint for how agencies can escape the time-for-money trap while solving real problems for real users.
 
-By combining Doug's technical expertise with lived experience as a content creator, and Shelby's vision for democratizing video production, they created something that neither could have built alone. The result: 5,000+ users in three months, a sustainable SaaS model feeding a premium service business, and most importantly, a tool that actually gets used because it solves a genuine pain point.
+By combining my technical expertise with lived experience as a content creator, and Shelby's vision for democratizing video production, we created something that neither could have built alone. The result: 5,000+ users in three months, a sustainable SaaS model feeding a premium service business, and most importantly, a tool that actually gets used because it solves a genuine pain point.
 
-"Nothing beats the feeling of creating something meaningful," Doug concludes. And ultimately, that's what Snacker delivers for thousands of creators: the freedom to share their message without wrestling with traditional video production barriers.
+Nothing beats the feeling of creating something meaningful. And ultimately, that's what Snacker delivers for thousands of creators: the freedom to share their message without wrestling with traditional video production barriers.
