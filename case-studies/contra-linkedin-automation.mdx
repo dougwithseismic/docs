@@ -58,103 +58,70 @@ description: "How a Chrome extension for crowdsourced content discovery doubled 
 >
 > — **Allison Nulty**, Head of Product, Contra
 
-## The Origin Story
+## How It Started
 
-### Found on Contra, Built for Contra
+The partnership began in the most fitting way possible - through Contra itself. After I showcased some Chrome extension work and published a data analysis piece about Contra's growth using public data, Ben from the Contra team reached out.
 
-The partnership began in the most fitting way possible - through Contra itself. After showcasing Chrome extension work and publishing a data analysis piece about Contra's growth using public data, we caught the attention of Ben from the Contra team.
+When they contacted me about LinkedIn automation and data collection, the timing couldn't have been better. I was already building something similar for my own LinkedIn networking. This wasn't just another project - it was a passion piece I was genuinely excited about.
 
-"When they reached out about LinkedIn automation and data collection, it was perfect timing," we recall. "I was already building something similar for my own LinkedIn networking. This wasn't just another project - it was a passion piece I was genuinely excited about."
+## Understanding the Problem
 
-## The Challenge
+Contra is a freelance marketplace with over a million users, but they faced a critical challenge: inventory. Their marketplace's success depends entirely on having enough quality job opportunities for freelancers to discover.
 
-Contra, a freelance marketplace with over a million users, faced a critical inventory problem. The marketplace's success depends entirely on the volume and quality of job opportunities available to freelancers.
+As a scrappy startup competing against established platforms like Upwork and Fiverr, they needed to find relevant opportunities at scale without massive outbound teams. The key insight came from their users' behavior - freelancers were already spending hours on LinkedIn and X (Twitter) looking for gigs.
 
-As a scrappy startup competing against established platforms, Contra needed to:
+What if we could transform this passive browsing into active value creation? What if every Contra user became a discovery agent for the entire platform?
 
-- Find relevant job opportunities at scale
-- Compete for inventory without massive outbound teams
-- Leverage their existing user base as a competitive advantage
-- Transform passive browsing into active opportunity discovery
+## Building the Solution
 
-The key insight: their freelancers were already spending hours on LinkedIn and X (Twitter) looking for opportunities. Could this browsing behavior be transformed into a crowdsourced discovery engine?
+Initially, Contra wanted to leverage first-party LinkedIn connections to build network effects - inviting connections and creating matches within their platform. But after I demonstrated what background worker scripts could do and showed how extensions could work passively without disrupting browsing, the vision expanded dramatically.
 
-## The Solution
+We realized we could go much further: using all Chrome extension users to find opportunities for everyone, essentially crowdsourcing job discovery across LinkedIn and X.
 
-### From Network Building to Opportunity Discovery
+Working with Allison, their Head of Product, was exceptional. She knew exactly what she wanted. The design team delivered incredibly high-fidelity mockups. Everyone was available and passionate - it was the perfect collaboration.
 
-The vision evolved through collaboration. Initially, Contra wanted to leverage first-party LinkedIn connections to build network effects on their platform - inviting connections and creating matches within Contra.
+I was tasked with building the Chrome extension for Indy.ai, transforming everyday social media browsing into automated opportunity discovery. The concept was elegant: the extension would crowdsource job finding across Contra's entire user base, creating a compounding effect where more users equals more opportunities for everyone.
 
-"After demonstrating background worker scripts and showing how extensions could work passively in the background, the vision expanded," we explain. "They realized we could go much further - using all Chrome extension users to find opportunities for everyone, essentially crowdsourcing job discovery across LinkedIn and X."
+Here's how it works:
 
-### The Partnership Dynamic
+- As users browse LinkedIn and X normally, the extension passively reads content in the background
+- It collects first-party connections and their posts without disrupting the browsing experience
+- LLMs analyze the content to identify hiring signals and opportunities
+- Relevant matches surface directly to users
+- Contra's job inventory grows automatically in the background
 
-Working with Contra was exceptional. "Allison, their Head of Product, knew exactly what they wanted. The design team delivered incredibly high-fidelity mockups. Everyone was available and passionate about the project - it was the perfect collaboration."
+## The Technical Build
 
-WithSeismic was tasked with building the Chrome extension for Indy.ai, transforming everyday social media browsing into automated opportunity discovery. The extension crowdsources job finding across Contra's entire user base, creating a compounding effect where more users equals more opportunities for everyone.
+One of my first priorities was creating a frictionless onboarding experience. I built the extension to automatically detect authentication status across all three platforms - LinkedIn, X, and Contra - using network request validation.
 
-The system works by:
+The result was completely seamless: as soon as someone installed the extension, if they were already logged into these platforms, they were ready to go. No additional setup required.
 
-- Passively reading content as users browse LinkedIn and X
-- Collecting first-party connections and their posts
-- Using LLMs to identify hiring signals and opportunities
-- Surfacing relevant matches directly to users
-- Building Contra's job inventory in the background
+I built the extension using Plasmo.com's Chrome extension framework with React for the UI. The architecture relied heavily on background service workers to ensure the extension never disrupted browsing. Content collection and parsing happened entirely in the background, with LLMs analyzing the content to identify opportunities.
 
-## Technical Implementation
+### Staying Compliant
 
-### Seamless Authentication
+Platform compliance was critical. I implemented extremely conservative rate limiting - just one request per second - to avoid any automation flags. The extension never automates user actions; it only reads content from the user's own network. Everything runs in background workers with zero impact on the browsing experience.
 
-One of the key innovations was creating a frictionless onboarding experience. The extension automatically detected authentication status across all three platforms (LinkedIn, X, and Contra) using network request validation.
+The beauty of the distributed architecture is that it scales naturally. With thousands of users, each person's extension collects from their unique network, creating coverage that would be impossible for a centralized system. Smart caching prevents duplicate processing, and more users actually means better performance and broader coverage.
 
-"We made it completely seamless," we explain. "As soon as you installed the extension, if you were already logged into these platforms, you were ready to go. No additional setup required."
+## What We Built
 
-### Tech Stack
+The extension I delivered includes:
 
-- **Framework**: Plasmo.com Chrome extension framework
-- **Frontend**: React for the extension UI
-- **Architecture**: Heavy use of background service workers
-- **Processing**: Content collection and parsing pipeline
-- **Analysis**: LLM integration for opportunity identification
-
-### Key Technical Considerations
-
-**Platform Compliance**
-
-- Extremely conservative rate limiting (one request per second)
-- No automation of user actions
-- Read-only content collection from user's own network
-- Background workers to ensure zero impact on user browsing experience
-
-**Scalability Architecture**
-
-- Distributed collection across thousands of users
-- Efficient background processing without impacting browsing
-- Smart caching to avoid duplicate processing
-
-## Key Features
-
-- **Passive Opportunity Discovery**: Works while users browse naturally
-- **Network Leverage**: Analyzes first-party connections and their content
-- **Smart Matching**: LLM-powered relevance scoring
+- **Passive Discovery**: Works automatically while users browse naturally
+- **Network Intelligence**: Analyzes first-party connections and their content
+- **Smart Matching**: LLM-powered relevance scoring to surface the right opportunities
 - **Zero Friction**: No change to user behavior required
-- **Cross-Platform**: Works on LinkedIn and X (Twitter)
-- **Direct Integration**: Seamless connection with Contra's marketplace
+- **Cross-Platform**: Works seamlessly on both LinkedIn and X
+- **Direct Integration**: Connects directly into Contra's marketplace
 
-## Results & Impact
+## The Results
 
-### Marketplace Growth
+The impact exceeded expectations. Within weeks of launch, Contra saw a **2x increase in job inventory** - effectively doubling their marketplace without hiring a single outbound recruiter.
 
-- **2x increase** in job inventory after launch
-- Significantly expanded opportunity discovery for freelancers
+The extension now has **20,000+ active users** on the Chrome Web Store with a **4.6 star rating**. Growth has been largely organic through word-of-mouth, with freelancers telling other freelancers about it.
 
-### User Adoption
-
-- **20,000+ active users** on Chrome Web Store
-- **4.6 star rating** from users
-- High organic growth through word-of-mouth
-
-### User Testimonials
+The user feedback has been incredibly gratifying:
 
 > "Love Indy! It saves me so much time from endlessly scrolling LinkedIn. As a freelance designer, I can focus on applying to the RIGHT opportunities."
 >
@@ -168,43 +135,21 @@ One of the key innovations was creating a frictionless onboarding experience. Th
 >
 > - _Shan Minhas_
 
-## The Crowdsourcing Effect
+## Why This Approach Works
 
-The brilliance of this approach is its compounding network effect:
+The brilliance of this solution is its compounding network effect. Each new user adds coverage of their unique network. More users means more content processed, which means more opportunities found for everyone - not just the person who discovered them.
 
-- Each new user adds coverage of their unique network
-- More users = more content processed = more opportunities found
-- Benefits scale to all users, not just the discoverer
-- Creates a moat through collective intelligence
+This creates a sustainable competitive moat through collective intelligence. A competitor would need to rebuild not just the technology, but the entire user base to match the coverage.
 
-## Innovation Highlights
+## What I Learned
 
-- **Transformed passive browsing into active value creation**
-- **Solved the cold start problem through crowdsourcing**
-- **Created competitive advantage from user behavior**
-- **Built network effects into core product**
+This project reinforced several key principles I apply to every build:
 
-## Lessons Learned
+**Perfect alignment creates momentum.** I was solving my own problem (LinkedIn networking), Contra had clear vision and excellent design, and users got immediate value without changing behavior. When all three align, magic happens.
 
-### The Power of Aligned Interests
+**Constraints drive excellence.** By respecting platform limits with conservative rate limiting and read-only operations, we built something sustainable. Background processing ensures users never wait. Invisible authentication removes friction.
 
-The success of Indy.ai came from perfect alignment:
-
-- We were solving our own problem (LinkedIn networking)
-- Contra had clear vision and excellent design
-- Users got immediate value without changing behavior
-
-### Technical Excellence Through Constraints
-
-- **Respect platforms**: Conservative rate limiting and read-only operations ensure longevity
-- **Background processing**: Users should never wait for data processing
-- **Seamless experience**: Authentication should be invisible when possible
-
-### Crowdsourcing as Competitive Advantage
-
-- Each user adds unique network coverage
-- Distributed collection beats centralized approaches
-- Network effects create a sustainable moat
+**Crowdsourcing beats centralization.** Each user adds unique network coverage. Distributed collection scales naturally while centralized approaches hit walls. The network effect becomes the product's moat.
 
 ## Chrome Web Store
 
