@@ -278,12 +278,15 @@ export const QualifyingQuiz = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Are We a Good Fit?
+            Save Us Both Time
           </h3>
           <span className="text-sm text-gray-600 dark:text-gray-400">
             {currentStep + 1} of {questions.length}
           </span>
         </div>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          Answer 5 quick questions so we can have a focused conversation about what matters to you. Takes 2 minutes.
+        </p>
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
           <div
             className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full transition-all duration-300"

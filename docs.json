@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "WithSeismic - Internal Tools & Automation",
+  "name": "WithSeismic - Revenue Engineering",
 
   "colors": {
     "primary": "#FF8000",
@@ -13,8 +13,8 @@
   },
   "favicon": "/favicon.svg",
   "seo": {
-    "title": "WithSeismic - Internal Tools & Automation",
-    "description": "Boutique growth engineering consultancy that turns technical innovation into revenue acceleration. We build Chrome extensions, LLM workflows, browser automation, and MCP servers for SaaS and marketplaces.",
+    "title": "WithSeismic - We Solve Revenue Problems Through Engineering",
+    "description": "We solve revenue problems through engineering and code. Custom automation, Chrome extensions, LLM workflows, and browser automation for SaaS and marketplaces doing $300K-$5M ARR.",
     "metatags": {
       "charset": "UTF-8",
       "viewport": "width=device-width, initial-scale=1.0",
@@ -26,15 +26,15 @@
       "MobileOptimized": "320",
       "theme-color": "#FF8000",
       "color-scheme": "light dark",
-      "og:title": "WithSeismic - Internal Tools & Automation",
+      "og:title": "WithSeismic - We Solve Revenue Problems Through Engineering",
       "og:type": "website",
       "og:url": "https://withseismic.com",
       "og:image": "/images/og.png",
-      "og:description": "Build MVPs, Chrome extensions, LLM workflows, browser automation, and MCP servers. Automate your business processes in two weeks from $6k.",
+      "og:description": "We solve revenue problems through engineering and code. Custom automation for SaaS and marketplaces. Starting at $7,500/month over 3 months.",
       "og:site_name": "WithSeismic",
       "twitter:card": "summary_large_image",
-      "twitter:title": "WithSeismic - Internal Tools & Automation",
-      "twitter:description": "Build Chrome extensions, LLM workflows, browser automation, and MCP servers. Automate your business processes in two weeks from $6k.",
+      "twitter:title": "WithSeismic - We Solve Revenue Problems Through Engineering",
+      "twitter:description": "We solve revenue problems through engineering and code. Custom automation, Chrome extensions, and engineering solutions that directly impact your bottom line.",
       "twitter:image": "/images/og.png"
     }
   },
@@ -230,6 +230,7 @@
       },
       {
         "tab": "Interactive Tools",
+        "hidden": true,
         "groups": [
           {
             "group": "Marketing Tools",
@@ -253,6 +254,7 @@
       },
       {
         "tab": "Articles",
+        "hidden": true,
         "groups": [
           {
             "group": "About WithSeismic",
@@ -295,6 +297,7 @@
       },
       {
         "tab": "Universities",
+        "hidden": true,
         "groups": [
           {
             "group": "Get Started",
