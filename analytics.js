@@ -24,6 +24,8 @@
       codeBlockCopy: 10,
       toolUsed: 15,
       calculationPerformed: 20,
+      qualifying_question_answered: 5,
+      qualifying_quiz_completed: 50,
       emailProvided: 30,
       companyInfoProvided: 25,
       bookingInitiated: 50,
@@ -353,6 +355,19 @@
       description: "Compare project costs using the pricing calculator",
       qualifier: (profile) => {
         return profile.behavior?.toolsUsed?.includes('pricing_calculator');
+      }
+    },
+    {
+      id: "self_aware",
+      name: "Self-Aware Buyer",
+      icon: "🎯",
+      description: "Complete the qualifying quiz to see if we're a fit",
+      qualifier: (profile) => {
+        const sessions = Object.values(profile.behavior?.pages || {})
+          .flatMap(p => p.sessions || []);
+        return sessions.some(s =>
+          s.actions?.some(a => a.type === 'qualifying_quiz_completed')
+        );
       }
     },
     {
@@ -1019,7 +1034,7 @@
         ],
         qualified: [
           {
-            path: "/contact/book-consultation",
+            path: "/contact",
             title: "Book Your Consultation",
           },
           {
@@ -1145,7 +1160,7 @@
           },
           qualified: {
             message: "You're qualified! Let's talk: Book Your Consultation",
-            path: "/contact/book-consultation"
+            path: "/contact"
           }
         };
 
@@ -1884,7 +1899,7 @@
           Why don't you reach out and let me know how I can help?
         </p>
 
-        <a href="/contact/book-consultation" style="
+        <a href="/contact" style="
           display: block;
           background: linear-gradient(to right, #FF8000, #CC6600);
           color: #ffffff;
@@ -2181,7 +2196,7 @@
         text: "You're qualified! Let's talk: Book Your Consultation",
         level: "qualified",
         delay: 6000,
-        link: "/contact/book-consultation"
+        link: "/contact"
       }
     ];
 
