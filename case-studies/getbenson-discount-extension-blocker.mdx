@@ -37,7 +37,7 @@ description: "How getBenson's technology prevents discount extensions like Honey
 
 My journey to getBenson began at VoucherCloud, which later got acquired by Groupon. Working in the voucher publishing space gave me a unique vantage point to see both sides of the Honey problem.
 
-As a Honey user myself, I witnessed firsthand how extensions earned affiliate commissions without providing real value. The codes often didn't work, yet brands were still paying for these failed conversions.
+As a Honey user myself, we witnessed firsthand how extensions earned affiliate commissions without providing real value. The codes often didn't work, yet brands were still paying for these failed conversions.
 
 The problem ran deeper than just broken codes. The affiliate industry had a built-in conflict of interest: networks earned kickbacks from every Honey transaction, creating a powerful incentive to stay silent about the damage. B2C brands were left in the dark, lacking the critical data needed to understand whether these extensions helped or hurt their business.
 
@@ -76,7 +76,7 @@ This pattern repeats across email campaigns, loyalty programs, and strategic par
 
 ## Building the Solution
 
-Before building, I researched existing solutions. While a couple existed, none offered comprehensive protection. My vision crystallized around three core questions: Could I reliably detect these extensions? Could I prevent them from interfering? Could I help brands reclaim their lost margin?
+Before building, we researched existing solutions. While a couple existed, none offered comprehensive protection. My vision crystallized around three core questions: Could I reliably detect these extensions? Could I prevent them from interfering? Could I help brands reclaim their lost margin?
 
 With clients from my affiliate network already expressing frustration about this problem, the decision to build getBenson was obvious.
 
@@ -86,11 +86,11 @@ I built getBenson as the first comprehensive defense system against discount ext
 
 Building getBenson in 2018 meant entering an evolving cat-and-mouse game between extensions and detection methods.
 
-The technical challenge was formidable. Each extension operated differently - some ran in the main execution context, others in isolated environments. I had to navigate the complex security boundaries of browser architecture, leveraging features like Shadow DOM to create protected zones that extensions couldn't penetrate.
+The technical challenge was formidable. Each extension operated differently - some ran in the main execution context, others in isolated environments. We had to navigate the complex security boundaries of browser architecture, leveraging features like Shadow DOM to create protected zones that extensions couldn't penetrate.
 
-My process was iterative and challenging. I experimented with countless detection strategies, each iteration teaching me more about the delicate balance between functionality and security. The key insight: maintaining strict separation between the extension world and my protected checkout environment was non-negotiable.
+My process was iterative and challenging. We experimented with countless detection strategies, each iteration teaching me more about the delicate balance between functionality and security. The key insight: maintaining strict separation between the extension world and my protected checkout environment was non-negotiable.
 
-The breakthrough came when I approached the problem like reverse engineering an application. By detecting specific files that extensions exposed through the browser's API, I could create unique fingerprints for each extension - definitively identifying whether Honey, Retail Me Not, Rakuten, or others were active on the page.
+The breakthrough came when I approached the problem like reverse engineering an application. By detecting specific files that extensions exposed through the browser's API, we could create unique fingerprints for each extension - definitively identifying whether Honey, Retail Me Not, Rakuten, or others were active on the page.
 
 ### How It Works
 
@@ -143,7 +143,7 @@ getBenson integrates seamlessly with any e-commerce platform:
 
 Theory11, a premium playing card brand, became my first client. They had already experienced Honey's devastating impact on their margins and tried other solutions without success. For them, getBenson was an immediate necessity.
 
-Through customer conversations, I discovered two distinct buyer personas:
+Through customer conversations, we discovered two distinct buyer personas:
 
 **The Immediate Blockers** had clear urgency: "Block these extensions now - we're hemorrhaging margin." They understood the problem and wanted immediate protection.
 
@@ -276,7 +276,7 @@ This was before Shopify's sweeping changes to allow checkout extensions - a plat
 
 ## What I Learned
 
-Looking back, I see a different path.
+Looking back, we see a different path.
 
 **From adversarial to analytical.** If I were building getBenson today, I'd take a fundamentally different approach. Rather than positioning myself as an adversary to discount extensions, I'd focus on objective impact analysis. The question wouldn't be "How do we block them?" but "What's the actual ROI of these partnerships?"
 
