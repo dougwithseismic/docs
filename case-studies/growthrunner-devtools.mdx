@@ -38,86 +38,49 @@ description: "How a custom Chrome DevTools extension automated 90% of analytics 
   →](https://contra.com/p/cbWXMPeN-bespoke-tools-growth-runner-devtools-extension)
 </Note>
 
-## The Challenge
+## How It Started
 
 Complex tasks with no room for error are prime candidates for automation. When GrowthRunner reached out to automate their entire analytics process, I jumped at the chance to showcase what bespoke tools can do.
 
-GrowthRunner, the expert analytics tracking agency founded by Nitesh Sharoff, specializes in advanced analytics and tracking for iconic brands including Wagamama and Net-a-Porter. Their core business revolves around auditing analytics setups - integral to their lead generation, day-to-day implementations, and billable hours.
+GrowthRunner is the expert analytics tracking agency founded by Nitesh Sharoff. They specialize in advanced analytics and tracking for iconic brands including Wagamama and Net-a-Porter. Their core business revolves around auditing analytics setups - integral to their lead generation, day-to-day implementations, and billable hours.
 
-These audits require specialists to meticulously comb through client sites, reviewing tracking events, checking each payload and implementation. This process is:
+## Understanding the Problem
 
-- Error-prone and monotonous
-- Highly specialized with numerous edge cases
-- Critical to their business model (a misimplementation can cost clients hundreds of thousands)
-- Time-consuming, limiting scalability
+These audits require specialists to meticulously comb through client sites, reviewing tracking events, checking each payload and implementation. The process was error-prone and monotonous, highly specialized with numerous edge cases, critical to their business model (a misimplementation can cost clients hundreds of thousands), and time-consuming, limiting their scalability.
 
-## The Solution
+## Building the Solution
 
-I partnered with GrowthRunner to create a custom DevTools extension that reduced their auditing and implementation time by 90%, automating monotonous tasks and improving overall efficiency.
+I created a custom DevTools extension that reduced their auditing and implementation time by 90%, automating monotonous tasks and improving overall efficiency.
 
-The automation addressed the pain point of lengthy manual auditing by:
+The automation works by leveraging Chrome's Recording API to capture user journeys, building a dataLayer listener that plays back recorded actions, simulating typical user journeys and navigation, capturing screenshots and timestamps for documentation, and matching actual events against expected events to provide analytics health snapshots.
 
-- Leveraging Chrome's Recording API to capture user journeys
-- Building a dataLayer listener that plays back recorded actions
-- Simulating typical user journeys, clicks, and navigation
-- Capturing screenshots and timestamps for documentation
-- Matching actual events against expected events to provide analytics health snapshots
+## The Technical Build
 
-## Technical Implementation
+I built this using Plasmo.com as the web extension framework, React with Tailwind CSS for the DevTools interface, IndexedDB for local storage, and Chrome's DevTools and Recording APIs.
 
-### Tech Stack
+The main technical challenges were significant. DataLayer tracking required monitoring changes before, during, and after code execution in the DevTools window. Cross-context communication needed heavy use of main world JavaScript injection to enable communication between the client window and the isolated world of Chrome extension development. The Chrome Recording API integration was complex to implement for accurate capture and replay.
 
-- **Framework**: Plasmo.com - A JavaScript framework for building web extensions
-- **UI**: React with Tailwind CSS for the DevTools interface
-- **Storage**: IndexedDB for images and video storage
-- **Core APIs**: Chrome DevTools API, Chrome Recording API
+## What I Built
 
-### Key Technical Challenges
+The extension is custom-built for GrowthRunner's specific workflow. It includes an analytics dataLayer observer that tracks and categorizes all events automatically, captures user actions like clicks and text inputs, extends the Chrome Recording API for auditing and playback, and generates automated reports with screenshots and timestamps.
 
-The main technical challenges involved:
+## How Fast I Delivered It
 
-1. **DataLayer Tracking**: Monitoring changes to the data layer before, during, and after code execution in the DevTools window
-2. **Cross-Context Communication**: Heavy use of main world JavaScript injection to enable communication between the client window and the isolated world of Chrome extension development
-3. **Chrome Recording API Integration**: Complex implementation to capture and replay user actions accurately
+I delivered the MVP in 10 days. The total project timeline was 14 days including sales and iterations. It went to production in 2 weeks.
 
-## Key Features
+## The Results
 
-- **Bespoke DevTools Extension**: Custom-built for GrowthRunner's specific workflow
-- **Analytics DataLayer Observer**: Tracks and categorizes all events automatically
-- **User Action Tracking**: Captures clicks, text inputs, and user interactions
-- **Chrome Recording API Extension**: Audits and plays back actions for testing
-- **Automated Reporting**: Generates snapshots with screenshots and timestamps
+The efficiency gains were dramatic. I achieved a 90% reduction in auditing time, reducing tasks from multiple hours to minutes. Team capacity increased from 1 audit per day to 10 audits per day per team member - a 10x increase in throughput.
 
-## Timeline
+The business impact extended beyond time savings. GrowthRunner freed up expert team members for high-value strategic work, reduced error rates in analytics implementations, accelerated their pitch-to-delivery cycle, and enabled scaling without proportional headcount increase.
 
-- **MVP Delivery**: 10 days
-- **Total Project Timeline**: 14 days including sales and iterations
-- **Time to Production**: 2 weeks
+## What I Learned
 
-## Results & Impact
+**Bespoke automation tools can transform specialized workflows.** Even complex, edge-case-heavy processes can be automated effectively when you understand the domain deeply enough.
 
-### Efficiency Gains
+**Two weeks of development can deliver months of time savings.** The ROI on focused automation is staggering when you target the right pain points.
 
-- **90% reduction** in auditing time
-- Tasks reduced from **multiple hours to minutes**
-- Team capacity increased from **1 audit per day** to **10 audits per day** per team member
-- **10x increase** in throughput capacity
-
-### Business Impact
-
-- Freed up expert team members for high-value strategic work
-- Reduced error rates in analytics implementations
-- Accelerated pitch-to-delivery cycle
-- Enabled scaling without proportional headcount increase
-
-## Lessons Learned
-
-This project demonstrated that:
-
-- Bespoke automation tools can transform specialized workflows
-- Even complex, edge-case-heavy processes can be automated effectively
-- Two weeks of development can deliver months of time savings
-- Custom DevTools extensions are powerful for technical service businesses
+**Custom DevTools extensions are powerful for technical service businesses.** They integrate seamlessly into existing workflows and provide capabilities web apps can't match.
 
 ## Frequently Asked Questions
 
