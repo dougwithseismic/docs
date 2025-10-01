@@ -133,7 +133,7 @@
         "groups": [
           {
             "group": "Getting Started",
-            "pages": ["tool-ideas/introduction", "tool-ideas/ai-agent-tools"]
+            "pages": ["tool-ideas/introduction"]
           },
           {
             "group": "By Team Type",
