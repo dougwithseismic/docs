@@ -59,9 +59,7 @@
           },
           {
             "group": "Our Service",
-            "pages": [
-              "services/solution-discovery"
-            ]
+            "pages": ["services/solution-discovery"]
           },
           {
             "group": "What We Build",
@@ -210,7 +208,6 @@
         "groups": [
           {
             "group": "Getting Started",
-            "hidden": true,
             "pages": [
               "resources/productization-guide",
               "resources/assessment-framework",
@@ -230,7 +227,6 @@
       },
       {
         "tab": "Interactive Tools",
-        "hidden": true,
         "groups": [
           {
             "group": "Marketing Tools",
@@ -254,7 +250,6 @@
       },
       {
         "tab": "Articles",
-        "hidden": true,
         "groups": [
           {
             "group": "About WithSeismic",
@@ -297,7 +292,6 @@
       },
       {
         "tab": "Universities",
-        "hidden": true,
         "groups": [
           {
             "group": "Get Started",
