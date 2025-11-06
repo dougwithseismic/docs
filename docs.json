@@ -13,8 +13,8 @@
   },
   "favicon": "/favicon.svg",
   "seo": {
-    "title": "WithSeismic - We Solve Revenue Problems Through Engineering",
-    "description": "We solve revenue problems through engineering and code. Custom automation, Chrome extensions, LLM workflows, and browser automation for SaaS and marketplaces doing $300K-$5M ARR.",
+    "title": "Doug Silkstone - Software Engineer & Automation Consultant",
+    "description": "Doug Silkstone builds custom software and automation. Chrome extensions, MVPs, LLM workflows, and browser automation for SaaS and marketplaces doing $300K-$5M ARR.",
     "metatags": {
       "charset": "UTF-8",
       "viewport": "width=device-width, initial-scale=1.0",
@@ -26,20 +26,20 @@
       "MobileOptimized": "320",
       "theme-color": "#FF8000",
       "color-scheme": "light dark",
-      "og:title": "WithSeismic - We Solve Revenue Problems Through Engineering",
+      "og:title": "Doug Silkstone - Software Engineer & Automation Consultant",
       "og:type": "website",
       "og:url": "https://withseismic.com",
       "og:image": "/images/og.png",
-      "og:description": "We solve revenue problems through engineering and code. Custom automation for SaaS and marketplaces. Starting at $7,500/month over 3 months.",
+      "og:description": "Doug Silkstone builds custom software and automation. MVPs, Chrome extensions, and engineering solutions. Starting at $3,500/month.",
       "og:site_name": "WithSeismic",
       "twitter:card": "summary_large_image",
-      "twitter:title": "WithSeismic - We Solve Revenue Problems Through Engineering",
-      "twitter:description": "We solve revenue problems through engineering and code. Custom automation, Chrome extensions, and engineering solutions that directly impact your bottom line.",
+      "twitter:title": "Doug Silkstone - Software Engineer & Automation Consultant",
+      "twitter:description": "Doug Silkstone builds custom software and automation. Chrome extensions, MVPs, LLM workflows, and browser automation that directly impact your bottom line.",
       "twitter:image": "/images/og.png"
     }
   },
   "banner": {
-    "content": "⚡ Build your competitive advantage. Custom automation from $22,500. [See how we work →](/pricing)",
+    "content": "⚡ First automation tool in 2 weeks + unlimited revisions OR YOU DON'T PAY. From $3,500/month. [Book a call →](/contact)",
     "dismissible": true
   },
   "navigation": {
@@ -274,18 +274,6 @@
               "articles/fingers-on-the-pulse",
               "articles/from-lovable-to-production",
               "articles/storybook-for-automation"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Careers",
-        "groups": [
-          {
-            "group": "Join Our Team",
-            "pages": [
-              "careers/working-at-withseismic",
-              "careers/open-positions"
             ]
           }
         ]
