@@ -403,6 +403,15 @@
             "href": "https://clutch.co/profile/withseismic-high-growth-ai-automation-ambitious-brands"
           }
         ]
+      },
+      {
+        "name": "Legal",
+        "items": [
+          {
+            "label": "Privacy Policy",
+            "href": "/privacy-policy"
+          }
+        ]
       }
     ]
   },
