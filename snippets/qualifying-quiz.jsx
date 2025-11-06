@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 export const QualifyingQuiz = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -7,79 +9,79 @@ export const QualifyingQuiz = () => {
   const questions = [
     {
       id: "revenue",
-      question: "What's your current annual recurring revenue (ARR)?",
+      question: "What's your current revenue situation?",
       type: "choice",
       options: [
-        { value: "pre-revenue", label: "Pre-revenue", score: 0 },
-        { value: "under-300k", label: "Under $300K", score: 1 },
-        { value: "300k-1m", label: "$300K - $1M", score: 3 },
-        { value: "1m-5m", label: "$1M - $5M", score: 5 },
-        { value: "over-5m", label: "Over $5M", score: 4 },
+        { value: "pre-revenue", label: "Pre-revenue / Just starting", score: 0 },
+        { value: "under-100k", label: "Under $100K ARR", score: 1 },
+        { value: "100k-500k", label: "$100K - $500K ARR", score: 3 },
+        { value: "500k-2m", label: "$500K - $2M ARR", score: 5 },
+        { value: "over-2m", label: "Over $2M ARR", score: 5 },
       ],
     },
     {
       id: "problem",
-      question: "How would you describe your biggest operational challenge?",
+      question: "What's your biggest pain point right now?",
       type: "choice",
       options: [
         {
-          value: "manual-bottleneck",
-          label: "Manual processes blocking growth",
+          value: "team-drowning",
+          label: "Team drowning in manual work",
           score: 5,
         },
         {
-          value: "scaling-issues",
-          label: "Can't scale current operations",
-          score: 4,
+          value: "cant-scale",
+          label: "Can't scale without hiring more people",
+          score: 5,
+        },
+        {
+          value: "inefficient",
+          label: "Operations feel inefficient",
+          score: 3,
         },
         {
           value: "exploring",
-          label: "Just exploring automation options",
-          score: 2,
-        },
-        {
-          value: "no-problem",
-          label: "No specific problem yet",
-          score: 0,
+          label: "Just exploring automation",
+          score: 1,
         },
       ],
     },
     {
       id: "budget",
-      question: "What's your monthly budget for automation/tooling?",
+      question: "What can you invest monthly in engineering?",
       type: "choice",
       options: [
-        { value: "under-5k", label: "Under $5K/month", score: 1 },
-        { value: "5k-10k", label: "$5K - $10K/month", score: 4 },
-        { value: "10k-20k", label: "$10K - $20K/month", score: 5 },
-        { value: "over-20k", label: "Over $20K/month", score: 5 },
-        { value: "flexible", label: "Flexible for the right solution", score: 3 },
+        { value: "under-3k", label: "Under $3K/month", score: 0 },
+        { value: "3k-7k", label: "$3K - $7K/month", score: 3 },
+        { value: "7k-15k", label: "$7K - $15K/month", score: 5 },
+        { value: "over-15k", label: "$15K+/month", score: 5 },
+        { value: "roi-based", label: "Depends on ROI", score: 4 },
       ],
     },
     {
       id: "timeline",
-      question: "When do you need to start?",
+      question: "When do you need this?",
       type: "choice",
       options: [
-        { value: "asap", label: "ASAP (within 2 weeks)", score: 5 },
-        { value: "month", label: "Within a month", score: 4 },
-        { value: "quarter", label: "This quarter", score: 3 },
-        { value: "researching", label: "Just researching now", score: 1 },
+        { value: "asap", label: "Yesterday (urgent)", score: 5 },
+        { value: "2-weeks", label: "Within 2 weeks", score: 4 },
+        { value: "month", label: "Next month", score: 3 },
+        { value: "researching", label: "Just researching", score: 1 },
       ],
     },
     {
-      id: "champion",
-      question: "Who will drive this internally?",
+      id: "decision",
+      question: "Who makes the final call?",
       type: "choice",
       options: [
-        { value: "founder", label: "Founder/CEO (me)", score: 5 },
+        { value: "founder", label: "I'm the founder/CEO", score: 5 },
         {
           value: "exec",
-          label: "Executive team member with authority",
-          score: 4,
+          label: "I'm an executive with budget",
+          score: 5,
         },
-        { value: "manager", label: "Department manager", score: 3 },
-        { value: "exploring", label: "Still building the case", score: 1 },
+        { value: "manager", label: "I manage a department", score: 2 },
+        { value: "contributor", label: "I'm building the case", score: 1 },
       ],
     },
   ];
@@ -155,42 +157,45 @@ export const QualifyingQuiz = () => {
 
     if (fitScore >= 80) {
       return {
-        title: "You're an Excellent Fit!",
+        title: "Perfect Fit - Let's Talk",
         message:
-          "Based on your answers, we should absolutely talk. You have clear pain points, budget allocated, and decision-making authority. Let's skip the sales dance and get to work.",
-        cta: "Book a Strategy Call",
+          "You have real pain, budget authority, and urgency. This is exactly what I solve. Let's skip the pitch and talk specifics—I can likely start within a week.",
+        cta: "Book a Call",
         ctaLink: "/contact",
-        pricing: "$7,500/month (3-month minimum)",
+        pricing: "Starting at $3,500/month",
+        note: "Most clients start with 1-3 months, then continue month-to-month",
       };
     } else if (fitScore >= 60) {
       return {
-        title: "You're a Good Fit",
+        title: "Strong Fit - Worth Exploring",
         message:
-          "You have the foundation in place, but there might be some gaps to address. Let's talk about your specific situation and see if we can make this work.",
-        cta: "Discuss Your Situation",
+          "You have the fundamentals. Let's talk through your specific situation and see if the timing makes sense for both of us.",
+        cta: "Schedule a Chat",
         ctaLink: "/contact",
-        pricing: "$7,500/month (3-month minimum)",
+        pricing: "Starting at $3,500/month",
+        note: "Pricing depends on scope and timeline",
       };
     } else if (fitScore >= 40) {
       return {
-        title: "We Might Be Able to Help",
+        title: "Potentially a Fit",
         message:
-          "You're in the middle ground. Depending on your specific needs, we could potentially work together, but it'll require a conversation to understand the details.",
-        cta: "Email Your Situation",
-        ctaLink: "mailto:hello@withseismic.com?subject=Qualifying Quiz Results",
-        pricing:
-          "Custom pricing based on scope - typically $7,500+/month for 3 months",
+          "There are some gaps, but depending on your specific needs, we might be able to work together. Email me your situation and I'll give you honest feedback.",
+        cta: "Email Your Details",
+        ctaLink: "mailto:hello@withseismic.com?subject=Qualifying Quiz - Need Advice",
+        pricing: "Typically $3,500-$10K/month",
+        note: "Custom scoping based on your business problem",
       };
     } else {
+      const isEarlyStage = revenueAnswer === "pre-revenue" || budgetAnswer === "under-3k";
       return {
-        title: "Let's Be Honest...",
-        message:
-          revenueAnswer === "pre-revenue" || budgetAnswer === "under-5k"
-            ? "Right now, you're better off with freelancers on Upwork or exploring no-code tools. Our minimum engagement is $22,500 (3 months × $7,500), which might not make sense at your stage. Come back when you're doing $300K+ ARR and have operational bottlenecks blocking growth."
-            : "Based on your answers, we might not be the right fit right now. You're either still in research mode or don't have the urgency/authority to move forward. That's completely fine! Bookmark us for when things change.",
-        cta: "Explore Case Studies Instead",
+        title: isEarlyStage ? "Not There Yet" : "Timing Might Be Off",
+        message: isEarlyStage
+          ? "At your stage, you're better off with freelancers or no-code tools. I work with companies doing $100K+ ARR with operational bottlenecks. Bookmark this for when you're scaling and hitting growth walls."
+          : "Based on your answers, we're probably not aligned right now. You might be in research mode or not have urgency/authority. That's fine! Check out the case studies to see what's possible, then come back when timing's better.",
+        cta: isEarlyStage ? "See What's Possible" : "Read Case Studies",
         ctaLink: "/case-studies/introduction",
         pricing: null,
+        note: null,
       };
     }
   };
@@ -239,6 +244,11 @@ export const QualifyingQuiz = () => {
               <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 {results.pricing}
               </div>
+              {results.note && (
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  {results.note}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -260,10 +270,7 @@ export const QualifyingQuiz = () => {
 
         <div className="mt-6 pt-6 border-t border-neutral-500/20">
           <div className="text-xs text-gray-500 dark:text-gray-500 text-center">
-            Your answers are tracked to help us understand our ideal customer
-            profile.
-            <br />
-            No spam, no hard sells. Just honest assessment.
+            Answers tracked for analytics. No spam. Just honest feedback on fit.
           </div>
         </div>
       </div>
@@ -278,14 +285,14 @@ export const QualifyingQuiz = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Save Us Both Time
+            Are We a Good Fit?
           </h3>
           <span className="text-sm text-gray-600 dark:text-gray-400">
             {currentStep + 1} of {questions.length}
           </span>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Answer 5 quick questions so we can have a focused conversation about what matters to you. Takes 2 minutes.
+          5 quick questions. Takes 90 seconds. I'll give you honest feedback on whether we should talk.
         </p>
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
           <div
