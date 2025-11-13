@@ -172,6 +172,8 @@ Trigger “background agents” (e.g., delivery estimator, return-policy explain
 Your “Maya” agent becomes a participant in the user journey, not a support parachute.
 
 6. ASCII Infrastructure Diagram (End-to-End)
+
+   ```
    +-----------------+ WebSocket +-----------------+
    | Browser |--------------------------->| Event Gateway |
    | (user events) | | (ingestion) |
@@ -196,6 +198,8 @@ Your “Maya” agent becomes a participant in the user journey, not a support p
    | DOM Controller | | LM Engine |
    | (fill, highlight)| | (OpenAI/Llama) |
    +------------------+ +----------------+
+   ```
+
 7. Design Notes
    Use Server-Sent Events for low-complexity outbound streams if WebSockets feel heavy.
 
@@ -336,6 +340,8 @@ Trigger personalised discounts or loyalty prompts inside the UI.
 This makes the agent environment-aware, not just user-aware.
 
 3. Event Bus Diagram (With Multi-Source Events)
+
+   ```
    +----------------------+
    | Inventory Service |
    | Delivery Service |
@@ -369,6 +375,8 @@ This makes the agent environment-aware, not just user-aware.
    +-------+--------+
    | Browser UI |
    +----------------+
+   ```
+
 4. How the agent processes events
    The LLM’s prompt loop receives:
 
@@ -410,41 +418,59 @@ User has item in wishlist history.
 → Agent: “M is low in stock — do you want an alert or reserve one?”
 
 5. Practical Interfaces (clean JSON)
+
    Unified Event Format
+
+   ```json
    {
-   "source": "inventory",
-   "type": "stock.update",
-   "productId": "123",
-   "variant": "L",
-   "stock": 3,
-   "timestamp": "2025-11-12T20:51:00Z"
+     "source": "inventory",
+     "type": "stock.update",
+     "productId": "123",
+     "variant": "L",
+     "stock": 3,
+     "timestamp": "2025-11-12T20:51:00Z"
    }
+   ```
+
+   ```json
    {
-   "source": "browser",
-   "type": "checkout.step",
-   "step": "delivery",
-   "timestamp": "2025-11-12T20:51:03Z"
+     "source": "browser",
+     "type": "checkout.step",
+     "step": "delivery",
+     "timestamp": "2025-11-12T20:51:03Z"
    }
+   ```
+
+   ```json
    {
-   "source": "delivery",
-   "type": "slots.updated",
-   "postcode": "11000",
-   "slots": [ ... ]
+     "source": "delivery",
+     "type": "slots.updated",
+     "postcode": "11000",
+     "slots": [ ... ]
    }
+   ```
+
    The agent responds with:
 
-{
-"action": "ui.notify",
-"priority": "high",
-"text": "New delivery slot opened for tonight — want to switch?"
-}
-Or:
+   ```json
+   {
+     "action": "ui.notify",
+     "priority": "high",
+     "text": "New delivery slot opened for tonight — want to switch?"
+   }
+   ```
 
-{
-"action": "dom.fill",
-"selector": "#delivery-slot",
-"value": "6-8pm"
-} 6. If you want next steps
+   Or:
+
+   ```json
+   {
+     "action": "dom.fill",
+     "selector": "#delivery-slot",
+     "value": "6-8pm"
+   }
+   ```
+
+6. If you want next steps
 I can produce:
 
 A complete event taxonomy you can use for the MVP
@@ -526,14 +552,18 @@ This is the “hoisting up” you’re talking about.
 50 duplicates as upstream reconcilers adjust
 
 Derived semantic signal:
+
+```json
 {
-"type": "delivery.slot_opened",
-"slot": "18:00-20:00",
-"postcode": "11000",
-"change": "added",
-"priority": "medium",
-"reason": "new capacity"
+  "type": "delivery.slot_opened",
+  "slot": "18:00-20:00",
+  "postcode": "11000",
+  "change": "added",
+  "priority": "medium",
+  "reason": "new capacity"
 }
+```
+
 Personalised relevance:
 Deliver only to:
 
@@ -777,11 +807,14 @@ It outputs a very small list of users (out of 500) who should get the opportunit
 Signal Derivation Layer
 Collapse them into:
 
+```
 delivery.slot_opened {
-slot: "18:00-20:00",
-zone: "Z3",
-change: "added"
+  slot: "18:00-20:00",
+  zone: "Z3",
+  change: "added"
 }
+```
+
 Knowledge Graph
 Used to determine structural relationships:
 
@@ -848,6 +881,8 @@ Noise reduction
 Graphs are slow compared to event streams.
 
 4. The Right Architecture (Minimal)
+
+   ```
    Knowledge Graph <-- static relationships, slow changing
    ^
    | (lookups)
@@ -865,6 +900,8 @@ Graphs are slow compared to event streams.
    |
    v
    Browser UI
+   ```
+
 5. If you want a concrete design
    I can produce any of the following:
 
@@ -957,6 +994,7 @@ Then you have one router that consumes from both and makes joined decisions.
 
 Diagram:
 
+```
       GLOBAL_STREAM (delivery slots, stock, payments)
                |
                v
@@ -972,6 +1010,7 @@ Diagram:
     +-------------------------+
                  |
           actions to browser
+```
 
 4. How the Router Blends the Streams
    The router maintains two in-memory caches (or Redis-backed):
@@ -1480,9 +1519,9 @@ Interest indexing
 All acceptable to an interviewer.
 
 Example
-If a delivery slot opens for postcode “E2”:
+If a delivery slot opens for postcode "E2":
 
-Global event: delivery_slot:{postcode:E2, ts:...}
+Global event: `delivery_slot:{postcode:E2, ts:...}`
 
 Routing layer:
 
@@ -1502,7 +1541,7 @@ Great for:
 
 Per-user channels
 
-Low latency decisions (<5ms)
+Low latency decisions (under 5ms)
 
 Subscription lists (active sessions)
 
@@ -1773,7 +1812,7 @@ payment failure
 
 item going out of stock
 
-→ must hit browser in <300ms
+→ must hit browser in under 300ms
 → handled with Redis Streams / NATS / in-memory systems
 
 Cold-path signals (aggregated, historical):
@@ -2104,14 +2143,20 @@ Below is an ASCII architecture diagram showing the full event and orchestration 
 1️⃣ Local events (user → backend):
 The browser emits structured events like:
 
+```json
 { "type": "add_to_cart", "sku": "A123", "total": 2653 }
+```
+
 They go to the WebSocket broker, which forwards them to the event bus.
 
 2️⃣ Global events (system → all):
-When an external system (e.g., “delivery slots” API) publishes:
+When an external system (e.g., "delivery slots" API) publishes:
 
+```json
 { "type": "slot_opened", "postcode": "12345", "slots": 1 }
-It’s written into the global Redis stream.
+```
+
+It's written into the global Redis stream.
 
 3️⃣ AI Orchestrator consumes:
 It listens to both stream:global and stream:user:\*, applies logic like:
@@ -2124,7 +2169,10 @@ It listens to both stream:global and stream:user:\*, applies logic like:
 
 Then emits an action:
 
+```json
 { "type": "notify_slot_available", "user": "12345" }
+```
+
 4️⃣ WebSocket → Browser:
 The broker pushes that message to the right session, which triggers:
 
@@ -2335,19 +2383,23 @@ WS outbox: ws:out:{connId} (gateway consumes & pushes on socket)
 Use consumer groups for parallelism/backpressure, and keep per-user ordering by having the per-session agent read its own evt:user:{id} and cmd:user:{id}.
 
 Message envelope (CloudEvents-ish)
+
+```json
 {
-"id": "ulid-123",
-"type": "delivery.slot_opened", // or "command.notify_slot"
-"source": "delivery-api",
-"subject": "postcode:12000",
-"time": "2025-11-13T21:43:20Z",
-"ttl_ms": 15000,
-"correlation_id": "corr-xyz",
-"reply_to": "res:user:123:corr-xyz", // for RPC patterns
-"attributes": { "priority": "high" },
-"data": { "slot_id": "S-9A", "count": 1 }
+  "id": "ulid-123",
+  "type": "delivery.slot_opened", // or "command.notify_slot"
+  "source": "delivery-api",
+  "subject": "postcode:12000",
+  "time": "2025-11-13T21:43:20Z",
+  "ttl_ms": 15000,
+  "correlation_id": "corr-xyz",
+  "reply_to": "res:user:123:corr-xyz", // for RPC patterns
+  "attributes": { "priority": "high" },
+  "data": { "slot_id": "S-9A", "count": 1 }
 }
-Keep idempotency with id and store a short lived “seen” key (Redis SETEX) per handler.
+```
+
+Keep idempotency with id and store a short lived "seen" key (Redis SETEX) per handler.
 
 Selecting targets for scarce/global signals
 You don’t need a full KG for this. Maintain fast indices:
@@ -2366,7 +2418,10 @@ Intersect sets (e.g., SINTER sessions:postcode:12000 sessions:route:/checkout).
 
 For the top N (scarce resource), publish commands to cmd:user:{id}:
 
+```json
 { "type": "command.offer_slot", "data": { "slot_id": "S-9A", "hold_ms": 10000 } }
+```
+
 Optionally start a saga (Temporal/Durable/Zeebe) that holds the slot, waits for user confirm, and compensates on timeout.
 
 Per-Session Agent responsibilities
@@ -2376,8 +2431,11 @@ Merges local + command context (simple priority rules)
 
 Talks to browser: publish to ws:out:{connId}:
 
+```json
 { "type": "ui.prompt", "text": "A slot opened—reserve it?", "actions": ["Reserve","Skip"] }
-Tools: Don’t call external webhooks inline on the hot path. Publish to an integration topic (tool:reserve_slot) processed by connector workers. Attach an idempotency key and callback/reply_to.
+```
+
+Tools: Don't call external webhooks inline on the hot path. Publish to an integration topic (tool:reserve_slot) processed by connector workers. Attach an idempotency key and callback/reply_to.
 
 Can request orchestration: publish to req:orchestrator with reply_to, e.g. “user wants slot; is it still available?”
 Orchestrator replies on res:user:{id}:corr-xyz.
@@ -2492,7 +2550,10 @@ Per-Session Agent
 └── subscribes → stream:user:12345
 Example:
 
+```json
 { "type": "global_event", "payload": { "slot": "18:00", "postcode": "11000" } }
+```
+
 The per-session agent decides what to do with it (show prompt, auto-reserve, ignore).
 
 Why push works better:
@@ -2597,8 +2658,11 @@ Let’s map it explicitly, end-to-end, so you can explain (or build) it cleanly.
 1️⃣ External source emits a global event
 Example: a warehouse API or delivery service reports a new slot.
 
+```json
 { "event": "slot_opened", "postcode": "E14", "slotId": "SL-991", "capacity": 1 }
-That’s pushed into the global stream:
+```
+
+That's pushed into the global stream:
 
 stream:global:slots
 2️⃣ Global Orchestrator subscribes to global streams
@@ -2617,9 +2681,12 @@ Or a knowledge base with richer context (user preferences, cart contents, etc.)
 3️⃣ Global Orchestrator republishes targeted events
 For each matched user, it writes into their personal stream:
 
+```
 stream:user:U123 ← { "type": "slot_available", "slotId": "SL-991" }
 stream:user:U987 ← { "type": "slot_available", "slotId": "SL-991" }
-That’s the “fan-out” or “routing” step — the orchestrator’s core job.
+```
+
+That's the "fan-out" or "routing" step — the orchestrator's core job.
 
 4️⃣ Per-Session Agent subscribes to its stream
 Each agent lives near real-time on:
@@ -2633,9 +2700,12 @@ Optionally queries the shared LLM/rules engine:
 
 “Should I notify this user or auto-reserve?”
 
-Sends a message to the user’s WebSocket connection.
+Sends a message to the user's WebSocket connection.
 
+```json
 { "action": "notify", "text": "A new slot opened at 18:00 in your area!" }
+```
+
 5️⃣ Browser receives & acts
 The browser UI shows a prompt or performs a pre-emptive action.
 
@@ -2716,21 +2786,32 @@ Each per-session agent listens to its own stream:user:{id}.
 🧠 2️⃣ Example: Delivery Slot Event Lifecycle
 
 1. Warehouse API emits an event
+
+   ```
    POST /slot-opened
+   ```
+
+   ```json
    {
-   "slotId": "SL-999",
-   "postcode": "E14",
-   "capacity": 1,
-   "startsAt": "2025-11-14T18:00:00Z"
+     "slotId": "SL-999",
+     "postcode": "E14",
+     "capacity": 1,
+     "startsAt": "2025-11-14T18:00:00Z"
    }
+   ```
+
    Your event adapter writes it into the global stream:
 
-XADD stream:global:slots \* \
- type "slot_opened" \
- slotId "SL-999" \
- postcode "E14" \
- capacity 1 \
- startsAt "2025-11-14T18:00:00Z" 2. Global Orchestrator consumes
+   ```
+   XADD stream:global:slots * \
+    type "slot_opened" \
+    slotId "SL-999" \
+    postcode "E14" \
+    capacity 1 \
+    startsAt "2025-11-14T18:00:00Z"
+   ```
+
+2. Global Orchestrator consumes
 It reads from stream:global:slots and runs a matching pipeline:
 
 Pseudocode
@@ -2761,16 +2842,22 @@ That’s the “fan-out” step you described perfectly.
 3. Per-Session Agent receives
    Each agent is blocking on:
 
-XREAD BLOCK 0 STREAMS stream:user:12345 $
-When it receives:
+   ```
+   XREAD BLOCK 0 STREAMS stream:user:12345 $
+   ```
 
-{
-"type": "slot_available",
-"slotId": "SL-999",
-"postcode": "E14",
-"startsAt": "2025-11-14T18:00:00Z"
-}
-It updates its local state and decides how to act.
+   When it receives:
+
+   ```json
+   {
+     "type": "slot_available",
+     "slotId": "SL-999",
+     "postcode": "E14",
+     "startsAt": "2025-11-14T18:00:00Z"
+   }
+   ```
+
+   It updates its local state and decides how to act.
 
 ⚙️ 3️⃣ When do we actually call the LLM?
 Not every event deserves a full inference call.
@@ -2882,14 +2969,17 @@ Expire: let the slot lapse after X minutes.
 
 You might store slot offer state in Redis:
 
+```
 slot:SL-999
 {
-capacity: 1,
-offers: [U123, U567, U890],
-reserved: [],
-declined: [U123]
+  capacity: 1,
+  offers: [U123, U567, U890],
+  reserved: [],
+  declined: [U123]
 }
-Then have a periodic “slot reconciler” job:
+```
+
+Then have a periodic "slot reconciler" job:
 
 for (const slot of openSlots()) {
 if (slot.capacity > 0 && slot.declined.length < slot.offers.length) {
@@ -2974,10 +3064,14 @@ Global Orchestrator (decides who to notify)
 stream:user:U123, stream:user:U456, ...
 ↓
 Per-Session Agent receives:
+
+```
 {
-type: "slot_available",
-slotId: "SL-999"
+  type: "slot_available",
+  slotId: "SL-999"
 }
+```
+
 ↓
 User chooses:
 ✅ Accept → call Slot Service /reserve → emits delivery:slot_reserved
@@ -3074,8 +3168,15 @@ Back-pressure & ordering
 
 2️⃣ The Lifecycle of an Event
 a. Warehouse or Delivery Service emits:
+
+```
 POST /slot-opened
+```
+
+```json
 { "slotId": "SL-999", "postcode": "E14", "capacity": 1, "startsAt": "2025-11-14T18:00:00Z" }
+```
+
 b. Event adapter converts → stream entry:
 XADD stream:global:slots _
 type "delivery:slot_opened" slotId "SL-999" postcode "E14" capacity 1 startsAt "2025-11-14T18:00:00Z"
@@ -3086,7 +3187,9 @@ Filters sessions: postcode match, premium users, active checkout, etc.
 
 Publishes targeted events:
 
-XADD stream:user:U123 \* event { "type":"slot_available", "slotId":"SL-999", ... }
+```
+XADD stream:user:U123 * event { "type":"slot_available", "slotId":"SL-999", ... }
+```
 d. Per-Session Agent consumes:
 Subscribes to stream:user:U123
 
