@@ -1,14 +1,14 @@
 ---
-title: "Productizing Agency Services: How Snacker.ai Created a Growth Engine for GrowthMatch"
-description: "How productizing a video concierge service into a DIY platform generated 5,000+ leads, reduced CAC by 80%, and enabled GrowthMatch to scale beyond the agency model"
+title: "Snacker.ai: Building an LLM-Powered Video Editing Platform"
+description: "How we built an AI video editor that competes with Riverside and Descript, using LLMs to automatically edit videos from transcript analysis in 20 seconds"
 ---
 
 <script type="application/ld+json">
   {`{
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Snacker.ai: Productizing Agency Services Case Study",
-  "description": "How WithSeismic helped GrowthMatch transform their video service into Snacker.ai, generating 5,000+ leads",
+  "headline": "Snacker.ai: Building an LLM-Powered Video Editing Platform",
+  "description": "How we built an AI video editor using LLMs to automatically edit videos from transcript analysis",
   "url": "https://withseismic.com/case-studies/snacker-ai-video-platform",
   "author": {
     "@type": "Organization",
@@ -22,7 +22,7 @@ description: "How productizing a video concierge service into a DIY platform gen
     "@type": "WebApplication",
     "name": "Snacker.ai",
     "url": "https://snacker.ai",
-    "description": "AI-powered video creation platform",
+    "description": "LLM-powered video editing platform",
     "applicationCategory": "VideoApplication"
   }
 }`}
@@ -33,414 +33,193 @@ description: "How productizing a video concierge service into a DIY platform gen
   →](https://www.growthmatch.com/)
 </Note>
 
-## How It Started
+## The Challenge
 
-GrowthMatch, a TechStars alumni company, had successfully pivoted into a done-for-you video concierge service. They would record, help with case studies, generate content ideas, edit videos, and deliver polished content ready for publication.
+GrowthMatch, a TechStars alumni company, runs a done-for-you video content concierge service. They wanted to productize their expertise using LLMs—creating an AI-powered video editing platform that could compete with established tools like Riverside and Descript.
 
-## Understanding the Problem
-
-Like traditional agencies, they faced a critical scaling challenge. High overhead costs for manual video editing and production, limited capacity to serve multiple clients simultaneously, unable to scale without proportionally increasing headcount, clients' team members couldn't collaborate on content creation, and missing opportunities from prospects who weren't ready for full-service pricing.
-
-They needed a self-service solution that could maintain their quality standards while enabling massive scale.
-
-## Why Productization Was Critical
-
-### The Growth Funnel Strategy
-
-Productizing the service wasn't just about creating another revenue stream. It was about building a strategic growth engine. Here's why this approach was essential:
-
-1. **Lead Generation at Scale**: A DIY product attracts users who aren't ready for premium services but become qualified leads over time
-2. **Market Validation**: Self-service users provide data on what features and use cases have the highest demand
-3. **Brand Awareness**: Free and low-cost tiers create viral growth through shared content
-4. **Reduced CAC**: Self-service acquisition costs fraction of enterprise sales
-
-### The Dual Business Model
-
-By productizing their expertise into Snacker.ai, GrowthMatch could now operate two complementary businesses:
-
-**Snacker.ai (Product)**
-
-- Automated video editing and content creation
-- Self-service onboarding
-- $0-49/month pricing tiers
-- Volume play with thousands of users
-
-**GrowthMatch (Service)**
-
-- High-touch concierge video production
-- Strategic content planning
-- $5,000-25,000/month contracts
-- Premium positioning for enterprise clients
+The technical challenge: How do you teach an LLM to edit video from transcript text alone—no visual or audio cues—while maintaining natural flow and adapting to individual speaking styles? The goal was to deliver polished, edited videos in under 20 seconds, eliminating the traditional editing interface entirely.
 
 ## Building the Solution
 
-### When Content Creators Collide
-
-The partnership between Shelby and me began in an unexpected place - the Cursor forums. Shelby had noticed my work and reached out with a vision that immediately resonated.
-
-Shelby knew exactly what he wanted and was looking for the right person to execute his vision. The moment he explained the problem, it clicked. As a YouTube creator myself, I'd been struggling with the same issue - how to produce more video content, faster, without sacrificing quality.
-
-This wasn't just another client project. The alignment was perfect: a founder who understood the vision meeting a developer who lived the problem daily.
-
-### How We Work
-
-When we're excited about a project, the language naturally shifts from "your product" to "our product." It becomes a true partnership where we're as invested in the outcome as the founder.
-
-Our approach is distinctive:
-
-**Deep Domain Immersion**: We immerse ourselves completely in the problem space. We research competitors, try existing tools, and experience the pain points firsthand. This hands-on approach sets us apart from typical dev agencies that might have talented engineers but don't assign people who truly understand the domain.
-
-**Beyond Engineering**: Clients hire us for engineering, but they get much more - growth strategy, product design, marketing insights, and user experience expertise. This multi-disciplinary approach is rare but essential for early-stage products.
-
-**Opinionated Partnership**: We're opinionated and will challenge decisions when necessary. If competitors have better solutions or if there's a smarter approach, we'll speak up. This can create friction, but it's ultimately valuable - founders need someone who cares enough to push back.
-
-Our advice for founders: Choose partners who are genuinely passionate about your problem space. Look for expertise, ambition tempered with pragmatism, and curiosity. Most importantly, find someone who sees it as "our" problem to solve, not "your" problem to fix.
-
-Find someone who lives in your problem space. When developers genuinely care about the problem they're solving, everything moves faster and the solutions are better. This wasn't just a job for us - we were solving our own pain point as a content creator.
-
-### The Technical Challenge
-
-#### From Lovable Prototype to Production Reality
-
-The Lovable prototype was in rough shape. People don't realize that AI-generated code tends to pile features on shaky foundations. Every new user request adds another layer of conditional logic without considering the overall architecture.
-
-The prototype's problems were systemic: if-else logic piled upon if-else logic for every user request, no consistent patterns between components, LLMs don't choose best practices or scalable solutions, and a previous developer had attempted Supabase setup but it wasn't great.
-
-We picked up a mess, honestly.
-
-#### The Refactoring Balancing Act
-
-The challenge wasn't just fixing the code - it was maintaining velocity while rebuilding the foundation. Every developer's instinct is to start fresh, but you have to be pragmatic. Customers care about results, not code elegance. The key is finding the balance between technical debt and shipping speed.
-
-Our approach was surgical and strategic:
-
-**Immediate Stabilization**: Moved everything into a monorepo for shared packages, added Hono backend to bring order to the frontend chaos, and properly plumbed in all the Supabase work.
-
-**Scalable Patterns Introduction**: Feature folders and consistent naming conventions, data fetching patterns with React Query, file structure conventions, and shared components and utilities.
-
-**Future-Proofing for Lovable**: The founder needed to keep shipping features while we stabilized the codebase. We created guardrails - detailed prompts, code examples, and architectural patterns - so his Lovable additions wouldn't undermine the foundation we were building.
-
-#### The Education Challenge
-
-Working with a founder actively building in Lovable while stabilizing the codebase presented unique challenges. The knowledge gap was significant. We taught Shelby the basics - using Cursor, running terminal commands, understanding deployment. These fundamentals that developers take for granted were completely foreign to him.
-
-Seeing the complexity firsthand was eye-opening for him. It built mutual respect - he understood why certain things took time, and we understood his urgency to ship.
-
-The technical gap was significant:
-
-- API key security and leak prevention
-- Caching and queue management concepts
-- Production-ready scaling considerations
-- Security implications of LLM-based features
-
-Lovable prototypes aren't production-ready. Security, scalability, performance - these aren't just nice-to-haves. With LLM-based features, you're dealing with API keys, rate limits, caching strategies. These concepts are critical but invisible to non-technical founders.
-
-#### The Rebuild Dilemma
-
-We advocated for a clean rebuild - it would have taken just two additional weeks to build on solid foundations. But ultimately, the client makes the call. Our role is to advise strongly but respect their decision.
-
-Our advice to founders considering the Lovable-to-production path: Don't let perfect be the enemy of good - ship and iterate. But be strategic about technical debt. Trust your technical partners. We want your project to succeed as much as you do.
-
-Incremental refactoring became our strategy. We had a clear vision of proper architecture and gradually moved the codebase toward it. Shelby's determination to ship kept us moving forward despite the technical challenges.
-
-### Strategic Benefits of Productization
-
-Snacker.ai became a standalone SaaS that enabled GrowthMatch to:
-
-- **Capture the Full Market**: Serve everyone from solopreneurs to Fortune 500s
-- **Create Natural Upsell Paths**: DIY users hit limits and upgrade to done-for-you
-- **Enable Team Offerings**: "Snacker for Teams" opened enterprise opportunities they couldn't handle as pure services
-- **Build Defensible Moat**: Technology platform harder to replicate than service model
-- **Generate Passive Revenue**: SaaS revenue continues even when service capacity maxed
+The partnership began in the Cursor forums. As a YouTube creator, the problem resonated immediately: producing video content at scale without sacrificing quality. We inherited a Lovable prototype and incrementally refactored it to production standards (monorepo, Hono backend, proper Supabase integration) while maintaining shipping velocity.
 
 ## Technical Implementation
 
-### Starting Point
-
-- Inherited a Lovable prototype that needed production-ready architecture
-- Required complete AI integration and video processing pipeline
-
 ### Tech Stack
 
-- **Architecture**: Monorepo with TypeScript
+- **Architecture**: TypeScript monorepo
 - **Frontend**: Vite + React
 - **Backend**: Hono framework
 - **Database**: Supabase
 - **Video Processing**: Web Codecs API + HLS playlist generation
-- **AI Integration**: LLM APIs for content generation and editing
+- **AI**: LLM APIs for content generation and editing
 
-### Technical Innovations
+### Browser-Based Video Challenges
 
-**The Browser Video Battlefield**
+Browser video editing is technically challenging. You're working with hardware limitations, viewport constraints, and browser security models. We evaluated Remotion, WebCodecs API, and Diffusion Studio.
 
-Browser-based video editing is rare for good reasons. The tools exist - Remotion, WebCodecs API, Diffusion Studio - but you're battling hardware limitations, viewport constraints, and browser security models.
+**Client vs. Server Rendering**
 
-The technical challenges were numerous:
+- Client rendering is cheaper and faster, but dependent on user hardware
+- Server rendering provides consistency but requires expensive infrastructure
+- Mobile presents additional constraints—limited processing power and screen size
 
-**Client vs. Server Rendering Trade-offs**
+**iOS Safari Audio Blocking**
 
-- Client rendering: Cheaper, potentially faster, but dependent on user's machine
-- Server rendering: Consistent but expensive, requires rendering infrastructure
-- Mobile constraints: Limited processing power and screen real estate
-- Background processing: Considered Chrome extensions with service workers but added complexity
+iOS Safari blocks audio autoplay when stitching videos—a security feature that breaks traditional video editing workflows. Our solution:
 
-**The iOS Audio Blocking Crisis**
+- Created HLS playlists instead of traditional video stitching
+- Segmented videos into timestamp-based chunks
+- Built custom playlist sections to bypass iOS restrictions
+- Trade-off: Lost Remotion's advanced animation capabilities
 
-iOS Safari killed our original approach. It blocks audio autoplay when stitching videos - a security feature that makes perfect sense but breaks traditional video editing workflows.
+**Dual-Stream Processing**
 
-The solution was creative but came with sacrifices: created HLS playlists instead of traditional video stitching, segmented videos into timestamp-based chunks, built custom playlist sections to bypass iOS restrictions, and lost Remotion's advanced animation capabilities in the process.
+We record two streams simultaneously:
+- Full resolution for final output
+- Lightweight proxy for real-time transcription
 
-**Proxy Processing for Speed**
+This approach balances speed with quality—users get near-instant transcription without sacrificing final video quality.
 
-Video processing requires clever workarounds. We record two streams simultaneously - full resolution for final output and a lightweight proxy for real-time transcription. It's the kind of complexity users never see but makes the magic possible.
+## LLM-Powered Video Editing
 
-The transcription dilemma: run Whisper in the browser for privacy but sacrifice performance, send to external services for speed but add latency and privacy concerns, balance between client performance and feature completeness.
+### The Core Innovation
 
-Every browser limitation has a workaround, but each workaround involves trade-offs. Building for the web means accepting compromises at every level of the stack.
+Teaching an LLM to edit video from transcripts alone presented a unique challenge. The AI needs to understand context and intent from text—no visual or audio cues. Everyone has different speaking styles and pacing preferences.
 
-## The AI-Powered Workflow
+This put us in direct competition with well-funded, established players like Riverside and Descript—but with a fundamentally different approach: fully automated editing based on LLM transcript analysis, eliminating the editing interface entirely.
 
-### Cracking the AI Editing Code
+### Training the AI
 
-Teaching an LLM to edit video from transcripts alone was challenging. Everyone has different speaking styles and preferences for pacing. The AI needs to understand context and intent from text alone - no visual or audio cues.
+The breakthrough came through internal testing and systematic evals:
 
-The breakthrough came through relentless internal testing:
+- Deliberately tried to "trip up" the AI with edge cases
+- Used the product for all our own content creation
+- Introduced systematic evaluation frameworks
+- Iterated until the internal team couldn't break it
 
-**The Dogfooding Breakthrough**
+When we couldn't break the AI editing anymore, we knew it was ready for users.
 
-Started testing internally, trying to "trip up" the AI deliberately. Introduced evals for systematic testing. The team used the product for all their own content creation. If we could make it work for all of our content, customers were going to be happy with that too.
+### Three-Layer AI Integration
 
-When our internal team couldn't break the AI editing anymore, we knew we had something special. We became our own best case study.
+**1. Content Ideation**
+- AI-generated talking points and prompts
+- Topic suggestions based on audience and goals
+- Session planning and content calendars
 
-### Three Pillars of AI Integration
+**2. Automatic Video Editing**
+- Removes gaps, pauses, and mistakes automatically
+- Creates coherent takes from raw recordings
+- Accepts feedback for re-editing
+- Produces polished videos in 20 seconds
+- Adapts to individual speaking styles through context understanding
 
-1. **Content Ideation**
+**3. Content Distribution**
+- Generates platform-specific captions and descriptions
+- One-click publishing to LinkedIn, X, YouTube
+- Creates blog posts and articles from video content
 
-   - AI-generated talking points and prompts
-   - Topic suggestions based on audience and goals
-   - Session planning and content calendars
-   - Personalized content strategies
+## Product Features
 
-2. **Automatic Video Editing**
+- **LLM-Powered Teleprompter**: Built-in teleprompter with AI script assistance
+- **Zero-UI Editing**: No manual editing—record and receive polished video
+- **20-Second Turnaround**: From recording completion to shareable video
+- **Team Collaboration**: Multi-user content creation workflows
+- **Multi-Platform Export**: Optimized output for every social platform
 
-   - Removes gaps, pauses, and mistakes automatically
-   - Creates coherent takes from raw recordings
-   - Accepts feedback for re-editing
-   - Produces polished videos in seconds
-   - Adapts to individual speaking styles through context understanding
+## Timeline
 
-3. **Content Distribution**
-   - Generates platform-specific captions and descriptions
-   - One-click publishing to LinkedIn, X, YouTube
-   - Creates blog posts and articles from video content
-   - Publishes to Snacker's own content platform
-
-## Key Features
-
-- **Teleprompter & Notes**: Built-in teleprompter with LLM-powered script assistance
-- **Zero-UI Video Editing**: Hidden complexity. Users just record and share
-- **20-Second Turnaround**: From recording end to rendered, shareable video
-- **Team Collaboration**: Invite teammates to work on content together
-- **Multi-Platform Export**: Optimized content for every social platform
-
-## Timeline & Development
-
-- **Project Duration**: 3 months
+- **Duration**: 3 months
 - **Starting Point**: Lovable prototype
-- **Deliverable**: Production-ready SaaS with paying customers
+- **Deliverable**: Production-ready platform with paying users
 
-## Results & Impact
+## Results
 
-### User Acquisition (3 months)
+### User Acquisition (First 3 Months)
 
-- **20 paying customers** acquired
-- **5,000+ free users** onboarded
-- Created natural upsell funnel to GrowthMatch's premium services
+- 20 paying customers
+- 5,000+ free users
+- Validated product-market fit for AI-powered video editing
 
-### The Power of Productization in Action
+### Technical Validation
 
-**Lead Quality Transformation**
+- Proved LLM-based editing can compete with well-funded competitors
+- Demonstrated browser-based video processing at scale
+- Validated 20-second turnaround as competitive differentiator
+- Successfully competed with Riverside and Descript using fully automated LLM approach
 
-- 5,000 free users = massive top-of-funnel awareness
-- 20 paying customers validated willingness to pay
-- Each user became a potential $5,000+/month service client
-- Content created by users acted as organic marketing
+## Technical Learnings
 
-**Service Business Benefits**
+### Browser-Based Video Processing
 
-- **Pre-qualified Leads**: Snacker users who hit limits naturally inquired about done-for-you services
-- **Reduced Sales Cycles**: Prospects already understood the value of video content
-- **Higher Close Rates**: Users had already experienced the quality through the product
-- **Premium Positioning**: "If the DIY tool is this good, imagine the full service"
+WebCodecs API and tools like Remotion are advancing client-side video processing. Browser-based video editing can now rival native applications in capability, though trade-offs remain around hardware dependencies and mobile constraints.
 
-### Product-Market Fit
+### LLM-Based Editing
 
-- Validated the "done for you" video editing concept
-- Proved demand for simplified video content creation
-- Successfully bridged DIY and concierge service models
-- Identified enterprise needs through "Snacker for Teams" requests
+Key insights from training an LLM to edit video:
 
-### Business Transformation
+- Context understanding from transcripts alone is achievable with systematic training
+- Individual speaking style adaptation requires extensive evaluation frameworks
+- Internal dogfooding is essential—if your team can't break it, users probably won't either
+- 20-second processing time creates a fundamentally different UX than traditional editing tools
 
-- **Scaled Beyond Agency Model**: From linear growth (more people = more revenue) to scalable growth (software serves unlimited users)
-- **Created Recurring Revenue**: Predictable SaaS MRR alongside project-based service revenue
-- **Reduced CAC**: Self-service acquisition vs. enterprise sales process
-- **Increased LTV**: Upsell path from $49/month to $5,000+/month contracts
-- **Opened New Markets**: Could now serve SMBs and solopreneurs profitably
+### Architecture
 
-## What Made Snacker Different
+Starting from AI-generated prototypes requires careful refactoring:
 
-Unlike traditional video editing tools, Snacker eliminated the entire editing interface. Users simply:
+- Monorepo structure enables shared patterns and components
+- Incremental refactoring maintains velocity while improving foundation
+- Clear guardrails let non-technical founders continue shipping features
+- Production LLM applications need proper API key management, caching, and rate limiting
 
-1. Sit down to record
-2. Get AI-powered guidance on what to say
-3. Record their video with teleprompter support
-4. Receive a polished, edited video 20 seconds later
-5. Share with one click to any platform
-
-The "done for you" philosophy meant hiding all traditional video editing complexity while maintaining professional output quality.
-
-### The Developer's Perspective
-
-"What we built wasn't just another video tool," Doug reflects. "It was solving a problem I personally had - the friction between having something to say and getting it out there in video format. When you're building something you genuinely need, every feature decision becomes clearer, every trade-off makes more sense."
-
-The key was understanding that most people don't want to edit video - they want to communicate. By removing the editing interface entirely and replacing it with AI-powered automation, Snacker turned video creation from a skill to be learned into a tool to be used.
-
-## Why This Productization Strategy Works
-
-### The Agency Escape Velocity Problem
-
-Most agencies struggle to escape the time-for-money trap. Productization solves this by:
-
-1. **Creating Leverage**: One codebase serves unlimited users
-2. **Building Assets**: Unlike service work, product value compounds over time
-3. **Enabling True Scale**: Can grow revenue without proportionally growing team
-4. **Generating Data**: Every user interaction provides market intelligence
-
-### The Perfect Product-Service Flywheel
-
-**Product Feeds Service:**
-
-- Free users become aware of premium offerings
-- DIY limitations naturally highlight value of done-for-you
-- Product usage data reveals high-value prospects
-- Team accounts identify enterprise opportunities
-
-**Service Feeds Product:**
-
-- Service insights drive product roadmap
-- Premium client needs become product features
-- Service quality sets product quality bar
-- Client success stories become product marketing
-
-## What We Learned
-
-### The Future of Browser-Based Video
-
-The future of browser video is exciting. As WebCodecs becomes more widely adopted and tools like Remotion advance client-side rendering, we might finally see web apps rival native applications for video editing.
-
-For me, video represents something bigger than just content. Video remains the most authentic form of personal branding. Through my YouTube channel, I've built genuine connections by sharing what I'm passionate about. When prospects reach out already understanding my values and expertise, it validates the power of video content.
-
-### The Lovable Reality Check
-
-The Lovable-to-production journey revealed a crucial education gap. The marketing promises that "everyone can code" and "engineers are optional" simply aren't true.
-
-The reality is more nuanced:
-
-**The Spaghetti Corner**: Without proper architecture, you'll inevitably hit a wall. Features pile on features until the codebase becomes unmaintainable. Experienced engineers recognize this pattern - it's what happens when you build without planning.
-
-**The Marketing vs. Reality**: When tech CEOs claim AI will write 90% of code, remember they're selling products. The hype from major AI companies is ultimately about market positioning and investor narratives.
-
-**The Human Element**: Don't skip learning the fundamentals. The satisfaction of truly understanding and creating something yourself far exceeds the convenience of delegating your thinking to an AI model.
-
-### Core Lessons
-
-- **Productization is Strategic, Not Tactical**: It's not about building a product; it's about creating a growth engine that feeds your core business
-- **Start with Your Expertise**: The best products emerge from deep service experience. You already know the pain points
-- **DIY Doesn't Cannibalize Premium**: Self-service actually qualifies and educates future premium clients
-- **Simplification is Innovation**: Removing features (traditional editing UI) can be more valuable than adding them
-- **Speed Matters**: 20-second turnaround changed user behavior and created competitive advantage
-- **Hybrid Models Win**: Pure SaaS or pure service is limiting. The combination creates exponential growth
-- **Architecture Matters**: Eventually you'll hit the wall if foundations aren't solid - plan for scale from day one
-- **Dogfood Relentlessly**: If your own team won't use it, customers won't either
-
-## Why This Partnership Worked
-
-The Snacker project exemplified what makes a successful engagement:
-
-1. **Founder-Developer Alignment**: Both Shelby and the team were content creators who understood the problem viscerally
-2. **Technical Expertise Meets Domain Knowledge**: We brought both engineering skills and YouTube creator experience
-3. **Partnership Over Transaction**: The relationship evolved from "hiring a developer" to "building together"
-4. **Freedom to Question and Innovate**: We were empowered to challenge decisions and suggest better approaches
-5. **Multi-disciplinary Value**: Beyond code, we contributed to growth strategy, product design, and marketing
-
-Interestingly, while Shelby ran a video concierge service, his direct involvement was limited to using Descript for basic editing. This gap between running the business and understanding the technical complexities made our hands-on creator experience invaluable.
-
-Finding that perfect founder-developer symbiosis makes everything worthwhile. It's why we choose this path over traditional employment - the opportunity to truly partner in building something meaningful.
-
-## Frequently Asked Questions
+## FAQ
 
 <AccordionGroup>
-  <Accordion title="How did you achieve 5,000+ users in just 3 months?">
-    The self-service model removed barriers to entry. Users could try the AI video editing immediately without sales calls. The 20-second turnaround time created word-of-mouth growth, and the free tier let users experience value before paying.
-  </Accordion>
-
-  <Accordion title="What makes the AI video editing different from other tools?">
-    Instead of traditional editing interfaces, users simply record and receive a polished video 20 seconds later. The AI understands context from transcripts alone and adapts to individual speaking styles through continuous learning.
-  </Accordion>
-
-  <Accordion title="How does productization complement the service business?">
-    The DIY tool creates a natural upsell funnel. Free users hit limits and upgrade to paid tiers. Power users eventually need the full-service concierge offering. Each Snacker user becomes a potential $5,000+ service client.
+  <Accordion title="How does LLM-based editing work?">
+    The LLM analyzes transcripts to understand context and intent, then automatically removes gaps, pauses, and mistakes while adapting to individual speaking styles. Users record and receive polished videos in 20 seconds—no editing interface required.
   </Accordion>
 
   <Accordion title="What were the biggest technical challenges?">
-    Browser-based video editing is complex due to hardware limitations and security models. The iOS Safari audio blocking crisis forced us to innovate with HLS playlists instead of traditional video stitching.
+    iOS Safari's audio blocking required HLS playlist solutions instead of traditional stitching. We implemented dual-stream recording (full resolution + lightweight proxy) for fast transcription without sacrificing quality.
   </Accordion>
 
-  <Accordion title="How did you handle the transition from Lovable prototype to production?">
-    The prototype had architectural issues typical of AI-generated code. We incrementally refactored while maintaining velocity, creating guardrails so the founder could keep shipping features during stabilization.
+  <Accordion title="How did you train the AI?">
+    Systematic internal testing and evaluation frameworks. We deliberately tried to break the AI with edge cases, used it for all our own content, and iterated until our team couldn't break it anymore.
   </Accordion>
 
-  <Accordion title="Could this productization approach work for other agencies?">
-    Absolutely. Any agency with repeatable processes can extract their expertise into self-service tools. The key is identifying which step provides immediate value and can qualify users for premium services.
-  </Accordion>
-
-  <Accordion title="What's the revenue model split between product and services?">
-    After 3 months: 20 paying customers on the product side, with several inquiring about full-service options. The product serves as lead generation and qualification for higher-value service contracts.
-  </Accordion>
-
-  <Accordion title="How do you measure success beyond user numbers?">
-    Key metrics include activation rates, time-to-value, feature adoption, and conversion from free to paid tiers. Most importantly, we track how many product users inquire about done-for-you services.
+  <Accordion title="How does Snacker compete with Riverside and Descript?">
+    Snacker competes with a fundamentally different approach: fully automated LLM-based editing from transcript analysis. While Riverside and Descript offer editing tools, Snacker eliminates the editing interface entirely—record and receive finished videos automatically in 20 seconds.
   </Accordion>
 </AccordionGroup>
 
-## Technologies Used
+## Technologies
 
 <CardGroup cols={3}>
   <Card title="TypeScript" icon="code">
     Type-safe development
   </Card>
   <Card title="React + Vite" icon="react">
-    Fast, modern frontend
+    Modern frontend
   </Card>
   <Card title="Hono" icon="server">
     Lightweight backend
   </Card>
   <Card title="Supabase" icon="database">
-    Real-time database
+    Database and auth
   </Card>
-  <Card title="Web Codecs" icon="film">
+  <Card title="Web Codecs API" icon="film">
     Browser video processing
   </Card>
   <Card title="HLS" icon="stream">
-    Video streaming
+    Video streaming protocol
+  </Card>
+  <Card title="LLM APIs" icon="brain">
+    AI-powered editing
   </Card>
 </CardGroup>
 
-## Final Thoughts
+## Summary
 
-The Snacker project represents more than just a successful productization - it's a blueprint for how agencies can escape the time-for-money trap while solving real problems for real users.
+For GrowthMatch (TechStars alumni), we built an LLM-powered video editing platform that competes directly with well-funded players like Riverside and Descript. By eliminating the editing interface and automating the process through LLM transcript analysis, we created a tool that processes videos in 20 seconds.
 
-By combining my technical expertise with lived experience as a content creator, and Shelby's vision for democratizing video production, we created something that neither could have built alone. The result: 5,000+ users in three months, a sustainable SaaS model feeding a premium service business, and most importantly, a tool that actually gets used because it solves a genuine pain point.
-
-Nothing beats the feeling of creating something meaningful. And ultimately, that's what Snacker delivers for thousands of creators: the freedom to share their message without wrestling with traditional video production barriers.
+The technical innovation: teaching an LLM to understand context and intent from text alone, combined with browser-based video processing (HLS playlists, dual-stream recording) to deliver a production-ready platform in 3 months. The result validates that startups can compete with established video editing tools through innovative LLM applications.

@@ -269,12 +269,27 @@
             ]
           },
           {
+            "group": "AI Automation Series",
+            "pages": [
+              "articles/four-levels-ai-automation-maturity",
+              "articles/building-level-2-tool-ecosystems",
+              "articles/measuring-ai-automation-roi",
+              "articles/from-reactive-chatbots-to-always-on-ai"
+            ]
+          },
+          {
             "group": "Insights",
             "pages": [
               "articles/programmatic-acquisition-playbook",
               "articles/fingers-on-the-pulse",
               "articles/from-lovable-to-production",
               "articles/storybook-for-automation"
+            ]
+          },
+          {
+            "group": "Archive",
+            "pages": [
+              "articles/building-storybook-for-automations"
             ]
           }
         ]

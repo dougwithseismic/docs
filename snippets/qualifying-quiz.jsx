@@ -1,10 +1,8 @@
-import { useState } from 'react';
-
 export const QualifyingQuiz = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [showResults, setShowResults] = useState(false);
-  const [fitScore, setFitScore] = useState(0);
+  const [currentStep, setCurrentStep] = React.useState(0);
+  const [answers, setAnswers] = React.useState({});
+  const [showResults, setShowResults] = React.useState(false);
+  const [fitScore, setFitScore] = React.useState(0);
 
   const questions = [
     {
