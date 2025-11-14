@@ -53,6 +53,7 @@
               "index",
               "skool-community",
               "about-withseismic",
+              "testimonials",
               "pricing",
               "development",
               "quickstart"
@@ -253,6 +254,12 @@
         "tab": "Articles",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "articles"
+            ]
+          },
+          {
             "group": "About WithSeismic",
             "pages": [
               "articles/documentation-site-without-product",
@@ -431,6 +438,10 @@
           {
             "label": "Privacy Policy",
             "href": "https://withseismic.com/privacy-policy"
+          },
+          {
+            "label": "Terms of Service",
+            "href": "https://withseismic.com/terms-of-service"
           }
         ]
       }
