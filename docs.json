@@ -254,6 +254,12 @@
         "tab": "Articles",
         "groups": [
           {
+            "group": "Overview",
+            "pages": [
+              "articles"
+            ]
+          },
+          {
             "group": "About WithSeismic",
             "pages": [
               "articles/documentation-site-without-product",
