@@ -431,6 +431,10 @@
           {
             "label": "Privacy Policy",
             "href": "https://withseismic.com/privacy-policy"
+          },
+          {
+            "label": "Terms of Service",
+            "href": "https://withseismic.com/terms-of-service"
           }
         ]
       }
