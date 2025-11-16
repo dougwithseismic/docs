@@ -260,6 +260,17 @@
             ]
           },
           {
+            "group": "Entrepreneurs In Residence",
+            "pages": [
+              "articles/entrepreneurs-in-residence-overview",
+              "articles/work-life-balance-sustainable-building",
+              "articles/understanding-different-work-models",
+              "articles/trading-one-boss-for-many",
+              "articles/building-stable-foundations",
+              "articles/portfolio-career-approach"
+            ]
+          },
+          {
             "group": "About WithSeismic",
             "pages": [
               "articles/documentation-site-without-product",
