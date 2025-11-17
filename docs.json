@@ -255,19 +255,17 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "articles"
-            ]
+            "pages": ["articles"]
           },
           {
             "group": "Entrepreneurs In Residence",
             "pages": [
-              "articles/entrepreneurs-in-residence-overview",
-              "articles/work-life-balance-sustainable-building",
-              "articles/understanding-different-work-models",
-              "articles/trading-one-boss-for-many",
-              "articles/building-stable-foundations",
-              "articles/portfolio-career-approach"
+              "articles/entrepreneurs-in-residence/entrepreneurs-in-residence-overview",
+              "articles/entrepreneurs-in-residence/work-life-balance-sustainable-building",
+              "articles/entrepreneurs-in-residence/understanding-different-work-models",
+              "articles/entrepreneurs-in-residence/trading-one-boss-for-many",
+              "articles/entrepreneurs-in-residence/building-stable-foundations",
+              "articles/entrepreneurs-in-residence/portfolio-career-approach"
             ]
           },
           {
@@ -306,9 +304,7 @@
           },
           {
             "group": "Archive",
-            "pages": [
-              "articles/building-storybook-for-automations"
-            ]
+            "pages": ["articles/building-storybook-for-automations"]
           }
         ]
       },
@@ -340,23 +336,7 @@
               }
             ]
           },
-          {
-            "group": "Life University",
-            "icon": "heart",
-            "pages": [
-              "universities/life/introduction",
-              {
-                "group": "Making Friends as an Adult",
-                "pages": [
-                  "universities/life/making-friends-as-an-adult",
-                  "universities/life/making-friends-introvert",
-                  "universities/life/making-friends-social-anxiety",
-                  "universities/life/making-friends-online",
-                  "universities/life/making-friends-life-transitions"
-                ]
-              }
-            ]
-          },
+
           {
             "group": "n8n University",
             "icon": "graduation-cap",
