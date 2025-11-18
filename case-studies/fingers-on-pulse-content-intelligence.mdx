@@ -1,14 +1,14 @@
 ---
-title: "Ingesting Thousands of Hours of YouTube for LMS Platform"
-description: "How we built an automated content intelligence system that processes 800+ YouTube channels, transforming months of manual research into minutes of automated insights for educational content"
+title: "Fingers on Pulse: Ingesting the Zeitgeist at Scale"
+description: "How we architected an event-driven content intelligence pipeline to process 800+ YouTube channels in real-time using Trigger.dev."
 ---
 
 <script type="application/ld+json">
   {`{
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Fingers on Pulse: YouTube Content Intelligence System Case Study",
-  "description": "How WithSeismic built an automated system processing 800+ YouTube channels, achieving 200x speed improvement",
+  "headline": "Fingers on Pulse: Ingesting the Zeitgeist at Scale",
+  "description": "Engineering case study: Architecting a 200x scale content pipeline using Trigger.dev and multi-level batch processing.",
   "url": "https://withseismic.com/case-studies/fingers-on-pulse-content-intelligence",
   "author": {
     "@type": "Organization",
@@ -16,355 +16,116 @@ description: "How we built an automated content intelligence system that process
   },
   "publisher": {
     "@type": "Organization",
-    "name": "WithSeismic"
-  },
-  "about": {
-    "@type": "SoftwareApplication",
-    "name": "Fingers on Pulse",
-    "applicationCategory": "Content Intelligence System",
-    "description": "Automated YouTube content processing and analysis platform"
+    "name": "WithSeismic",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://withseismic.com/logo/light.svg"
+    }
   }
 }`}
 </script>
 
-<img
-  src="/images/finger-m0.png"
-  alt="Fingers On The Pulse Content Intelligence System"
-  className="rounded-lg"
-/>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 not-prose">
+  <Card title="200x Speedup" icon="gauge-high">
+    Parallel batch processing vs manual audit
+  </Card>
+  <Card title="800+ Channels" icon="tower-broadcast">
+    Continuous real-time monitoring
+  </Card>
+  <Card title="<20min Latency" icon="stopwatch">
+    From publish to processed insight
+  </Card>
+</div>
 
-<Note>
-  [Read the full technical deep-dive on our blog
-  →](https://blog.withseismic.com/fingers-on-the-pulse-how-we-ate-thousands-of-hours-of-youtube-to-shape-the-zeitgeist-with-trigger-dev/)
-</Note>
+## The Information Firehose
 
-## The Problem
+In the fast-moving world of AI and MarTech, staying current is a full-time job. For educational content platforms, the "research lag"—the time between a new development and the creation of course material—is a critical vulnerability.
 
-In fast-moving industries like growth marketing, MarTech, and AI, yesterday's breakthrough is tomorrow's baseline. Content teams face an impossible challenge: staying current across thousands of information sources while actually creating content.
+Our client needed to monitor over 800 YouTube channels to identify emerging trends, but manual research capped their capacity at ~25 channels. They needed a system to ingest, analyze, and synthesize thousands of hours of video content without hiring an army of analysts.
 
-**The reality for most content teams:**
-- Researchers spend 60% of their time just trying to stay current
-- Manual monitoring limits coverage to 25 channels maximum
-- Different researchers extract different insights from the same content
-- Educational content lags 3-6 months behind cutting-edge developments
-- By the time you've researched and created content, the landscape has already shifted
+## Solution: Event-Driven Content Intelligence
 
-Meanwhile, thousands of videos publish daily across YouTube alone. Important announcements—GPT-4.5 launches, new automation tools, shifting best practices—happen in real-time. Content teams needed to "keep their fingers on the pulse" but couldn't scale their research capacity fast enough.
+We built a serverless ingestion pipeline that treats content creation as an event stream. By decoupling **Discovery** (finding new videos) from **Analysis** (processing transcripts), we achieved massive parallelism.
 
-## What This Unlocks
+### System Architecture
 
-We built an automated content intelligence system that transforms how content teams stay current. Here's what becomes possible:
+The system leverages **Trigger.dev** for orchestration, ensuring reliability across long-running jobs.
 
-### Instant Knowledge at Your Fingertips
-When OpenAI drops a new model announcement, the system detects it within minutes, processes the full transcript, extracts key insights, and notifies your team—all within 20 minutes of publication. You can create response content the same day, not months later.
-
-### Automated Newsletter Curation
-Generate curated newsletters automatically by monitoring specific channels or topics. The system continuously tracks content across 800+ sources, extracts the most relevant insights, and packages them into ready-to-publish digests—weekly, daily, or triggered by emerging trends.
-
-### Competitive Intelligence
-Monitor your competitors' content strategies in real-time. See what topics they're covering, which formats perform best, when they publish, and what gaps exist in their coverage. Turn their content strategy into your competitive advantage.
-
-### Trend Detection Before They Peak
-Spot emerging topics as they gain momentum, not after they've saturated the market. When a new tool, technique, or concept starts appearing across multiple channels, the system flags it immediately—giving you first-mover advantage on content creation.
-
-### Data-Driven Content Planning
-Shift from "what should we write about?" guesswork to "here's exactly what the industry is discussing right now" data. Every content decision backed by real-time analysis of thousands of hours of industry content.
-
-**The transformation:** Content research drops from 60% of creators' time to just 15%. Channel coverage expands from 25 to 800+. Content lag shrinks from months to same-day. Processing speed increases 200x.
-
-## How It Started
-
-The project came through the Growth Engineering Slack community run by Mike Taylor. Fabian reached out with an ambitious vision for his LMS platform - he needed to leverage AI, automation, and advanced scraping to gain a competitive edge in educational content creation.
-
-Fabian knew me from my work in the community. I'm known as one of the more technical members who delivers advanced solutions rather than relying on out-of-the-box tools. When he explained what he wanted to build, we were immediately interested.
-
-The appeal was multifaceted: it was a technically challenging problem requiring creative solutions, it had direct application to our own YouTube content creation needs, and it gave me the opportunity to demonstrate how AI tools create real competitive advantages. The scope was ambitious and pushed technical boundaries.
-
-It was a great challenge - quite a grand, ambitious plan. We were keen from the start to tackle it.
-
-## Building the Solution
-
-I built an automated content intelligence system that could monitor 800+ YouTube channels simultaneously, process thousands of hours of video content, extract structured insights using AI, and identify emerging trends in real-time.
-
-The goal was to shape the zeitgeist by knowing what's happening as it happens, enabling the creation of educational content that's always relevant and current. We needed to reduce content research time by 75% while expanding coverage 32x.
-
-## The Technical Build
-
-I designed the system around a multi-level batch processing pipeline:
-
-```
-Channel Discovery → Video Processing → Content Analysis → Insight Storage → Trend Analysis
+```mermaid
+graph TD
+    A[Cron: Channel Watcher] -->|New Video Detected| B{Job Queue}
+    B -->|Trigger| C[Content Adapter]
+    C -->|Fetch Transcript| D[YouTube API / Apify]
+    D -->|Raw Text| E[LLM Analysis Pipeline]
+    E -->|Structured Insights| F[Supabase]
+    F -->|New Trend| G[Notification Service]
+    
+    style B fill:#f9f,stroke:#333,stroke-width:2px
+    style E fill:#bbf,stroke:#333,stroke-width:2px
 ```
 
-<img
-  src="/images/finger-m1.png"
-  alt="Content Discovery Flow Diagram"
-  className="rounded-lg"
-/>
+### Engineering Spotlight: Orchestrating Chaos
 
-I built this using Trigger.dev for job orchestration, Hono as the backend framework, OpenAI GPT-4 for content analysis, and the YouTube Data API for content retrieval.
+We chose **Trigger.dev** over traditional queues (BullMQ) or serverless functions (Lambda) for one key reason: **Observability**.
 
-### Why We Chose Trigger.dev
+When processing thousands of jobs, failures are inevitable (API rate limits, malformed transcripts, timeouts). Trigger.dev provides a visual dashboard for the job graph, allowing us to inspect payloads and retry specific steps without building custom admin tools.
 
-I could have gone with traditional BullMQ and it would have worked fine. But Trigger.dev stood out for its impressive UI and user experience for managing job queues. It was killing two birds with one stone.
+### Multi-Level Batch Processing
 
-The decision came down to practical considerations: Do I build a UI from scratch to handle job queue work? Trigger.dev gave Fabian something he could interact with immediately - run projects, scrapes, crawls, and see what was happening in real-time.
-
-One of the huge benefits is their fantastic UI for visualizing job queues. Throughout the debugging process, we could retry jobs and see what was working or failing without any layer of abstraction. Easy to set up with a free tier, plus the option to self-host if needed.
-
-I considered alternatives like Inngest (similar feature set with open source options) and Hatchet.run (great for pure work orchestration with more control over worker relationships). BullMQ would have been traditional but required building custom monitoring.
-
-Ultimately, Trigger.dev had the perfect mix of user experience and developer experience to get stuff sorted. Thank god I chose Trigger.dev - it was perfect for this.
-
-Most developers have horror stories about production queue systems—Redis running out of memory at 3 AM, jobs silently failing, dead-letter queues not configured. Trigger.dev eliminated these concerns entirely:
+To handle the volume, we implemented a two-tier concurrency model:
+1.  **Channel Level**: Parallel checks across 800+ channels.
+2.  **Video Level**: Concurrent processing of backlog content for new channels.
 
 ```typescript
+// Tier 1: Batch Triggering Channel Scrapes
 export const processYouTubeChannels = task({
   id: "process-youtube-channels",
-  maxDuration: 600,
-  run: async (payload: ProcessYouTubeChannelsPayload) => {
-    // Create batch payloads for each channel
-    const channelPayloads = payload.channels.map((channel) => ({
-      payload: { youtubeUrl: channel },
-      options: {
-        queue: {
-          name: "youtube-channels",
-          concurrency: 5,
-        },
-      },
+  run: async (payload: { channels: string[] }) => {
+    // Fan-out pattern: Trigger a separate job for each channel
+    // with controlled concurrency to respect API limits
+    const batchPayloads = payload.channels.map(url => ({
+      payload: { url },
+      options: { queue: { name: "youtube-scraper", concurrency: 5 } }
     }));
 
-    // Batch trigger channel scraping
-    const batchResult = await scrapeYouTubeProfile.batchTrigger(
-      channelPayloads
-    );
-
-    return {
-      success: true,
-      tasksTriggered: batchResult.runs.length,
-    };
+    return await scrapeChannel.batchTrigger(batchPayloads);
   },
 });
 ```
 
-## How It Works
+### The Universal Content Adapter
 
-### Multi-Level Batch Processing
-
-I designed the system to process content at two levels for maximum efficiency. Level one processes multiple channels concurrently. Level two processes multiple videos within each channel concurrently.
-
-This approach enables processing hundreds of videos simultaneously. The math is simple: manual approach would be 200 videos × 30 minutes = 100 hours (2.5 work weeks). My system processes 200 videos in parallel in about 30 minutes total. That's a 200x speedup.
-
-### Making AI Work with Raw Transcripts
-
-When processing video transcripts, it really depends on the content type and how the speaker addresses the audience. We used the YouTube API to get transcripts directly, which meant we didn't have speaker identification - just raw transcript data to work with.
-
-The challenges were significant. You're relying on your inputs to be as clean as possible. If the transcript misspelled something or the LLM didn't understand a concept, it affected the output.
-
-Sometimes videos had sponsors, and halfway through they'd start talking about the sponsor. That could leak into the data output, so I had to prompt specifically to handle this.
-
-With this volume, cost and speed become critical. Claude Sonnet was out of the question - too expensive. OpenAI's GPT-4 had smaller, faster models I could leverage.
-
-Where LLMs excel is generalizing lots of content and aggregating many pieces into one coherent format. That's exactly what we needed - understanding what the video was about, what technologies were discussed, whether it was educational or sales content.
-
-We ran evals to find the right mix of speed, cost, and quality. But evaluation doesn't have to be scary or overly scientific. Sometimes you can just stick your finger in the air and work out which way the wind is blowing. Consistently use your product, see what works and what doesn't, then tweak it.
-
-For each video, the system extracts:
-
-- **Talking Points**: Key topics discussed
-- **Category**: Primary content classification
-- **Summary**: Concise overview
-- **Keywords**: Relevant terms and concepts
-- **Learnings**: Actionable insights
+To ensure the system could scale beyond YouTube (to LinkedIn, Twitter, Blogs), we implemented a strict **Adapter Pattern**.
 
 ```typescript
-const response = await generateObject({
-  model: openai("gpt-4o"),
-  schema: z.object({
-    talkingPoints: z.array(z.string()),
-    category: z.string(),
-    summary: z.string(),
-    keywords: z.array(z.string()),
-    learnings: z.array(z.string()).nullable(),
-  }),
-  prompt: `Analyze transcript: ${markdown}`,
-});
-```
-
-### Content Analysis Flow
-
-<img
-  src="/images/finger-m2.png"
-  alt="Content Analysis Flow Diagram"
-  className="rounded-lg"
-/>
-
-### Building for Scale from Day One
-
-When aggregating content across different platforms, you always need a factory pattern that creates a unified format for your database. We were collecting from YouTube and LinkedIn initially - YouTube through their APIs and LinkedIn through Apify, which is a fantastic marketplace for scraping APIs.
-
-I knew from the start that if we were going to add another 50 platforms, we'd need a unified way of defining data collection, piping it into a consistent format, and moving it forward. It's a tried and tested pattern I've used time and again.
-
-```typescript
-interface ContentAdapter<T, U> {
-  extract(source: T): Promise<RawContent>;
+interface ContentAdapter<SourceType> {
+  // 1. Extract raw data from the platform
+  extract(source: SourceType): Promise<RawContent>;
+  
+  // 2. Normalize to our internal schema
   normalize(raw: RawContent): UnifiedContent;
-  process(content: UnifiedContent): Promise<ContentInsights>;
-  store(insights: ContentInsights, metadata: U): Promise<void>;
+  
+  // 3. Process with LLM (Strategy Pattern)
+  analyze(content: UnifiedContent): Promise<Insights>;
 }
 ```
 
-I made several key architectural decisions upfront. We introduced caching so successful results weren't being called again unnecessarily. The queue system was essential from day one for handling cron jobs that watch channels and immediately process new content. Each platform has its own quirks - rate limits, data formats - but they all flow through the same pipeline.
+This abstraction allows us to plug in new sources without rewriting the core analysis logic. The `analyze` step uses OpenAI's GPT-4o with structured outputs (Zod schemas) to guarantee type safety in our database.
 
-This pattern makes adding new content sources like Twitter, blogs, or podcasts straightforward. All sources flow through the same processing pipeline while maintaining platform-specific optimizations.
+## Business Impact: From Lagging to Leading
 
-## How We Built It
+The system transformed the client's workflow from reactive to proactive.
 
-I love doing these small passion projects. Being the person who both builds and scopes, talking directly to Fabian to understand exactly what's needed - there's no conversation chains or multiple stakeholders slowing things down.
+*   **Zero-Day Content**: When OpenAI releases a model, the system processes the announcement video, extracts key technical details, and drafts a curriculum update within 20 minutes.
+*   **Trend Detection**: By aggregating keywords across 800 channels, we identify "rising stars" (topics gaining velocity) before they hit the mainstream.
+*   **Operational Efficiency**: Research time per content piece dropped from 4 hours to 15 minutes.
 
-I delivered a proof of concept in one week, then completed the full production build in two weeks total. The approach was rapid prototyping with creative freedom.
+> "We automated the 'boring' part of research—watching hours of video—so the team can focus on the high-value part: synthesis and teaching."
 
-We were able to take creative liberties and make technical decisions on the fly, then pitch them to Fabian after building. We knew he would agree because we were on the same page from the start. We were almost a co-founder on this project.
-
-This autonomy enabled immediate technical decisions without committee approval, creative problem-solving without bureaucratic overhead, and rapid iteration based on real results.
-
-The one-week POC gave Fabian everything he needed: real data testing the automation concept, validation of AI-generated insight quality, ROI determination before full investment, and the vision brought to life immediately.
-
-## The Results
-
-<img
-  src="/images/finger-m3.png"
-  alt="Before: Cumbersome, desystematised, dirty"
-  className="rounded-lg"
-/>
-<p className="text-center text-sm text-gray-600 mt-2">
-  Before: Cumbersome, desystematised, dirty
-</p>
-
-<img
-  src="/images/finger-m4.png"
-  alt="After: Automation utopia with a 200x increase"
-  className="rounded-lg mt-6"
-/>
-<p className="text-center text-sm text-gray-600 mt-2">
-  After: Automation utopia with a 200x increase
-</p>
-
-The transformation was dramatic. Content research dropped from 60% of creators' time to just 15%. Channel coverage expanded from 25 YouTube channels to over 800. Content planning shifted from subjective impressions to data-driven decisions based on trends.
-
-Most importantly, content lag went from 3-6 months behind cutting edge to same week or even same day. Processing speed increased by 200x - from 1 audit per day per researcher to hundreds processed simultaneously.
-
-Here's what that looks like in practice. When OpenAI launches a new model, the video gets published on YouTube. My system detects it within minutes, processes the transcript, extracts key insights, notifies the content team, and enables educational material creation within 20 minutes total.
-
-## Solving the Hard Problems
-
-The technical challenges fell into three main categories.
-
-**YouTube API Rate Limiting**: I implemented channel-based concurrency controls, batch processing optimization, state tracking to avoid redundancy, and caching to prevent unnecessary API calls.
-
-**Processing Long-Form Content**: The system uses chunked transcript processing for memory efficiency, extracts relevant sections to focus on key content, and has an intelligent caching system to avoid reprocessing.
-
-**Ensuring Reliability**: I built comprehensive error handling with graceful fallbacks, detailed logging and monitoring through Trigger.dev's UI, state tracking for resumable processing after failures, and result caching to maintain progress despite interruptions.
-
-## What We Learned
-
-The scope was tight, the delivery was painless. My expertise from similar projects meant this was bread and butter for me. We really enjoyed doing it, which always makes things easier.
-
-Fabian was great to work with - very knowledgeable and technically minded. It was easy to explain concepts and quickly flesh out ideas together.
-
-**Focus on core problems, not infrastructure.** Trigger.dev eliminated weeks of queue setup work. This is the kind of decision that makes or breaks project timelines.
-
-**Pipeline architectures provide flexibility.** Composable tasks make systems resilient. When one part breaks, the rest keeps working.
-
-**Smart concurrency is crucial.** Understanding constraints enables reliable scaling. You can't just throw more workers at the problem.
-
-**Structured analysis yields better results.** AI needs structure for consistent insights. Raw text in, structured data out.
-
-**Balance automation with expertise.** Systems augment, don't replace, human judgment. The AI processes content, but humans still decide what matters.
-
-If you're going to build something like this, plan it out from the start. Get someone involved who understands the engineering patterns needed. Be very specific about what data you want to collect - it's easy to collect everything and then have to refine it down.
-
-When you're scraping, the more properties you collect, the higher the likelihood of things falling apart with nulls and undefined values. Proper scoping really helped this project succeed.
-
-## Where This Could Go
-
-I would love to see this evolve beyond just extracting insights. We played around with sentiment analysis and bias checking during development. There's a ton of potential for content teams using this for strategic analysis of their own channels or competitor research.
-
-I explored several possibilities that didn't make it into the initial build: creating content off the back of insights like synopses or summaries, done-for-you newsletters collecting all YouTube content for a channel weekly, sentiment and bias analysis to understand not just what's being said but how and why, and deep competitor analysis to inform content strategy.
-
-If you're interested in building something like this, please get in touch - we would love to do it.
-
-This system demonstrates how automation can transform content research from a bottleneck into a competitive advantage. By processing the firehose of content automatically, teams can focus on what humans do best—creating engaging, nuanced learning experiences—while the system ensures they're always working with the latest information.
-
-The proof of concept validated everything we needed to know: automated content intelligence is technically feasible, the quality of insights meets educational standards, ROI justifies the investment in automation, and the system scales to handle massive content volumes.
-
----
-
-## Frequently Asked Questions
-
-<AccordionGroup>
-  <Accordion title="How does this system achieve 200x faster processing than manual research?">
-    The key is multi-level batch processing. Instead of analyzing videos sequentially (manual approach: 200 videos × 30 minutes = 100 hours), our system processes hundreds of videos in parallel simultaneously. This reduces the total processing time from weeks to under 30 minutes through concurrent execution.
-  </Accordion>
-
-  <Accordion title="What makes Trigger.dev better than traditional job queue systems like BullMQ?">
-    Trigger.dev provided an exceptional UI for managing and monitoring job queues without building custom dashboards. It eliminated the horror stories of Redis memory issues, silent job failures, and complex dead-letter queue configurations. The visual job management and retry capabilities were crucial for debugging the complex batch processing workflows.
-  </Accordion>
-
-  <Accordion title="How accurate is the AI analysis of video transcripts?">
-    The system balances cost, speed, and quality using OpenAI's GPT-4o models. We handle common issues like sponsor content pollution and transcript inaccuracies through specific prompting. The evaluation approach focuses on consistent dogfooding - continuously using the product to identify what works and iterating based on real-world performance rather than theoretical metrics.
-  </Accordion>
-
-  <Accordion title="Can this system work with platforms other than YouTube?">
-    Yes, it's designed with a Universal Content Adapter pattern from day one. The system already processes LinkedIn content via Apify and can easily be extended to Twitter, blogs, podcasts, or any content platform. Each platform has its own adapter but flows through the same unified processing pipeline.
-  </Accordion>
-
-  <Accordion title="How does the system handle YouTube API rate limits at scale?">
-    We implement channel-based concurrency controls, batch processing optimization, and intelligent caching to avoid redundant API calls. The system tracks state to prevent unnecessary requests and uses result caching so successful operations aren't repeated, maximizing efficiency within API constraints.
-  </Accordion>
-
-  <Accordion title="What specific insights does the AI extract from each video?">
-    For each video, the system extracts talking points (key topics discussed), category classification, concise summaries, relevant keywords and concepts, and actionable learnings. This structured data enables trend analysis and helps educational content creators understand what's being discussed across their industry in real-time.
-  </Accordion>
-
-  <Accordion title="How quickly can the system detect and process new industry developments?">
-    The system monitors 800+ channels continuously and can detect new content within minutes of publication. When major announcements happen (like OpenAI launching a new model), the complete cycle from detection to processed insights takes about 20 minutes, enabling same-day or even same-hour content creation responses.
-  </Accordion>
-
-  <Accordion title="What was the development timeline for this system?">
-    The proof of concept was built in just 1 week, with the full production system completed in 2 weeks total. The rapid development was possible due to direct client communication, creative technical freedom, and leveraging existing expertise with similar content processing systems.
-  </Accordion>
-
-  <Accordion title="How does this compare to manual content research processes?">
-    Manual research consumed 60% of content creators' time, could only monitor 25 channels, resulted in 3-6 month content lag, and produced inconsistent analysis. The automated system reduced research time to 15% of creators' workload while monitoring 800+ channels with same-day insights and consistent, structured analysis.
-  </Accordion>
-
-  <Accordion title="What future enhancements are possible with this system?">
-    The architecture enables automated content creation, done-for-you newsletters summarizing weekly channel content, sentiment and bias analysis, competitive intelligence deep-dives, and strategic analysis tools. The foundation supports expanding beyond content monitoring into active content strategy and creation assistance.
-  </Accordion>
-</AccordionGroup>
-
----
-
-## Technologies Used
-
-<CardGroup cols={3}>
-  <Card title="Trigger.dev" icon="play">
-    Job orchestration
-  </Card>
-  <Card title="Hono" icon="server">
-    Backend framework
-  </Card>
-  <Card title="OpenAI GPT-4" icon="brain">
-    Content analysis
-  </Card>
-  <Card title="YouTube API" icon="youtube">
-    Content retrieval
-  </Card>
-  <Card title="TypeScript" icon="code">
-    Type-safe development
-  </Card>
-  <Card title="Batch Processing" icon="layer-group">
-    Parallel execution
-  </Card>
-</CardGroup>
+<Card
+  title="Read Technical Deep Dive"
+  icon="book-open"
+  href="https://blog.withseismic.com/fingers-on-the-pulse-how-we-ate-thousands-of-hours-of-youtube-to-shape-the-zeitgeist-with-trigger-dev/"
+>
+  Full architecture breakdown on our blog
+</Card>

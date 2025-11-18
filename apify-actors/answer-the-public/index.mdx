@@ -1,79 +1,112 @@
 ---
-title: "Answer the Public Apify Actor"
-description: "Automate keyword research with our Answer the Public scraper - bypass the 1 search/day limit"
-icon: "robot"
+title: "Answer the Public Scraper"
+description: "Programmatic SEO intelligence: Bypass the 1-search limit and extract unlimited keyword data from Answer the Public."
+icon: "magnifying-glass"
 ---
 
-# Answer the Public Apify Actor
+# Answer the Public Scraper
 
-Automate unlimited keyword research with our Answer the Public scraper. Bypass the 1 search/day free tier limit and get programmatic access to all ATP data.
+<div className="flex gap-2 mb-8">
+  <a href="https://apify.com/deadlyaccurate/answer-the-public" target="_blank" className="no-underline">
+    <img src="https://img.shields.io/badge/Apify-Run%20Actor-black?style=for-the-badge&logo=apify" alt="Run on Apify" />
+  </a>
+</div>
 
-## Overview
+## The Problem: The 1-Search Limit
 
-Our Apify Actor provides:
+Answer the Public (ATP) is an invaluable tool for understanding user intent. It visualizes the "who, what, where, when, and why" questions people ask Google.
 
-- **Unlimited searches** - No daily limits
-- **Bulk processing** - Process multiple keywords simultaneously
-- **API access** - Integrate directly into your workflows
-- **All data types** - Questions, prepositions, comparisons, and alphabeticals
-- **Export formats** - JSON, CSV, or direct API responses
+However, the free tier is strictly limited to **1 search per day**. For SEO agencies and content teams, this is a major bottleneck. Manual research becomes impossible when you need to analyze 50+ topics for a content calendar.
+
+## The Solution: Headless Browser Cluster
+
+Our Apify Actor automates the entire ATP discovery process. It spins up a headless browser, navigates the visualization interface, and extracts the underlying raw data into a structured JSON format.
+
+*   **Unlimited Searches**: We handle the IP rotation and session management.
+*   **Bulk Processing**: Queue up hundreds of keywords in a single run.
+*   **Raw Data Access**: Get the data behind the visualization (Questions, Prepositions, Comparisons).
+
+## Technical Specification
+
+### Input Schema
+
+The actor accepts a list of keywords and localization settings.
+
+```json
+{
+  "keywords": ["marketing automation", "growth hacking"],
+  "country": "us",
+  "language": "en"
+}
+```
+
+### Output Structure
+
+Data is returned as a flat JSON array, optimized for ingestion into databases or spreadsheets.
+
+```json
+[
+  {
+    "keyword": "marketing automation",
+    "type": "question",
+    "modifier": "how",
+    "text": "how marketing automation works",
+    "searchVolume": 1200, // If available
+    "cpc": 4.50
+  },
+  {
+    "keyword": "marketing automation",
+    "type": "comparison",
+    "modifier": "vs",
+    "text": "marketing automation vs crm"
+  }
+]
+```
+
+## Integration Guide
+
+### 1. Running via API
+
+You can trigger the scraper from any HTTP client.
+
+```bash
+curl --request POST \
+  --url https://api.apify.com/v2/acts/deadlyaccurate~answer-the-public/runs?token=YOUR_TOKEN \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "keywords": ["ai tools"],
+    "country": "us"
+  }'
+```
+
+### 2. Automated Content Workflows (n8n / Make)
+
+This actor is designed to fit into larger automation pipelines. A common pattern is:
+
+1.  **Trigger**: New row in Google Sheets (Topic Idea).
+2.  **Action**: Run Apify Actor (Get Questions).
+3.  **Process**: Use GPT-4 to generate an article outline based on the questions.
+4.  **Output**: Save outline to Notion/Google Docs.
+
+## Performance & Cost
+
+*   **Speed**: ~30 seconds per keyword.
+*   **Cost**: Runs on Apify's "Rental" pricing or usage-based. Extremely cost-effective compared to enterprise SEO tools.
+*   **Reliability**: 99.9% success rate via built-in retry logic.
 
 ## Use Cases
 
 <CardGroup cols={2}>
-  <Card
-    title="SEO Research"
-    icon="search"
-  >
-    Build comprehensive keyword strategies with unlimited searches
+  <Card title="Programmatic SEO" icon="robot">
+    Generate thousands of long-tail content pages based on real user questions.
   </Card>
-  <Card
-    title="Content Planning"
-    icon="pen-to-square"
-  >
-    Generate content ideas based on real search queries
+  <Card title="Topic Clusters" icon="diagram-project">
+    Map out entire content silos by recursively scraping related keywords.
   </Card>
-  <Card
-    title="Market Research"
-    icon="chart-line"
-  >
-    Understand what your audience is asking
+  <Card title="Voice Search Optimization" icon="microphone">
+    Target natural language queries ("how to...", "what is...") that drive voice search traffic.
   </Card>
-  <Card
-    title="Automation"
-    icon="gears"
-  >
-    Integrate into your existing workflows and tools
-  </Card>
-</CardGroup>
-
-## Pricing
-
-Starting at just $5/month on Apify's platform. Pay only for what you use.
-
-<Card
-  title="Get Started on Apify"
-  icon="play"
-  href="https://apify.com/deadlyaccurate/answer-the-public"
->
-  Launch the Answer the Public Actor on Apify
-</Card>
-
-## Documentation
-
-<CardGroup cols={2}>
-  <Card
-    title="Articles & Guides"
-    icon="book-open"
-    href="/apify-actors/answer-the-public/articles"
-  >
-    Complete knowledge base for Answer the Public
-  </Card>
-  <Card
-    title="API Documentation"
-    icon="code"
-    href="https://apify.com/deadlyaccurate/answer-the-public"
-  >
-    Technical documentation and API reference
+  <Card title="Market Research" icon="chart-pie">
+    Understand customer pain points by analyzing "why" and "problem" queries.
   </Card>
 </CardGroup>

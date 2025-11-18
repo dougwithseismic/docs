@@ -1,358 +1,49 @@
 ---
-title: "Answer the Public Pricing: The Real Cost Nobody Talks About"
-description: "I tracked every dollar spent on ATP for 2 years. Here's what it actually costs."
-icon: "money-bill"
+title: "Cost Analysis: SaaS Subscription vs Pay-Per-Usage"
+description: "Why paying for compute is 10x cheaper than paying for a dashboard seat."
+icon: "file-invoice-dollar"
 ---
 
-# Answer the Public Pricing: The Real Cost Nobody Talks About
+# Cost Analysis: SaaS vs Serverless
 
-Everyone talks about the $99/month price tag. Nobody talks about the real cost.
+When buying data tools, you're usually paying for two things:
+1.  **The Data** (Compute/Storage)
+2.  **The UI** (Dashboard/Charts)
 
-I tracked every expense related to Answer the Public for 2 years. Here's what it actually costs when you factor in everything.
+For engineers, paying for the UI is wasted budget. Let's break down the economics of keyword research.
 
-## The Sticker Price
+## The SaaS Model (AnswerThePublic.com)
 
-Let's start with what ATP actually charges:
+*   **Plan**: Pro
+*   **Cost**: ~$99/month
+*   **Limits**: Daily search caps apply.
+*   **Value**: You pay for the convenience of the visualization wheel.
 
-**Free:** $0/month
-- 3 searches per day
-- That's it
+## The Serverless Model (Apify Actor)
 
-**Pro:** $99/month ($79/month annual)
-- Unlimited searches
-- Everything else is the same as free
+*   **Plan**: Usage-based
+*   **Cost**: ~$0.25 per 1,000 results (estimated compute).
+*   **Limits**: None.
+*   **Value**: You pay only for the machine time required to scrape Google.
 
-**Expert:** $199/month ($149/month annual)
-- Team features
-- Brand monitoring
-- Limited API access
+### The Math
 
-Simple enough, right? Wrong.
+If you run 10 searches a month:
+*   **SaaS**: $99 / 10 = $9.90 per search.
+*   **Apify**: $0.05 per search.
 
-## The Hidden Costs
+**Winner**: Apify (by a landslide).
 
-### Cost 1: Complementary Tools (Required)
+If you run 10,000 searches a month (Enterprise scale):
+*   **SaaS**: You need a custom Enterprise plan ($$$$).
+*   **Apify**: You just pay for more compute. The unit economics stay roughly the same.
 
-ATP doesn't show search volumes. This is critical.
+## Hidden Costs of SaaS
 
-Without volumes, you're creating content blind:
-- "email marketing tips" could be 100 searches/month
-- Or 10,000 searches/month
-- ATP won't tell you which
+1.  **Seat Licenses**: Need your whole team to access data? Pay for more seats. With Apify, you just share the API token or the output dataset.
+2.  **Export Friction**: Paying an intern to manually click "Download CSV" 50 times is a hidden labor cost. Automation eliminates this.
+3.  **Unused Capacity**: If you don't use the tool for a week, you still pay the $99 subscription. With Serverless, $0 usage = $0 cost.
 
-So you'll pay for:
-- **Google Keyword Planner:** Free (imprecise, ranges only)
-- **Ahrefs:** $129/month (what I used)
-- **SEMrush:** $140/month (alternative)
+## Conclusion
 
-My monthly cost:
-- ATP Pro: $99
-- Ahrefs: $129
-- **Total: $228/month**
-
-Annual: $2,736
-
-### Cost 2: Labor for Manual Exports
-
-Here's what nobody factors in: your time.
-
-For 100 keyword searches per month:
-- Search keyword: 30 seconds
-- Wait for results: 15 seconds
-- Export CSV: 20 seconds
-- Clean data: 2 minutes
-- **Per keyword: ~3 minutes**
-
-100 keywords = 5 hours of manual work
-
-At $50/hour labor cost:
-- Manual work: $250/month
-- ATP subscription: $99/month
-- **Real cost: $349/month**
-
-Annual: $4,188
-
-This is the cost nobody mentions in pricing breakdowns.
-
-### Cost 3: Team Scaling
-
-ATP is single-user. For teams:
-
-**3-person team:**
-- 3 × $99 = $297/month
-- $3,564/year
-
-**5-person agency:**
-- 5 × $99 = $495/month
-- $5,940/year
-
-**10-person marketing team:**
-- 10 × $99 = $990/month
-- $11,880/year
-
-There's no team discount. No shared account. Every person pays full price.
-
-### Cost 4: Wasted Content from Invalid Data
-
-This one hurt.
-
-Month 3 of using ATP, I created 25 articles from ATP questions without validating volumes first.
-
-Result:
-- 19 articles got fewer than 10 visits/month
-- Total traffic: 147 visits from 25 articles
-- Cost to create: ~$3,750 (writer fees)
-- Revenue generated: $0
-
-The ATP data wasn't wrong - those questions exist in autocomplete. But almost nobody searches for them.
-
-Without volume validation, ATP data can cost you thousands in wasted content.
-
-## Real-World Cost Examples
-
-Let me show you actual numbers from my usage:
-
-### Solo Freelancer (Me, Year 1)
-
-**Month 1:**
-- Keywords researched: 127
-- ATP Pro: $99
-- Ahrefs: $129
-- Labor (6 hours): $300
-- **Total: $528**
-
-**Month 2:**
-- Keywords researched: 43
-- ATP Pro: $99
-- Ahrefs: $129
-- Labor (2 hours): $100
-- **Total: $328**
-
-**Month 3:**
-- Keywords researched: 89
-- ATP Pro: $99
-- Ahrefs: $129
-- Labor (4 hours): $200
-- Wasted content: $750 (3 articles, no traffic)
-- **Total: $1,178**
-
-**Year 1 total: $6,147**
-
-That's a lot more than the advertised $1,188/year.
-
-### Agency (5-person team)
-
-**Monthly:**
-- ATP Pro × 5: $495
-- Ahrefs Team: $399
-- Labor (20 hours across team): $1,000
-- **Total: $1,894/month**
-
-**Annual: $22,728**
-
-For question research. Without search volumes. With manual exports.
-
-The ROI math gets harder to justify quickly.
-
-### What I Actually Paid
-
-Over 8 months:
-- ATP Pro: $99 × 8 = $792
-- Ahrefs: $129 × 8 = $1,032
-- Labor (estimated 35 hours total): $1,750
-- **Total: $3,574**
-
-For 8 months of keyword research that I could have automated.
-
-## The Automation Alternative
-
-After realizing the true cost, I built an alternative.
-
-### Apify Actor Costs
-
-**Actual usage for 100 searches/month:**
-- Compute time: ~$12
-- Storage: ~$2
-- Data transfer: ~$1
-- **Total: ~$15/month**
-
-**Plus Ahrefs:**
-- Ahrefs: $129/month
-- **Total: $144/month**
-
-Compare to ATP Pro + Ahrefs:
-- ATP + Ahrefs: $228/month
-- Actor + Ahrefs: $144/month
-- **Monthly savings: $84**
-- **Annual savings: $1,008**
-
-### For Teams
-
-**5-person agency:**
-- ATP Pro × 5: $495/month ($5,940/year)
-- Actor automation: $25/month ($300/year)
-- **Annual savings: $5,640**
-
-**10-person team:**
-- ATP Pro × 10: $990/month ($11,880/year)
-- Actor automation: $35/month ($420/year)
-- **Annual savings: $11,460**
-
-The savings compound with team size.
-
-## Break-Even Analysis
-
-When does ATP make financial sense vs automation?
-
-**If you research fewer than 10 keywords/month:**
-- Free tier works (3/day = 90/month)
-- Cost: $0
-- Winner: Free ATP
-
-**If you research 10-50 keywords/month:**
-- ATP Pro: $99/month
-- Automation: ~$8/month
-- Savings: $91/month ($1,092/year)
-- Winner: Automation
-
-**If you research 50+ keywords/month:**
-- ATP Pro: $99 + 5 hours labor = $349/month
-- Automation: ~$15 + 20 minutes labor = $32/month
-- Savings: $317/month ($3,804/year)
-- Winner: Automation by a lot
-
-**For teams (any volume):**
-- ATP scales linearly per user
-- Automation has no per-user cost
-- Winner: Always automation
-
-## What You're Actually Paying For
-
-Let's be honest about the value:
-
-**With ATP Pro ($99/month):**
-- Access to autocomplete data (public)
-- Visual presentation (nice, not essential)
-- Web interface (convenient)
-- CSV exports (require cleanup)
-- Brand recognition (some value for client work)
-
-**With automation ($15/month):**
-- Same autocomplete data
-- JSON output (structured, clean)
-- API access (automation-friendly)
-- Bulk processing (100+ keywords at once)
-- Scheduled runs (set and forget)
-
-You're paying $84/month extra for:
-- Pretty visualizations
-- Web interface
-- Brand name
-
-Is that worth it for your use case?
-
-## When ATP Pricing Makes Sense
-
-I'm not saying never pay for ATP. Be realistic about scenarios:
-
-**Pay for Pro if:**
-- You research fewer than 20 keywords/month
-- Client presentations need branded visuals
-- You bill clients enough to cover it
-- You don't want to learn automation
-
-**Pay for Expert if:**
-- You need white-label reports
-- Brand monitoring is critical
-- You've exhausted all alternatives
-- Budget truly isn't constrained
-
-**Use free tier if:**
-- Fewer than 5 keywords/month
-- Personal projects
-- Just need occasional inspiration
-- Time isn't valuable to you
-
-**Use automation if:**
-- Any team scenario
-- 50+ keywords/month
-- You value your time
-- You want to save $1,000-11,000/year
-
-## The Pricing Model Problem
-
-ATP's pricing is stuck in the past:
-
-**2015:**
-- Automation required dev teams
-- APIs were complex
-- Manual SaaS tools made sense
-- $99/month was reasonable
-
-**2025:**
-- No-code automation exists (Apify, n8n)
-- APIs are simple
-- Public data should be cheap
-- $99/month is outdated
-
-The data isn't proprietary. The workflow is manual. The pricing doesn't reflect modern alternatives.
-
-## My Honest Recommendation
-
-Start with the free tier. Use all 3 daily searches for a week.
-
-If you consistently hit the limit, you need more capacity.
-
-But don't automatically pay $99/month. Do the math:
-
-**Calculate your real cost:**
-1. Subscription: $99/month
-2. Required tools (Ahrefs): $129/month
-3. Labor (hours × hourly rate): $_?_/month
-4. Team size (users × $99): $_?_/month
-
-**Total: $_?_/month**
-
-Then compare to automation:
-1. Apify usage: ~$15/month
-2. Required tools: $129/month
-3. Labor: Minimal
-4. Team: No extra cost
-
-**Total: ~$144/month**
-
-What's your savings?
-
-For most people, it's $84-900/month.
-
-That's real money.
-
-<Card
-  title="Try Automation (Free Tier)"
-  icon="calculator"
-  href="https://apify.com/deadlyaccurate/answer-the-public"
->
-  Start free. See actual costs with your usage. Upgrade only if needed.
-</Card>
-
-## Frequently Asked Questions
-
-<Accordion title="Are there hidden fees beyond the subscription?">
-Not from ATP directly. But you'll need volume validation tools (Ahrefs/SEMrush), which cost more than ATP itself. The real hidden cost is labor for manual exports and data cleaning.
-</Accordion>
-
-<Accordion title="Can I get a refund if it doesn't work out?">
-ATP offers no refunds on annual plans after 14 days. Monthly plans can be canceled but you don't get prorated refunds. Test with free tier before committing to paid.
-</Accordion>
-
-<Accordion title="What about the annual discount?">
-Annual saves $240/year ($79/month vs $99/month). But you're locked in for 12 months. Only worth it if you're certain you'll use ATP all year. Most people should start monthly.
-</Accordion>
-
-<Accordion title="How does Apify usage pricing work?">
-You pay for compute time (how long actors run). Typical costs for 100 ATP searches: $12-15/month. Includes free tier to start. Scales with actual usage, not users.
-</Accordion>
-
-<Accordion title="Is there a way to share ATP Pro among team members?">
-No. ATP is strictly single-user. Sharing login credentials violates terms of service. Each team member needs their own $99/month subscription.
-</Accordion>
+Subscriptions are for tools you *live in* (like Slack or Jira). For data utilities, **pay-per-usage** is the only logical model.

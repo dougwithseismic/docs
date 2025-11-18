@@ -1,310 +1,37 @@
 ---
-title: "Answer the Public Free vs Paid: Don't Pay Until You Read This"
-description: "I tested both. Here's what the $99/month actually gets you (spoiler: not much)"
-icon: "circle-dollar"
+title: "Bypassing the Free Tier Limit Programmatically"
+description: "How to scale beyond the '1 search per day' limit without buying a monthly subscription."
+icon: "unlock"
 ---
 
-# Answer the Public Free vs Paid: Don't Pay Until You Read This
+# Bypassing the Free Tier Limit
 
-I've used Answer the Public's free tier, paid for Pro at $99/month, and eventually built my own solution because both options frustrated me.
+The "1 Search Per Day" limit on Answer the Public is an artificial constraint designed to push you into a subscription. It's not a technical limit of the underlying data source (Google Autocomplete); it's a business logic gate.
 
-Here's what you actually get at each level, and what most people get wrong about the upgrade decision.
+## The "Incognito" Workaround (And Why It Fails)
 
-## The Free Plan Truth
+Users often try to bypass this by:
+*   Using Incognito mode.
+*   Clearing cookies.
+*   Using a VPN.
 
-You get 3 searches per day. That's the whole story.
+This works for 3-4 searches, but eventually, browser fingerprinting catches up. It's also manual, slow, and unscalable. You can't build a business process on "toggling VPNs".
 
-Everything else works the same as paid:
-- Same data sources (Google, YouTube, TikTok, etc.)
-- Same visualizations
-- Same CSV exports
-- Same country/language options
+## The Programmatic Solution
 
-The only limit: 3 searches, then you wait 24 hours.
+To bypass the limit reliably, you need to decouple your identity from the request. This is what our Apify Actor does:
 
-### When Free Actually Works
+1.  **Residential Proxies**: Every request is routed through a different IP address. To Google, 100 searches look like 100 different people, not one person spamming.
+2.  **Session Rotation**: We spin up a fresh headless browser context for every job. No cookies, no local storage, no history.
+3.  **Distributed Architecture**: The workload is split across multiple containers.
 
-I used the free plan for months when I was just doing occasional client research. Three searches per day covered:
-- Monday: Main product keyword
-- Tuesday: Competitor keyword
-- Wednesday: Industry term
+## Is This Allowed?
 
-Exported the CSVs, validated volumes in Ahrefs, planned content. Worked fine.
+You are scraping **publicly available data** (Google Autocomplete). You are not logging into an account, and you are not accessing behind-a-login content.
 
-### When Free Breaks Down
+*   **Ethical Scraping**: Our Actor respects `robots.txt` where applicable and implements polite delays to avoid overwhelming target servers.
+*   **Compliance**: We handle the complexity of proxy management so you stay compliant with platform terms.
 
-The moment you need to do actual keyword research at scale, free becomes impossible.
+## The Result
 
-Real scenario: Client wants content calendar for Q1
-- Need to research: 50 keywords minimum
-- Free plan timeline: 17 days
-- Problem: Quarter starts in 2 weeks
-
-You can't build a business on "wait 17 days for keyword research."
-
-## What $99/Month Gets You
-
-I paid for Pro for 8 months. Here's what actually changed:
-
-**What you get:**
-- Unlimited searches (real value)
-- Search history (barely useful)
-- Priority support (never needed it)
-- Comparison mode (nice but not essential)
-
-**What you don't get:**
-- Search volume data (still need Ahrefs)
-- Keyword difficulty scores (still need Ahrefs)
-- API access (that's Expert tier only)
-- Any automation whatsoever
-
-The upgrade is really just "remove the 3 search limit." That's $99/month for unlimited searches.
-
-## The Real Cost Breakdown
-
-Let me show you the actual math based on how I used ATP:
-
-**Month 1 with Pro:**
-- Searched: 127 keywords
-- Cost per search: $0.78
-- Also paying for Ahrefs: $129/month
-- Total SEO tools: $228/month
-
-**Month 2 with Pro:**
-- Searched: 43 keywords (slower month)
-- Cost per search: $2.30
-- Still need Ahrefs: $129/month
-- Total: $228/month
-
-You're paying $99/month whether you search 5 keywords or 500. And you still need volume data from somewhere else.
-
-## What Nobody Tells You About Pro
-
-### The CSV Export Hassle
-
-Even with Pro, the workflow sucks:
-1. Search keyword
-2. Wait for results
-3. Click export
-4. Clean up CSV formatting
-5. Remove duplicate suggestions
-6. Filter nonsensical combinations
-7. Repeat for next keyword
-
-This takes 3-4 minutes per keyword. For 100 keywords, that's 5-6 hours of manual work.
-
-At $50/hour labor cost, you're adding $250-300 in time to your $99 subscription.
-
-Real monthly cost: ~$350-400 when you factor in labor.
-
-### The Team Scaling Problem
-
-Pro is single-user. Need to share with your team?
-
-- 3 person team: $297/month
-- 5 person team: $495/month
-- 10 person agency: $990/month
-
-For an agency, that's $11,880/year for keyword research data that doesn't even include search volumes.
-
-## The Expert Plan ($199/Month)
-
-I never paid for Expert. Here's why:
-
-**What Expert adds:**
-- Team features (still per-user pricing though)
-- Brand monitoring
-- White-label reports
-- Limited API access
-
-**What it costs:**
-- $199/month ($2,388/year)
-- At that price, you're competing with Ahrefs which gives you EVERYTHING
-
-Ahrefs at $129/month gives you:
-- Keyword research with volumes
-- Competitor analysis
-- Backlink data
-- Rank tracking
-- Site audits
-- Content gap analysis
-
-Answer the Public Expert at $199/month gives you:
-- Question research
-- Brand monitoring
-- Pretty reports
-
-The math doesn't math.
-
-## How I Actually Solved This
-
-After 8 months of paying $99/month, I got fed up with the manual workflow.
-
-I built an [Apify actor](https://apify.com/deadlyaccurate/answer-the-public) that automates the entire process:
-
-**My current workflow:**
-- List 100 keywords in a CSV
-- Upload to Apify actor
-- Run bulk search
-- Get clean JSON output
-- Load into Google Sheets
-- Total time: 10 minutes
-- Cost: ~$15/month
-
-**Old ATP Pro workflow:**
-- Search keyword
-- Export CSV
-- Clean data
-- Repeat 100 times
-- Total time: 6 hours
-- Cost: $99/month + labor
-
-Savings: $84/month + 5.5 hours
-
-## When Should You Actually Pay?
-
-I'm not saying never pay for ATP. But be honest about what you need:
-
-### Stick with Free If:
-
-- You research fewer than 5 keywords per month
-- You're doing personal projects
-- You have unlimited time
-- You just need occasional inspiration
-
-### Pay for Pro ($99/mo) If:
-
-- You need more than 3 searches daily
-- The visual presentations matter for clients
-- You research 20-50 keywords monthly
-- You don't want to deal with automation
-- Budget isn't constrained
-
-### Skip Expert ($199/mo) Unless:
-
-- You specifically need white-label reports
-- Brand monitoring is critical
-- You've exhausted every other option
-- Money truly isn't an object
-
-### Use Automation If:
-
-- You research 50+ keywords monthly
-- You have multiple team members
-- You integrate data with other tools
-- You want to save $900+/year
-- You value your time
-
-## The Decision Framework
-
-Ask yourself three questions:
-
-**1. How many keywords do I research monthly?**
-- < 10: Free might work
-- 10-50: Pro or automation
-- 50+: Automation makes sense
-
-**2. Do I need the specific ATP interface?**
-- Yes: Consider Pro
-- No: Automation is cheaper
-
-**3. What's my time worth?**
-- If manual work costs more than automation, automate
-- If you have unlimited time, use free
-
-## Real User Examples
-
-### Sarah (Freelance Content Writer)
-
-- Researches: 30 keywords/month
-- Tried: Free → too limiting
-- Used Pro: $99/month → worked but expensive
-- Switched to: Actor automation → $8/month
-- Result: Saved $1,092/year
-
-### Agency (5-person SEO team)
-
-- Researches: 300 keywords/month across clients
-- Tried: Free → impossible
-- Considered Pro: 5 × $99 = $495/month
-- Switched to: Actor automation → $25/month
-- Result: Saved $5,640/year
-
-### Enterprise Marketing Team
-
-- Researches: 80 keywords/month
-- Used: Pro → $99/month
-- Issue: Manual exports wasting hours
-- Solution: Actor automation → $12/month
-- Result: Saved $1,044/year + 4 hours/month
-
-## What I Wish I Knew Earlier
-
-### 1. The Data Isn't Proprietary
-
-ATP doesn't have special access to secret keyword data. It's querying public APIs that you can access yourself.
-
-The value is organization and presentation. You're paying for convenience, not unique data.
-
-### 2. You'll Need Another Tool Anyway
-
-ATP without volume data is incomplete. You'll end up paying for:
-- ATP: $99/month
-- Ahrefs/SEMrush: $129-140/month
-- Total: $228-239/month
-
-You're paying $100/month for question organization on top of your real SEO tool.
-
-### 3. The Manual Workflow Doesn't Scale
-
-Three months in, I realized I was spending 6-8 hours per month on manual exports and data cleaning.
-
-That's $300-400 in labor costs added to the $99 subscription.
-
-Real cost: $400-500/month when you count time.
-
-## My Recommendation
-
-Start with free. Use all 3 daily searches for a week.
-
-If you hit the limit consistently, you need more capacity. But don't automatically jump to Pro.
-
-Ask: "Will I use this enough to justify $99/month?"
-
-For most people doing real keyword research:
-- The actor automation costs 80% less
-- Works better for bulk processing
-- Includes API access
-- No per-user fees
-
-ATP Pro makes sense if you specifically need the visual interface for client presentations and don't mind manual work.
-
-<Card
-  title="Try the Apify Actor (Free Tier Available)"
-  icon="rocket"
-  href="https://apify.com/deadlyaccurate/answer-the-public"
->
-  Same data, automated workflow, $15/month typical usage. Start free.
-</Card>
-
-## Frequently Asked Questions
-
-<Accordion title="Can I share a Pro account with my team?">
-No. ATP is single-user even on Pro. Each team member needs their own $99/month subscription. This is why automation makes sense for teams - no per-user fees.
-</Accordion>
-
-<Accordion title="Does the annual plan save money?">
-You save $240/year ($79/month vs $99/month). But you're locked in for 12 months with no refunds. Only commit if you're certain you'll use it all year.
-</Accordion>
-
-<Accordion title="Is there a trial period?">
-No official trial beyond the free tier. You can use free (3 searches/day) indefinitely to test if the tool works for you before paying.
-</Accordion>
-
-<Accordion title="What if I only need ATP occasionally?">
-Free tier works fine. Pay for Pro only when you have a heavy research month, then cancel. You can resubscribe anytime.
-</Accordion>
-
-<Accordion title="How is the automation different from paying for ATP?">
-Automation gives you bulk processing, API access, scheduled runs, and clean data output. ATP gives you a web interface and manual exports. Same underlying data.
-</Accordion>
+By moving from the "Web Interface" to the "API Interface", the concept of a "Daily Limit" disappears. Your only limit is your budget for compute time.

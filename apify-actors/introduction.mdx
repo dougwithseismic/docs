@@ -1,16 +1,33 @@
 ---
-title: "Apify Actors"
-description: "Pre-built web scraping and automation actors available on the Apify platform"
-icon: "robot"
+title: "Serverless Automation Infrastructure"
+description: "Deploy scalable web scraping and automation workflows on the Apify platform without managing servers."
+icon: "cloud-bolt"
 ---
 
-## What are Apify Actors?
+## The Automation Layer
 
-Apify Actors are serverless cloud programs that can perform arbitrary web scraping, automation, or data processing jobs. They're designed to run on the Apify platform and can be easily integrated into your workflows.
+Modern data stacks require more than just APIs; they need a robust **Automation Layer** to handle the messy reality of the web. Apify Actors are serverless cloud programs that bridge the gap between unstructured web data and your structured database.
 
-## Our Published Actors
+We build and maintain production-ready Actors that solve complex data extraction challenges, allowing you to focus on analysis rather than infrastructure.
 
-We've built and published several production-ready actors on the Apify platform that solve specific automation and data extraction challenges:
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8 not-prose">
+  <Card title="Serverless" icon="server">
+    Zero infrastructure management. Auto-scaling containers.
+  </Card>
+  <Card title="Bypass Limits" icon="shield-halved">
+    Built-in proxy rotation and fingerprint management.
+  </Card>
+  <Card title="Universal API" icon="code">
+    Control everything via REST API or Python/Node.js SDKs.
+  </Card>
+  <Card title="Integrations" icon="puzzle-piece">
+    Native connectors for Pinecone, LangChain, and Zapier.
+  </Card>
+</div>
+
+## Production-Ready Actors
+
+Our public actors are engineered for reliability and scale. They handle the complexities of anti-bot systems, CAPTCHAs, and dynamic content rendering.
 
 <CardGroup cols={2}>
   <Card
@@ -18,46 +35,68 @@ We've built and published several production-ready actors on the Apify platform 
     icon="magnifying-glass"
     href="/apify-actors/answer-the-public"
   >
-    Extract comprehensive keyword research data from Answer the Public across multiple platforms
+    **SEO Intelligence**: Extract unlimited keyword visualizations, questions, and prepositions. Bypasses the 1-search daily limit.
+  </Card>
+  <Card
+    title="Google Ads Scraper"
+    icon="google"
+    href="#"
+  >
+    **Ad Intelligence**: Monitor competitor ad copy, keywords, and landing pages across any geography.
   </Card>
 </CardGroup>
 
-## Why Use Apify Actors?
+## Architecture: The Data Pipeline
 
-### Serverless Infrastructure
-No need to manage servers or infrastructure. Actors run on Apify's cloud platform with automatic scaling.
+Apify Actors sit between the raw web and your application logic. They act as intelligent agents that fetch, process, and normalize data before it ever hits your system.
 
-### Easy Integration
-- REST API access
-- JavaScript/Python SDKs
-- Webhooks for automation
-- Integration with Make, Zapier, and other platforms
+```mermaid
+graph LR
+    A[Your App / Cron] -->|Trigger API| B{Apify Cloud}
+    B -->|Spin Up| C[Actor Container]
+    C -->|Request| D[Proxy Network]
+    D -->|Fetch| E[Target Website]
+    E -->|HTML/JSON| C
+    C -->|Extract & Clean| F[Dataset]
+    F -->|Webhook| A
+    F -->|Sync| G[Vector DB / Warehouse]
+    
+    style B fill:#f9f,stroke:#333,stroke-width:2px
+    style F fill:#bbf,stroke:#333,stroke-width:2px
+```
 
-### Reliable & Scalable
-- Built-in retry logic
-- Automatic error handling
-- Concurrent execution support
-- Pay only for what you use
+## Developer Experience
 
-### Ready to Deploy
-All our actors are production-ready and thoroughly tested. Simply configure your inputs and start running.
+Integrating an Actor is as simple as calling an API endpoint. You don't need to worry about headless browsers, memory leaks, or IP bans.
 
-## Getting Started
+### Python SDK Example
 
-1. **Create an Apify account** at [apify.com](https://apify.com)
-2. **Browse our actors** below
-3. **Run directly from the platform** or integrate via API
-4. **Automate with webhooks** and scheduled runs
+```python
+from apify_client import ApifyClient
 
-## Use Cases
+# Initialize the client
+client = ApifyClient("YOUR_API_TOKEN")
 
-Our Apify actors are perfect for:
+# Prepare the Actor input
+run_input = {
+    "keywords": ["generative ai", "llm"],
+    "country": "US",
+}
 
-- **SEO & Content Research** - Keyword research and competitive analysis
-- **Market Intelligence** - Trend monitoring and data collection
-- **Automation Workflows** - Integration with your existing tools
-- **Data Processing** - Bulk operations and scheduled tasks
+# Run the Actor and wait for it to finish
+run = client.actor("deadlyaccurate/answer-the-public").call(run_input=run_input)
 
-## Support
+# Fetch and print Actor results from the run's dataset (if there are any)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(item)
+```
 
-Need help with an actor or want a custom solution? [Contact us](/contact) for support.
+## Enterprise Solutions
+
+Need a custom automation solution? We build bespoke Actors for:
+
+*   **Market Intelligence**: Real-time pricing and inventory monitoring.
+*   **Lead Generation**: Automated enrichment pipelines.
+*   **Compliance**: Automated audit and verification trails.
+
+[Contact our engineering team](/contact) to discuss your requirements.

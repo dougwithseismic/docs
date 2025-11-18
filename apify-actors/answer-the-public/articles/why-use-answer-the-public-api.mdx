@@ -1,369 +1,48 @@
 ---
-title: "Why Use the Answer the Public API?"
-description: "Discover the benefits of programmatic access to keyword research data and why automation beats manual searches"
-icon: "code"
+title: "Building Custom SEO Tools with the API"
+description: "How to use the Answer the Public API to build internal tools, dashboards, and client portals."
+icon: "screwdriver-wrench"
 ---
 
-# Why Use the Answer the Public API?
+# Building Custom SEO Tools
 
-Answer the Public is powerful for manual keyword research, but its real potential unlocks when you access the data programmatically. Whether you're running an agency, managing multiple content sites, or building keyword databases, API access transforms Answer the Public from a research tool into a competitive advantage.
+The ultimate power move is not just using a tool, but **building your own**. With the Apify Answer the Public Actor, you have the backend for a proprietary SEO tool. You just need to build the frontend.
 
-## The 3 Searches Per Day Problem
+## Use Case 1: The Agency Client Portal
 
-Let's be blunt: **3 free searches per day is useless for anyone doing keyword research at scale.**
+**Problem**: Clients always ask "What are people searching for?" and you have to manually send reports.
+**Solution**: Build a live dashboard.
+*   **Stack**: Retool / Bubble + Apify API.
+*   **Flow**: Client types keyword in Retool -> Triggers Apify Actor -> Displays results in a table.
+*   **Value**: You look like a tech-forward agency with proprietary tech.
 
-Consider these realistic scenarios:
+## Use Case 2: The "Topic Monitor" Slack Bot
 
-### Agency with 5 Clients
+**Problem**: You miss trending topics until it's too late.
+**Solution**: A daily trend watcher.
+*   **Stack**: Pipedream / Zapier + Slack.
+*   **Flow**: Daily Cron -> Run Actor for "your niche" -> Filter for "new" questions -> Post to Slack #content-ideas.
+*   **Value**: Your team gets fresh ideas delivered to where they work.
 
-You need to research keywords for:
+## Use Case 3: The Lead Magnet
 
-- Client A (e-commerce): 10 product categories
-- Client B (SaaS): 8 feature areas
-- Client C (Local service): 12 service types
-- Client D (B2B): 6 solution categories
-- Client E (Content site): 15 topic clusters
+**Problem**: You need to generate leads for your agency.
+**Solution**: A free "Keyword Generator" on your website.
+*   **Stack**: React Form + Apify API.
+*   **Flow**: User enters email + keyword -> You run the Actor -> Email them the CSV.
+*   **Value**: High-value lead magnet that actually solves a user problem.
 
-**Total keywords needed**: 51
-**Time with free account**: 17 days (at 3 per day)
-**Time with API**: 10 minutes
+## Technical Implementation
 
-### Content Creator Building a Site
+The Apify API is RESTful and easy to consume.
 
-Month 1: Research 50 seed keywords for topic clusters
-Month 2: Expand to 100 long-tail variations
-Month 3: Monitor trending questions (50 keywords revisited)
-
-**Total research**: 200 keyword searches
-**Time with free account**: 67 days
-**Time with API**: Under an hour
-
-### SEO Professional Doing Competitive Analysis
-
-Analyze competitor keyword landscape:
-
-- 5 competitors × 20 primary keywords each = 100 searches
-- Track monthly changes = 100 searches/month
-- Seasonal variations = +50 searches quarterly
-
-**Time with free account**: 33 days for initial research, then ongoing delays
-**Time with API**: Same day, with automated monthly monitoring
-
-<Warning>
-The 3 searches/day limit isn't just inconvenient—it fundamentally changes **what kind of research you can do**. You can't do bulk analysis, competitive intelligence, or trend monitoring with manual daily limits.
-</Warning>
-
-## The Hidden Cost of Manual Research
-
-Even if you subscribe to Answer the Public's paid plans to remove daily limits, manual research still costs you:
-
-### Time Costs
-
-For each keyword search:
-
-1. Navigate to answerthepublic.com
-2. Enter keyword
-3. Wait for visualization to render (10-30 seconds)
-4. Click through different data sources (Google, YouTube, TikTok, etc.)
-5. Export data manually
-6. Copy to spreadsheet or document
-7. Organize and categorize
-8. Repeat
-
-**Average time per keyword**: 3-5 minutes
-**Time for 100 keywords**: 5-8 hours
-
-With API access:
-
-1. Submit list of 100 keywords
-2. Wait for processing (30-60 seconds per keyword, but parallel)
-3. Receive structured JSON data
-4. Automatically imported to your systems
-
-**Total time**: 15 minutes of setup + automated processing
-
-### Opportunity Costs
-
-Manual research prevents you from:
-
-- **Automated monitoring**: Can't track keyword trends over time without manually re-searching
-- **Integration workflows**: Can't feed data into content calendars, SEO tools, or databases automatically
-- **Real-time analysis**: Can't respond quickly to trending topics or competitive moves
-- **Data enrichment**: Can't cross-reference with other datasets programmatically
-
-### Error Costs
-
-Manual data entry leads to:
-
-- Typos in copied keywords
-- Missed data points
-- Inconsistent categorization
-- Duplicate work
-
-## Benefits of Programmatic Access
-
-### 1. Scale Without Limits
-
-Process hundreds or thousands of keywords in a single run:
-
-```json
-{
-  "keywords": [
-    "sustainable fashion",
-    "eco friendly clothing",
-    "vegan leather",
-    // ... 997 more keywords
-  ]
-}
+```javascript
+// Example: Fetching results in Node.js
+const response = await fetch(`https://api.apify.com/v2/acts/deadlyaccurate~answer-the-public/runs?token=${API_TOKEN}`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ keywords: ['ai agents'] })
+});
 ```
 
-The actor processes all of them, returning structured data for each.
-
-### 2. Consistent, Structured Data
-
-Manual exports give you CSV files that need cleaning. API access returns clean JSON:
-
-```json
-{
-  "keyword": "sustainable fashion",
-  "data": {
-    "search_engine": {
-      "gweb": {
-        "results": {
-          "data": [
-            {
-              "query": "sustainable fashion brands",
-              "volume": 8100,
-              "cpc": 1.23
-            }
-          ]
-        }
-      }
-    }
-  }
-}
-```
-
-This data can be directly imported into databases, spreadsheets, or analytics tools.
-
-### 3. Automated Workflows
-
-Combine with other tools using webhooks and integrations:
-
-- **n8n**: Trigger keyword research when new products are added
-- **Make/Zapier**: Feed data to Google Sheets, Airtable, or CRMs
-- **Scheduled runs**: Weekly trend monitoring
-- **Slack/Discord**: Get alerts when new trending queries emerge
-
-### 4. Historical Tracking
-
-Run the same keywords monthly and track changes:
-
-- Which queries are growing?
-- What new questions are emerging?
-- Which topics are declining?
-
-This competitive intelligence is impossible with manual one-off searches.
-
-### 5. Cost Efficiency
-
-**Manual Answer the Public Pro subscription**:
-- $99-199/month (depending on plan)
-- Per-user pricing
-- Ongoing monthly commitment
-
-**API access via Apify actor**:
-- Pay only for compute time used
-- No per-user limits
-- No monthly minimums
-- Typical cost: $5-20/month for most use cases
-
-For agencies or teams, the savings compound quickly.
-
-## Real-World Use Cases
-
-### E-commerce: Product Research at Scale
-
-An e-commerce company launching 50 new products needs keyword research for each:
-
-**Manual approach**: 50 searches × 5 minutes = 4+ hours
-**API approach**: Submit list, get results in 30 minutes
-
-They use the data to:
-
-- Write product descriptions targeting actual questions
-- Build FAQ sections
-- Create category-level content
-- Plan PPC campaigns
-
-### Content Agency: Monthly Client Reports
-
-An agency with 20 clients needs monthly keyword monitoring:
-
-**Manual approach**: 20 clients × 10 keywords × 5 minutes = 16+ hours/month
-**API approach**: Scheduled run delivers data automatically
-
-The structured data feeds directly into:
-
-- Client dashboards
-- Content calendars
-- Performance reports
-- Trend alerts
-
-### SaaS Company: Competitive Intelligence
-
-A SaaS company monitors competitor keywords and trending industry terms:
-
-**Setup**:
-- 50 core industry keywords
-- 5 competitor brands
-- Monthly tracking
-
-**API workflow**:
-1. Scheduled actor runs first Monday of each month
-2. Data automatically compared to previous month
-3. Report generated showing:
-   - New trending questions
-   - Competitor keyword changes
-   - Opportunity gaps
-
-This provides ongoing competitive intelligence that would be impossible to maintain manually.
-
-### Solo Blogger: Content Planning
-
-A solo blogger wants 12 months of content ideas:
-
-**API approach**:
-1. Submit 20 seed keywords related to blog niche
-2. Get ~2,000 question variations
-3. Filter for search volume > 100/month
-4. Organize into content calendar
-5. Track which questions trend seasonally
-
-**Result**: Year of content planned in under an hour.
-
-## Why Our Apify Actor is the Best Solution
-
-Answer the Public doesn't offer an official public API. However, because the tool simply queries autocomplete endpoints, it's possible to replicate the functionality programmatically—which is exactly what our Apify actor does.
-
-### What You Get
-
-✅ **Same data sources**: Google, Bing, YouTube, TikTok, Instagram, Amazon, ChatGPT
-✅ **Structured JSON output**: Ready for databases and analysis
-✅ **Bulk processing**: Hundreds of keywords in one run
-✅ **No daily limits**: Process as much as you need
-✅ **Scheduled runs**: Automatic monthly/weekly monitoring
-✅ **Webhook integrations**: Push data anywhere
-✅ **Cost efficiency**: Pay per use, not subscriptions
-
-### Comparison
-
-| Feature | Manual ATP Free | ATP Paid | Our Apify Actor |
-|---------|-----------------|----------|-----------------|
-| Daily limit | 3 searches | Unlimited | Unlimited |
-| Cost | Free | $99-199/mo | ~$5-20/mo typical |
-| Data format | CSV download | CSV download | Structured JSON |
-| Automation | ❌ No | ❌ No | ✅ Yes |
-| Webhooks | ❌ No | ❌ No | ✅ Yes |
-| Scheduled runs | ❌ No | ❌ No | ✅ Yes |
-| Integration | ❌ Manual | ❌ Manual | ✅ Automatic |
-| Bulk processing | ❌ No | ⚠️ Manual | ✅ Yes |
-
-### Perfect For
-
-- **Agencies**: Client research at scale
-- **Content teams**: Bulk topic research
-- **SEO professionals**: Competitive monitoring
-- **Developers**: Build keyword tools
-- **Data analysts**: Integrate with existing systems
-- **Marketers**: Automated trend tracking
-
-## Getting Started with API Access
-
-Using our Apify actor is straightforward:
-
-### 1. Create Apify Account
-
-Sign up at [apify.com](https://apify.com) (free tier available)
-
-### 2. Find the Actor
-
-Visit [apify.com/deadlyaccurate/answer-the-public](https://apify.com/deadlyaccurate/answer-the-public)
-
-### 3. Configure Input
-
-```json
-{
-  "keywords": ["your", "keywords", "here"],
-  "language": "en",
-  "region": "us"
-}
-```
-
-### 4. Run or Schedule
-
-- **One-time**: Click "Start" and wait for results
-- **Scheduled**: Set up recurring runs (daily, weekly, monthly)
-- **Integrated**: Use API or webhooks to trigger from your systems
-
-### 5. Access Results
-
-Data is delivered as structured JSON, ready for:
-
-- Direct import to databases
-- Google Sheets integration
-- Custom dashboards
-- Analysis tools
-
-## Make the Switch
-
-If you're currently:
-
-- Hitting the 3 searches/day limit
-- Manually copying data to spreadsheets
-- Paying for Answer the Public subscriptions for multiple team members
-- Wishing you could automate keyword monitoring
-- Building content calendars from exported CSVs
-
-...it's time to switch to programmatic access.
-
-<Card
-  title="Start Using the API Today"
-  icon="rocket"
-  href="https://apify.com/deadlyaccurate/answer-the-public"
->
-  Get unlimited keyword research with structured data output. No subscriptions, no daily limits, no manual work.
-</Card>
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card
-    title="View Integration Guides"
-    icon="diagram-project"
-    href="/apify-actors/answer-the-public/articles/n8n-integration"
-  >
-    Learn how to integrate with n8n, Make, Zapier
-  </Card>
-  <Card
-    title="Getting Started Guide"
-    icon="book"
-    href="/apify-actors/answer-the-public/articles/getting-started-apify-actor"
-  >
-    Step-by-step setup tutorial
-  </Card>
-  <Card
-    title="Bulk Research Tutorial"
-    icon="layer-group"
-    href="/apify-actors/answer-the-public/articles/bulk-keyword-research"
-  >
-    Process hundreds of keywords at once
-  </Card>
-  <Card
-    title="Build a Keyword Database"
-    icon="database"
-    href="/apify-actors/answer-the-public/articles/building-keyword-database"
-  >
-    Create your own searchable keyword database
-  </Card>
-</CardGroup>
+By treating ATP data as a microservice, you can embed "Market Intelligence" into any part of your business.
