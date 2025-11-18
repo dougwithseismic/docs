@@ -618,7 +618,7 @@ export const ProgrammaticROICalculator = () => {
         </div>
         <ul className="text-xs text-gray-700 dark:text-gray-300 space-y-1">
           {results.roas < 2 && (
-            <li>• Your ROAS is below 2x. Consider improving conversion rate or increasing AOV.</li>
+            <li>Your ROAS is below 2x. Consider improving conversion rate or increasing AOV.</li>
           )}
           {results.roas >= 10 && typeof window !== 'undefined' && window.WithSeismicTracker && (() => {
             // Track high ROAS achievement
@@ -634,15 +634,15 @@ export const ProgrammaticROICalculator = () => {
             return null;
           })()}
           {inputs.qualityScore < 7 && (
-            <li>• Improve your Quality Score to reduce CPC by up to 25%.</li>
+            <li>Improve your Quality Score to reduce CPC by up to 25%.</li>
           )}
           {results.activeKeywords > 10000 && (
-            <li>• With {formatNumber(results.activeKeywords)} active keywords, use automated bidding strategies.</li>
+            <li>With {formatNumber(results.activeKeywords)} active keywords, use automated bidding strategies.</li>
           )}
           {inputs.conversionRate < 2 && (
-            <li>• Your conversion rate is low. Focus on landing page optimization.</li>
+            <li>Your conversion rate is low. Focus on landing page optimization.</li>
           )}
-          <li>• Start with your top-performing categories before scaling to all {formatNumber(results.keywordCombinations)} combinations.</li>
+          <li>Start with your top-performing categories before scaling to all {formatNumber(results.keywordCombinations)} combinations.</li>
         </ul>
       </div>
     </div>

@@ -7,10 +7,10 @@ I went the opposite way with withSeismic.com. Everything's free.
 But I still offer services. And I need to know what helps.
 
 So I track what people use:
-• Which tools open
-• Which docs finish
-• Which code copies
-• How long on each topic
+- Which tools open
+- Which docs finish
+- Which code copies
+- How long on each topic
 
 It's in your browser's localStorage. Open console. Type `WithSeismicTracker.getProfile()`. See what I see.
 
