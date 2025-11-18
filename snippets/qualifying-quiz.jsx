@@ -6,80 +6,43 @@ export const QualifyingQuiz = () => {
 
   const questions = [
     {
-      id: "revenue",
-      question: "What's your current revenue situation?",
-      type: "choice",
+      id: "project_type",
+      question: "What are we building?",
       options: [
-        { value: "pre-revenue", label: "Pre-revenue / Just starting", score: 0 },
-        { value: "under-100k", label: "Under $100K ARR", score: 1 },
-        { value: "100k-500k", label: "$100K - $500K ARR", score: 3 },
-        { value: "500k-2m", label: "$500K - $2M ARR", score: 5 },
-        { value: "over-2m", label: "Over $2M ARR", score: 5 },
+        { value: "mvp", label: "New Product / MVP", score: 5 },
+        { value: "extension", label: "Chrome Extension", score: 5 },
+        { value: "automation", label: "Internal Automation / AI", score: 5 },
+        { value: "legacy", label: "Fixing Legacy Code", score: 1 },
       ],
     },
     {
-      id: "problem",
-      question: "What's your biggest pain point right now?",
-      type: "choice",
+      id: "stage",
+      question: "What is the current state?",
       options: [
-        {
-          value: "team-drowning",
-          label: "Team drowning in manual work",
-          score: 5,
-        },
-        {
-          value: "cant-scale",
-          label: "Can't scale without hiring more people",
-          score: 5,
-        },
-        {
-          value: "inefficient",
-          label: "Operations feel inefficient",
-          score: 3,
-        },
-        {
-          value: "exploring",
-          label: "Just exploring automation",
-          score: 1,
-        },
+        { value: "idea", label: "Just an idea (Napkin sketch)", score: 3 },
+        { value: "ready", label: "Designs/Specs ready", score: 5 },
+        { value: "live_broken", label: "Live but needs fixing", score: 4 },
+        { value: "scaling", label: "Scaling (Need optimization)", score: 5 },
       ],
     },
     {
-      id: "budget",
-      question: "What can you invest monthly in engineering?",
-      type: "choice",
+      id: "goal",
+      question: "What is the primary goal?",
       options: [
-        { value: "under-3k", label: "Under $3K/month", score: 0 },
-        { value: "3k-7k", label: "$3K - $7K/month", score: 3 },
-        { value: "7k-15k", label: "$7K - $15K/month", score: 5 },
-        { value: "over-15k", label: "$15K+/month", score: 5 },
-        { value: "roi-based", label: "Depends on ROI", score: 4 },
+        { value: "revenue", label: "Drive Revenue / Get Customers", score: 5 },
+        { value: "efficiency", label: "Save Time / Automate Ops", score: 5 },
+        { value: "acquisition", label: "Prepare for Acquisition", score: 4 },
+        { value: "maintenance", label: "General Maintenance", score: 1 },
       ],
     },
     {
-      id: "timeline",
-      question: "When do you need this?",
-      type: "choice",
+      id: "model",
+      question: "How do you want to work?",
       options: [
-        { value: "asap", label: "Yesterday (urgent)", score: 5 },
-        { value: "2-weeks", label: "Within 2 weeks", score: 4 },
-        { value: "month", label: "Next month", score: 3 },
-        { value: "researching", label: "Just researching", score: 1 },
-      ],
-    },
-    {
-      id: "decision",
-      question: "Who makes the final call?",
-      type: "choice",
-      options: [
-        { value: "founder", label: "I'm the founder/CEO", score: 5 },
-        {
-          value: "exec",
-          label: "I'm an executive with budget",
-          score: 5,
-        },
-        { value: "manager", label: "I manage a department", score: 2 },
-        { value: "contributor", label: "I'm building the case", score: 1 },
+        { value: "partner", label: "I need a Technical Partner to lead", score: 5 },
+        { value: "hands", label: "I need hands to code my specs", score: 2 },
+        { value: "fix", label: "I need a quick one-off fix", score: 3 },
+        { value: "consult", label: "I just need advice", score: 3 },
       ],
     },
   ];
@@ -88,7 +51,6 @@ export const QualifyingQuiz = () => {
     const newAnswers = { ...answers, [questionId]: answer };
     setAnswers(newAnswers);
 
-    // Track the answer
     if (window.WithSeismicTracker) {
       window.WithSeismicTracker.trackEvent("qualifying_question_answered", {
         questionId,
@@ -97,11 +59,9 @@ export const QualifyingQuiz = () => {
       });
     }
 
-    // Move to next question or show results
     if (currentStep < questions.length - 1) {
       setTimeout(() => setCurrentStep(currentStep + 1), 300);
     } else {
-      // Calculate fit score
       const totalScore = Object.values(newAnswers).reduce(
         (sum, ans) => sum + ans.score,
         0
@@ -113,7 +73,6 @@ export const QualifyingQuiz = () => {
       const percentage = Math.round((totalScore / maxScore) * 100);
       setFitScore(percentage);
 
-      // Track completion
       if (window.WithSeismicTracker) {
         window.WithSeismicTracker.trackEvent("qualifying_quiz_completed", {
           totalScore,
@@ -122,11 +81,6 @@ export const QualifyingQuiz = () => {
           answers: Object.fromEntries(
             Object.entries(newAnswers).map(([k, v]) => [k, v.value])
           ),
-        });
-        // Add significant engagement points for completing the quiz
-        window.WithSeismicTracker.trackEvent("calculationPerformed", {
-          tool: "qualifying_quiz",
-          result: percentage,
         });
       }
 
@@ -142,58 +96,50 @@ export const QualifyingQuiz = () => {
   };
 
   const getFitLevel = (score) => {
-    if (score >= 80) return { level: "excellent", emoji: "🎯", color: "green" };
-    if (score >= 60) return { level: "good", emoji: "✓", color: "blue" };
-    if (score >= 40) return { level: "moderate", emoji: "~", color: "yellow" };
-    return { level: "exploratory", emoji: "?", color: "gray" };
+    if (score >= 80) return { level: "excellent", emoji: "🚀", color: "green" };
+    if (score >= 60) return { level: "good", emoji: "✨", color: "blue" };
+    return { level: "exploratory", emoji: "💡", color: "yellow" };
   };
 
   const getResultsContent = () => {
     const fit = getFitLevel(fitScore);
-    const revenueAnswer = answers.revenue?.value;
-    const budgetAnswer = answers.budget?.value;
+    const stageAnswer = answers.stage?.value;
+    const modelAnswer = answers.model?.value;
+
+    // Logic to determine recommendation
+    let recommendation = "Recommended: The Sprint ($7,500)";
+    if (stageAnswer === "scaling" || stageAnswer === "live_broken" || modelAnswer === "partner") {
+      recommendation = "Recommended: The Partnership ($4,950/mo)";
+    }
 
     if (fitScore >= 80) {
       return {
-        title: "Perfect Fit - Let's Talk",
+        title: "We Should Build This.",
         message:
-          "You have real pain, budget authority, and urgency. This is exactly what I solve. Let's skip the pitch and talk specifics—I can likely start within a week.",
-        cta: "Book a Call",
+          "You have a clear goal and need a technical partner. This is exactly the type of high-impact work I specialize in.",
+        cta: "Book a Technical Discovery",
         ctaLink: "/contact",
-        pricing: "Starting at $3,500/month",
-        note: "Most clients start with 1-3 months, then continue month-to-month",
+        recommendation: recommendation,
       };
     } else if (fitScore >= 60) {
       return {
-        title: "Strong Fit - Worth Exploring",
+        title: "Worth a Conversation",
         message:
-          "You have the fundamentals. Let's talk through your specific situation and see if the timing makes sense for both of us.",
+          "I can definitely help, but we should clarify the scope first. Let's chat to see if a Sprint or a Partnership makes more sense.",
         cta: "Schedule a Chat",
         ctaLink: "/contact",
-        pricing: "Starting at $3,500/month",
-        note: "Pricing depends on scope and timeline",
-      };
-    } else if (fitScore >= 40) {
-      return {
-        title: "Potentially a Fit",
-        message:
-          "There are some gaps, but depending on your specific needs, we might be able to work together. Email me your situation and I'll give you honest feedback.",
-        cta: "Email Your Details",
-        ctaLink: "mailto:hello@withseismic.com?subject=Qualifying Quiz - Need Advice",
-        pricing: "Typically $3,500-$10K/month",
-        note: "Custom scoping based on your business problem",
+        recommendation: recommendation,
       };
     } else {
-      const isEarlyStage = revenueAnswer === "pre-revenue" || budgetAnswer === "under-3k";
       return {
-        title: isEarlyStage ? "Not There Yet" : "Timing Might Be Off",
-        message: isEarlyStage
-          ? "At your stage, you're better off with freelancers or no-code tools. I work with companies doing $100K+ ARR with operational bottlenecks. Bookmark this for when you're scaling and hitting growth walls."
-          : "Based on your answers, we're probably not aligned right now. You might be in research mode or not have urgency/authority. That's fine! Check out the case studies to see what's possible, then come back when timing's better.",
-        cta: isEarlyStage ? "See What's Possible" : "Read Case Studies",
+        title: "Might Not Be a Fit (Yet)",
+        message:
+          modelAnswer === "hands"
+            ? "It sounds like you need a freelancer to execute specific tasks, rather than a technical partner. I recommend looking at Upwork or Toptal for this stage."
+            : "Based on your answers, you might be looking for something smaller or different than what I offer. Check out my case studies to see the scale of projects I usually take on.",
+        cta: "View Case Studies",
         ctaLink: "/case-studies/introduction",
-        pricing: null,
-        note: null,
+        recommendation: null,
       };
     }
   };
@@ -203,73 +149,46 @@ export const QualifyingQuiz = () => {
     const fit = getFitLevel(fitScore);
 
     return (
-      <div className="bg-background rounded-lg p-6 my-6 border border-neutral-500/20 shadow-sm">
-        <div className="text-center mb-6">
-          <div className="text-6xl mb-4">{fit.emoji}</div>
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+      <div className="bg-white dark:bg-neutral-900 rounded-xl p-8 my-8 border border-neutral-200 dark:border-neutral-800 shadow-lg">
+        <div className="text-center mb-8">
+          <div className="text-6xl mb-4 animate-bounce">{fit.emoji}</div>
+          <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
             {results.title}
           </h3>
-          <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Fit Score: {fitScore}%
-          </div>
-          <div
-            className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-6"
-          >
+          <div className="w-full bg-gray-100 dark:bg-neutral-800 rounded-full h-2 mb-6 max-w-xs mx-auto overflow-hidden">
             <div
-              className={`h-3 rounded-full transition-all duration-1000 ${
-                fit.color === "green"
-                  ? "bg-gradient-to-r from-green-500 to-green-600"
-                  : fit.color === "blue"
-                  ? "bg-gradient-to-r from-blue-500 to-blue-600"
-                  : fit.color === "yellow"
-                  ? "bg-gradient-to-r from-yellow-500 to-yellow-600"
-                  : "bg-gradient-to-r from-gray-400 to-gray-500"
-              }`}
+              className={`h-full transition-all duration-1000 ease-out ${fit.color === "green"
+                ? "bg-green-500"
+                : fit.color === "blue"
+                  ? "bg-blue-500"
+                  : "bg-yellow-500"
+                }`}
               style={{ width: `${fitScore}%` }}
             />
           </div>
-        </div>
-
-        <div className="bg-neutral-500/5 rounded-lg p-6 mb-6 border border-neutral-500/10">
-          <p className="text-gray-800 dark:text-gray-200 leading-relaxed mb-4">
+          <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6 max-w-2xl mx-auto">
             {results.message}
           </p>
-          {results.pricing && (
-            <div className="pt-4 border-t border-neutral-500/20">
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                Investment
-              </div>
-              <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                {results.pricing}
-              </div>
-              {results.note && (
-                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  {results.note}
-                </div>
-              )}
+          {results.recommendation && (
+            <div className="inline-block bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-8 border border-blue-100 dark:border-blue-800">
+              {results.recommendation}
             </div>
           )}
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href={results.ctaLink}
-            className="flex-1 block text-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-sm"
+            className="px-8 py-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-center no-underline"
           >
             {results.cta}
           </a>
           <button
             onClick={restart}
-            className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+            className="px-8 py-4 bg-gray-100 dark:bg-neutral-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-neutral-700 transition-all"
           >
-            Retake
+            Start Over
           </button>
-        </div>
-
-        <div className="mt-6 pt-6 border-t border-neutral-500/20">
-          <div className="text-xs text-gray-500 dark:text-gray-500 text-center">
-            Answers tracked for analytics. No spam. Just honest feedback on fit.
-          </div>
         </div>
       </div>
     );
@@ -279,44 +198,41 @@ export const QualifyingQuiz = () => {
   const progress = ((currentStep + 1) / questions.length) * 100;
 
   return (
-    <div className="bg-background rounded-lg p-6 my-6 border border-neutral-500/20 shadow-sm">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Are We a Good Fit?
-          </h3>
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            {currentStep + 1} of {questions.length}
+    <div className="bg-white dark:bg-neutral-900 rounded-xl p-8 my-8 border border-neutral-200 dark:border-neutral-800 shadow-lg">
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            Technical Discovery
+          </span>
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            {currentStep + 1} / {questions.length}
           </span>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          5 quick questions. Takes 90 seconds. I'll give you honest feedback on whether we should talk.
-        </p>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+        <div className="w-full bg-gray-100 dark:bg-neutral-800 rounded-full h-1">
           <div
-            className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full transition-all duration-300"
+            className="bg-blue-600 h-1 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
-      <div className="mb-8">
-        <h4 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
+      <div className="mb-10">
+        <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
           {currentQuestion.question}
         </h4>
 
-        <div className="space-y-3">
+        <div className="grid gap-3">
           {currentQuestion.options.map((option, index) => (
             <button
               key={index}
               onClick={() => handleAnswer(currentQuestion.id, option)}
-              className="w-full text-left p-4 rounded-lg border border-neutral-500/20 bg-neutral-500/5 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-all group"
+              className="w-full text-left p-5 rounded-xl border border-neutral-200 dark:border-neutral-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all group bg-white dark:bg-neutral-800/50"
             >
               <div className="flex items-center justify-between">
-                <span className="text-gray-800 dark:text-gray-200 font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                <span className="text-lg text-gray-700 dark:text-gray-200 font-medium group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                   {option.label}
                 </span>
-                <span className="text-gray-400 group-hover:text-orange-500 transition-colors">
+                <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl">
                   →
                 </span>
               </div>
@@ -328,7 +244,7 @@ export const QualifyingQuiz = () => {
       {currentStep > 0 && (
         <button
           onClick={() => setCurrentStep(currentStep - 1)}
-          className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+          className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-gray-300 transition-colors flex items-center gap-2"
         >
           ← Back
         </button>
