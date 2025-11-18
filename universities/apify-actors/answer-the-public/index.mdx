@@ -1,0 +1,323 @@
+---
+title: "Answer the Public Scraper"
+description: "Extract comprehensive keyword research data from Answer the Public across Google, Bing, YouTube, TikTok, Instagram, Amazon, and ChatGPT"
+icon: "magnifying-glass"
+---
+
+<Card
+  title="View on Apify"
+  icon="link"
+  href="https://apify.com/deadlyaccurate/answer-the-public"
+>
+  Access the actor on the Apify platform
+</Card>
+
+## Overview
+
+The Answer the Public Scraper is a production-ready Apify actor that extracts comprehensive keyword research data from [AnswerThePublic.com](https://answerthepublic.com) for any keyword. Get search insights from multiple sources including Google, Bing, YouTube, TikTok, Instagram, Amazon, and ChatGPT.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="No Daily Limits" icon="infinity">
+    Bypass Answer the Public's 3 searches/day limit for free accounts
+  </Card>
+  <Card title="7+ Data Sources" icon="database">
+    Extract from Google, Bing, YouTube, TikTok, Instagram, Amazon, and ChatGPT
+  </Card>
+  <Card title="Bulk Processing" icon="layer-group">
+    Process multiple keywords in a single run
+  </Card>
+  <Card title="Structured Output" icon="file-code">
+    Clean, structured JSON output ready for analysis
+  </Card>
+</CardGroup>
+
+## What Data Can You Extract?
+
+### Search Engines (Google, Bing)
+- Question-based queries (Who, What, When, Where, Why, How)
+- Preposition-based queries (for, with, to, near, etc.)
+- Comparison queries (vs, versus, or, and)
+- Related search terms
+- Search volume estimates
+- Cost per click (CPC) data
+
+### Social Media (YouTube, TikTok, Instagram)
+- Trending video topics
+- Popular hashtags
+- Content creator suggestions
+- Related channels/accounts
+
+### E-commerce (Amazon)
+- Product search queries
+- Shopping-related questions
+- Product comparison terms
+
+### AI (ChatGPT)
+- Common prompts and questions
+- Related conversation topics
+
+## Why Use This Actor?
+
+Answer the Public is a powerful keyword research tool, but free accounts are limited to **3 searches per day**. This actor provides programmatic access to the same free-tier data without daily search limits, making it ideal for:
+
+<AccordionGroup>
+  <Accordion title="Bulk Keyword Research">
+    Process hundreds or thousands of keywords without manual daily searches
+  </Accordion>
+  <Accordion title="Automated SEO Workflows">
+    Integrate keyword research into your content pipelines and automation workflows
+  </Accordion>
+  <Accordion title="Competitive Monitoring">
+    Track trending topics and competitor keywords on a regular schedule
+  </Accordion>
+  <Accordion title="Keyword Databases">
+    Build comprehensive keyword databases without manual data entry
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  This actor returns the same data available to free Answer the Public accounts. For premium features like alphabetical lists and extended data, you would need an Answer the Public subscription.
+</Note>
+
+## Quick Start
+
+### Input Configuration
+
+```json
+{
+  "keywords": ["sustainable fashion", "eco friendly products", "vegan leather"],
+  "language": "en",
+  "region": "us"
+}
+```
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `keywords` | Array | Yes | - | List of keywords to research |
+| `language` | String | No | `"en"` | Language code (e.g., 'en', 'es', 'fr') |
+| `region` | String | No | `"us"` | Region code (e.g., 'us', 'uk', 'ca') |
+| `maxPollAttempts` | Number | No | `60` | Maximum attempts to wait for results |
+| `pollInterval` | Number | No | `5000` | Time between checks in milliseconds |
+
+### Output Structure
+
+Each result includes:
+
+```json
+{
+  "keyword": "sustainable fashion",
+  "language": "en",
+  "region": "us",
+  "parentSearchId": "abc123",
+  "completedAt": "2025-11-17T00:45:30.000Z",
+  "data": {
+    "search_engine": {
+      "gweb": { /* Google results */ },
+      "bing": { /* Bing results */ }
+    },
+    "social_media": {
+      "youtube": { /* YouTube results */ },
+      "tiktok": { /* TikTok results */ },
+      "instagram": { /* Instagram results */ }
+    },
+    "shopping": {
+      "amazon": { /* Amazon results */ }
+    },
+    "ai": {
+      "chatgpt": { /* ChatGPT results */ }
+    },
+    "max_search_volume": 201000,
+    "max_cost_per_click": 34.735
+  }
+}
+```
+
+## Integration Examples
+
+<Tabs>
+  <Tab title="JavaScript/Node.js">
+    ```javascript
+    import { ApifyClient } from 'apify-client';
+
+    const client = new ApifyClient({
+        token: 'YOUR_APIFY_TOKEN',
+    });
+
+    const input = {
+        keywords: ["sustainable fashion", "eco friendly products"],
+        language: "en",
+        region: "us"
+    };
+
+    // Start the actor and wait for it to finish
+    const run = await client.actor("deadlyaccurate/answer-the-public").call(input);
+
+    // Fetch results from the dataset
+    const { items } = await client.dataset(run.defaultDatasetId).listItems();
+
+    // Process the results
+    items.forEach((item) => {
+        console.log(`\n=== ${item.keyword} ===`);
+        console.log(`Search Volume: ${item.data.max_search_volume}`);
+        console.log(`Max CPC: $${item.data.max_cost_per_click}`);
+
+        const googleData = item.data.search_engine.gweb;
+        console.log(`Google results: ${googleData.total_results_count}`);
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    from apify_client import ApifyClient
+
+    client = ApifyClient('YOUR_APIFY_TOKEN')
+
+    # Prepare input
+    run_input = {
+        "keywords": ["sustainable fashion", "eco friendly products"],
+        "language": "en",
+        "region": "us"
+    }
+
+    # Run the actor and wait for it to finish
+    run = client.actor("deadlyaccurate/answer-the-public").call(run_input=run_input)
+
+    # Fetch results
+    for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+        print(f"Keyword: {item['keyword']}")
+        print(f"Search Volume: {item['data']['max_search_volume']}")
+        print(f"CPC: ${item['data']['max_cost_per_click']}")
+    ```
+  </Tab>
+  <Tab title="cURL">
+    ```bash
+    curl -X POST https://api.apify.com/v2/acts/deadlyaccurate~answer-the-public/runs \
+      -H 'Content-Type: application/json' \
+      -H 'Authorization: Bearer YOUR_APIFY_TOKEN' \
+      -d '{
+        "keywords": ["keyword research"],
+        "language": "en",
+        "region": "us"
+      }'
+    ```
+  </Tab>
+</Tabs>
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="SEO Research" icon="chart-line">
+    Discover popular search queries and related keywords for content optimization
+  </Card>
+  <Card title="Content Planning" icon="pen-to-square">
+    Find trending topics and questions people ask in your niche
+  </Card>
+  <Card title="Market Research" icon="magnifying-glass-chart">
+    Understand what people are searching for across multiple platforms
+  </Card>
+  <Card title="Competitor Analysis" icon="users">
+    Research keywords your competitors might be targeting
+  </Card>
+  <Card title="PPC Campaigns" icon="dollar-sign">
+    Get cost per click estimates for keyword planning
+  </Card>
+  <Card title="Social Media Strategy" icon="hashtag">
+    Discover trending topics across YouTube, TikTok, and Instagram
+  </Card>
+</CardGroup>
+
+## Advanced Features
+
+### Scheduled Runs
+
+Set up recurring keyword research:
+
+1. Go to the actor's page on Apify
+2. Click "Schedule"
+3. Configure frequency (hourly, daily, weekly)
+4. Set your input parameters
+5. Actor runs automatically on schedule
+
+### Webhooks
+
+Get notified when your actor run completes:
+
+```javascript
+const run = await client.actor("deadlyaccurate/answer-the-public").call(input, {
+    webhooks: [{
+        eventTypes: ['ACTOR.RUN.SUCCEEDED'],
+        requestUrl: 'https://your-webhook-url.com/webhook'
+    }]
+});
+```
+
+### Integration with Make/Zapier
+
+This actor integrates seamlessly with automation platforms:
+
+- **Make (Integromat)** - Build automated workflows
+- **Zapier** - Connect to 5,000+ apps
+- **Google Sheets** - Automatically populate keyword research data
+- **Airtable** - Build keyword research databases
+- **Slack/Discord** - Get notifications when research completes
+
+## Performance
+
+- Processes each keyword in approximately 30-60 seconds
+- Handles multiple keywords sequentially
+- Automatic retry logic for failed searches
+- Reliable data extraction
+- Results stored in Apify dataset for easy access
+
+## Export Formats
+
+Results can be exported in multiple formats:
+
+- **JSON** - Full structured data with all fields
+- **CSV** - Flattened data suitable for spreadsheets
+- **Excel** - Formatted spreadsheet with data
+- **HTML Table** - Web-ready table format
+- **RSS Feed** - Automated updates via RSS
+
+## Pricing
+
+This actor runs on the Apify platform. Pricing is based on:
+
+- **Compute units** used during execution
+- **Dataset storage** for results
+- Apify offers a free tier to get started
+
+[View pricing details](https://apify.com/pricing)
+
+## Support & Custom Development
+
+Need help with this actor or want a custom solution?
+
+<Card
+  title="Contact Us"
+  icon="envelope"
+  href="/contact"
+>
+  Get in touch for support or custom development
+</Card>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card
+    title="Apify Documentation"
+    icon="book"
+    href="https://docs.apify.com"
+  >
+    Learn more about using Apify actors
+  </Card>
+  <Card
+    title="View on Apify"
+    icon="external-link"
+    href="https://apify.com/deadlyaccurate/answer-the-public"
+  >
+    Access the actor on Apify platform
+  </Card>
+</CardGroup>

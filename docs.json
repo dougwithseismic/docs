@@ -97,6 +97,7 @@
           {
             "group": "Web Extension Projects",
             "pages": [
+              "case-studies/network-inspector-devtools",
               "case-studies/contra-linkedin-automation",
               "case-studies/getbenson-discount-extension-blocker",
               "case-studies/growthrunner-devtools"
@@ -201,6 +202,53 @@
             "pages": [
               "pre-built-tools/tools/automated-site-crawler",
               "pre-built-tools/tools/gamification-lead-scoring"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Apify Actors",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["apify-actors/introduction"]
+          },
+          {
+            "group": "Available Actors",
+            "pages": [
+              "apify-actors/answer-the-public/index"
+            ]
+          },
+          {
+            "group": "Answer the Public - Articles & Guides",
+            "pages": [
+              "apify-actors/answer-the-public/articles",
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "apify-actors/answer-the-public/articles/what-is-answer-the-public",
+                  "apify-actors/answer-the-public/articles/how-answer-the-public-works",
+                  "apify-actors/answer-the-public/articles/complete-guide-using-answer-the-public",
+                  "apify-actors/answer-the-public/articles/why-use-answer-the-public-api"
+                ]
+              },
+              {
+                "group": "Comparisons & Reviews",
+                "pages": [
+                  "apify-actors/answer-the-public/articles/alternatives-comparison",
+                  "apify-actors/answer-the-public/articles/free-vs-paid",
+                  "apify-actors/answer-the-public/articles/pricing-breakdown",
+                  "apify-actors/answer-the-public/articles/is-it-worth-it",
+                  "apify-actors/answer-the-public/articles/vs-ahrefs",
+                  "apify-actors/answer-the-public/articles/vs-semrush"
+                ]
+              },
+              {
+                "group": "SEO Use Cases",
+                "pages": [
+                  "apify-actors/answer-the-public/articles/for-seo-strategy"
+                ]
+              }
             ]
           }
         ]
