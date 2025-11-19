@@ -1,0 +1,654 @@
+---
+title: "Factor 1: Natural Language to Tool Calls"
+description: "Convert user intent into structured function calls. Learn to build reliable tool-calling agents with TypeScript, Anthropic Claude, and Zod."
+---
+
+## The Principle
+
+**Use LLMs to convert natural language into structured function calls, then execute those calls deterministically with your own code.**
+
+This is the foundation of all agentic systems. The LLM decides **what** to do based on user intent. Your TypeScript code controls **how** it's done, including validation, error handling, retries, and business logic.
+
+## Why This Matters
+
+Without this separation, you're at the mercy of the LLM for everything. With it, you get:
+
+1. **Reliability** - Your code enforces business rules
+2. **Security** - Validate all inputs before execution
+3. **Observability** - Log and monitor every action
+4. **Control** - Implement your own retry logic, rate limiting, etc.
+
+```mermaid
+graph LR
+    A[User: "Email John about Q4 report"] -->|Natural Language| B[LLM]
+    B -->|Structured Output| C{Your Validation}
+    C -->|Valid| D[Execute: sendEmail]
+    C -->|Invalid| E[Reject/Retry]
+    D --> F[Business Logic]
+    F --> G[Result]
+
+    style A fill:#bbf,stroke:#333,stroke-width:2px
+    style D fill:#bfb,stroke:#333,stroke-width:2px
+    style E fill:#fbb,stroke:#333,stroke-width:2px
+```
+
+## Basic Implementation
+
+### Step 1: Define Your Tools
+
+```typescript
+import { z } from 'zod';
+
+interface Tool<TParams = unknown, TResult = unknown> {
+  name: string;
+  description: string;
+  parameters: z.ZodSchema<TParams>;
+  execute: (params: TParams) => Promise<TResult>;
+}
+
+// Example: Send email tool
+const sendEmailTool: Tool<SendEmailParams, EmailResult> = {
+  name: 'send_email',
+  description: 'Send an email to a recipient',
+  parameters: z.object({
+    to: z.string().email().describe('Recipient email address'),
+    subject: z.string().min(1).max(200).describe('Email subject line'),
+    body: z.string().min(1).describe('Email body content'),
+    cc: z.array(z.string().email()).optional().describe('CC recipients'),
+  }),
+  execute: async (params) => {
+    // Your business logic
+    const result = await emailService.send({
+      to: params.to,
+      subject: params.subject,
+      body: params.body,
+      cc: params.cc,
+    });
+
+    // Log for observability
+    logger.info('Email sent', {
+      to: params.to,
+      subject: params.subject,
+      messageId: result.id,
+    });
+
+    return result;
+  },
+};
+```
+
+### Step 2: Convert to Anthropic Format
+
+```typescript
+function toolToAnthropicSchema(tool: Tool): AnthropicTool {
+  return {
+    name: tool.name,
+    description: tool.description,
+    input_schema: zodToJsonSchema(tool.parameters),
+  };
+}
+
+// Helper: Convert Zod to JSON Schema
+function zodToJsonSchema(schema: z.ZodSchema): Record<string, unknown> {
+  // Using @anatine/zod-to-json-schema or manual conversion
+  if (schema instanceof z.ZodObject) {
+    const shape = schema.shape;
+    const properties: Record<string, unknown> = {};
+    const required: string[] = [];
+
+    for (const [key, value] of Object.entries(shape)) {
+      if (value instanceof z.ZodString) {
+        properties[key] = {
+          type: 'string',
+          description: value.description,
+        };
+
+        if (value._def.checks.some(c => c.kind === 'email')) {
+          properties[key].format = 'email';
+        }
+      }
+
+      if (!value.isOptional()) {
+        required.push(key);
+      }
+    }
+
+    return {
+      type: 'object',
+      properties,
+      required,
+    };
+  }
+
+  throw new Error('Unsupported schema type');
+}
+```
+
+### Step 3: Call the LLM
+
+```typescript
+import Anthropic from '@anthropic-ai/sdk';
+
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+async function callWithTools(userMessage: string, tools: Tool[]) {
+  const response = await client.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 4096,
+    tools: tools.map(toolToAnthropicSchema),
+    messages: [
+      {
+        role: 'user',
+        content: userMessage,
+      },
+    ],
+  });
+
+  return response;
+}
+```
+
+### Step 4: Execute Tools Safely
+
+```typescript
+interface ToolCall {
+  id: string;
+  name: string;
+  input: unknown;
+}
+
+interface ToolResult {
+  success: boolean;
+  data?: unknown;
+  error?: string;
+}
+
+class ToolExecutor {
+  constructor(private tools: Map<string, Tool>) {}
+
+  async execute(toolCall: ToolCall): Promise<ToolResult> {
+    const tool = this.tools.get(toolCall.name);
+
+    if (!tool) {
+      return {
+        success: false,
+        error: `Unknown tool: ${toolCall.name}`,
+      };
+    }
+
+    try {
+      // Validate parameters with Zod
+      const validatedParams = tool.parameters.parse(toolCall.input);
+
+      // Execute tool with validated params
+      const result = await tool.execute(validatedParams);
+
+      return {
+        success: true,
+        data: result,
+      };
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return {
+          success: false,
+          error: `Invalid parameters: ${error.errors.map(e => e.message).join(', ')}`,
+        };
+      }
+
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  }
+}
+```
+
+## Complete Agent Loop
+
+Now put it all together with a loop that handles multiple tool calls:
+
+```typescript
+class ToolCallingAgent {
+  constructor(
+    private client: Anthropic,
+    private executor: ToolExecutor,
+    private tools: Tool[]
+  ) {}
+
+  async run(userMessage: string): Promise<string> {
+    const messages: Anthropic.MessageParam[] = [
+      { role: 'user', content: userMessage },
+    ];
+
+    let iterationCount = 0;
+    const MAX_ITERATIONS = 10; // Prevent infinite loops
+
+    while (iterationCount < MAX_ITERATIONS) {
+      iterationCount++;
+
+      const response = await this.client.messages.create({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 4096,
+        tools: this.tools.map(toolToAnthropicSchema),
+        messages,
+      });
+
+      // Check for text response (agent is done)
+      const textBlock = response.content.find(
+        (block): block is Anthropic.TextBlock => block.type === 'text'
+      );
+
+      const toolUseBlocks = response.content.filter(
+        (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use'
+      );
+
+      // No tool calls - agent is done
+      if (toolUseBlocks.length === 0) {
+        return textBlock?.text || 'No response generated';
+      }
+
+      // Execute all tool calls in parallel
+      const toolResults = await Promise.all(
+        toolUseBlocks.map(async (toolUse) => {
+          const result = await this.executor.execute({
+            id: toolUse.id,
+            name: toolUse.name,
+            input: toolUse.input,
+          });
+
+          return {
+            type: 'tool_result' as const,
+            tool_use_id: toolUse.id,
+            content: JSON.stringify(result),
+          };
+        })
+      );
+
+      // Add assistant response and tool results to conversation
+      messages.push(
+        {
+          role: 'assistant',
+          content: response.content,
+        },
+        {
+          role: 'user',
+          content: toolResults,
+        }
+      );
+    }
+
+    throw new Error('Max iterations reached');
+  }
+}
+```
+
+## Usage Example
+
+```typescript
+// Setup
+const tools = new Map([
+  ['send_email', sendEmailTool],
+  ['create_task', createTaskTool],
+  ['search_docs', searchDocsTool],
+]);
+
+const executor = new ToolExecutor(tools);
+const agent = new ToolCallingAgent(
+  anthropic,
+  executor,
+  Array.from(tools.values())
+);
+
+// Run
+const result = await agent.run(
+  'Email John at john@example.com about the Q4 report, then create a task to follow up next week'
+);
+
+console.log(result);
+// Output: "I've sent an email to John about the Q4 report and created a follow-up task for next week."
+```
+
+## Advanced Patterns
+
+### Pattern 1: Validation Layers
+
+Add multiple validation layers for security:
+
+```typescript
+class SecureToolExecutor extends ToolExecutor {
+  constructor(
+    tools: Map<string, Tool>,
+    private validator: SecurityValidator
+  ) {
+    super(tools);
+  }
+
+  async execute(toolCall: ToolCall): Promise<ToolResult> {
+    // Layer 1: Schema validation (Zod)
+    const tool = this.tools.get(toolCall.name);
+    if (!tool) {
+      return { success: false, error: 'Unknown tool' };
+    }
+
+    let validatedParams;
+    try {
+      validatedParams = tool.parameters.parse(toolCall.input);
+    } catch (error) {
+      return {
+        success: false,
+        error: `Schema validation failed: ${error.message}`,
+      };
+    }
+
+    // Layer 2: Business rules
+    const businessValidation = await this.validator.validateBusiness(
+      toolCall.name,
+      validatedParams
+    );
+
+    if (!businessValidation.valid) {
+      return {
+        success: false,
+        error: businessValidation.reason,
+      };
+    }
+
+    // Layer 3: Permissions
+    const permissionCheck = await this.validator.checkPermissions(
+      toolCall.name,
+      validatedParams
+    );
+
+    if (!permissionCheck.allowed) {
+      return {
+        success: false,
+        error: 'Permission denied',
+      };
+    }
+
+    // All validations passed - execute
+    return await super.execute(toolCall);
+  }
+}
+```
+
+### Pattern 2: Tool Call Confirmation
+
+Require confirmation for destructive actions:
+
+```typescript
+const deleteDataTool: Tool = {
+  name: 'delete_customer_data',
+  description: 'Delete all data for a customer (DESTRUCTIVE)',
+  parameters: z.object({
+    customerId: z.string().uuid(),
+    confirm: z.literal(true).describe('Must be true to confirm deletion'),
+  }),
+  execute: async ({ customerId, confirm }) => {
+    if (!confirm) {
+      throw new Error('Deletion not confirmed');
+    }
+
+    // Require human approval for destructive ops
+    const approved = await requestHumanApproval({
+      action: 'delete_customer_data',
+      customerId,
+    });
+
+    if (!approved) {
+      throw new Error('Human approval denied');
+    }
+
+    return await db.customers.delete({ where: { id: customerId } });
+  },
+};
+```
+
+### Pattern 3: Retry Logic
+
+Add automatic retries for transient failures:
+
+```typescript
+async function executeWithRetry(
+  executor: ToolExecutor,
+  toolCall: ToolCall,
+  options: { maxAttempts: number; backoff: number } = { maxAttempts: 3, backoff: 1000 }
+): Promise<ToolResult> {
+  let lastError: Error | undefined;
+
+  for (let attempt = 1; attempt <= options.maxAttempts; attempt++) {
+    try {
+      const result = await executor.execute(toolCall);
+
+      // Success or non-retryable error
+      if (result.success || !isRetryable(result.error)) {
+        return result;
+      }
+
+      lastError = new Error(result.error);
+    } catch (error) {
+      lastError = error as Error;
+
+      if (!isRetryable(error)) {
+        throw error;
+      }
+    }
+
+    // Wait before retry
+    if (attempt < options.maxAttempts) {
+      await new Promise(resolve =>
+        setTimeout(resolve, options.backoff * attempt)
+      );
+    }
+  }
+
+  throw lastError || new Error('Max retries exceeded');
+}
+
+function isRetryable(error: unknown): boolean {
+  const retryableErrors = [
+    'ECONNRESET',
+    'ETIMEDOUT',
+    'RATE_LIMIT',
+    'TEMPORARILY_UNAVAILABLE',
+  ];
+
+  const errorMessage = error instanceof Error ? error.message : String(error);
+
+  return retryableErrors.some(e => errorMessage.includes(e));
+}
+```
+
+### Pattern 4: Parallel vs Sequential Execution
+
+Detect and handle dependencies between tool calls:
+
+```typescript
+interface ToolCallWithDeps extends ToolCall {
+  dependsOn?: string[]; // IDs of tool calls this depends on
+}
+
+async function executeToolCalls(
+  executor: ToolExecutor,
+  toolCalls: ToolCallWithDeps[]
+): Promise<Map<string, ToolResult>> {
+  const results = new Map<string, ToolResult>();
+  const pending = new Set(toolCalls.map(tc => tc.id));
+
+  while (pending.size > 0) {
+    // Find calls with satisfied dependencies
+    const ready = toolCalls.filter(tc =>
+      pending.has(tc.id) &&
+      (tc.dependsOn?.every(dep => results.has(dep)) ?? true)
+    );
+
+    if (ready.length === 0) {
+      throw new Error('Circular dependency detected');
+    }
+
+    // Execute all ready calls in parallel
+    const batchResults = await Promise.all(
+      ready.map(async (tc) => {
+        const result = await executor.execute(tc);
+        return { id: tc.id, result };
+      })
+    );
+
+    // Store results and mark as complete
+    for (const { id, result } of batchResults) {
+      results.set(id, result);
+      pending.delete(id);
+    }
+  }
+
+  return results;
+}
+```
+
+## Common Pitfalls
+
+### Pitfall 1: Trusting LLM Output Blindly
+
+```typescript
+// WRONG: Execute without validation
+const toolCall = response.content.find(b => b.type === 'tool_use');
+await sendEmail(toolCall.input); // ❌ No validation!
+
+// RIGHT: Always validate
+const validated = SendEmailSchema.parse(toolCall.input);
+await sendEmail(validated); // ✅ Type-safe and validated
+```
+
+### Pitfall 2: No Error Handling
+
+```typescript
+// WRONG: Unhandled errors crash the agent
+const result = await tool.execute(params);
+
+// RIGHT: Graceful error handling
+try {
+  const result = await tool.execute(params);
+  return { success: true, data: result };
+} catch (error) {
+  logger.error('Tool execution failed', { tool: tool.name, error });
+  return {
+    success: false,
+    error: error instanceof Error ? error.message : 'Unknown error',
+  };
+}
+```
+
+### Pitfall 3: Infinite Loops
+
+```typescript
+// WRONG: No iteration limit
+while (true) {
+  const response = await callLLM();
+  await executeTools(response);
+}
+
+// RIGHT: Bounded iterations
+const MAX_ITERATIONS = 10;
+for (let i = 0; i < MAX_ITERATIONS; i++) {
+  const response = await callLLM();
+  if (noMoreTools(response)) break;
+  await executeTools(response);
+}
+```
+
+## Testing
+
+### Unit Testing Tools
+
+```typescript
+import { describe, it, expect } from 'vitest';
+
+describe('sendEmailTool', () => {
+  it('validates email parameters', async () => {
+    const invalidParams = {
+      to: 'not-an-email',
+      subject: '',
+      body: 'Hello',
+    };
+
+    await expect(
+      sendEmailTool.parameters.parseAsync(invalidParams)
+    ).rejects.toThrow();
+  });
+
+  it('sends email with valid params', async () => {
+    const validParams = {
+      to: 'user@example.com',
+      subject: 'Test',
+      body: 'Hello World',
+    };
+
+    const result = await sendEmailTool.execute(validParams);
+
+    expect(result.success).toBe(true);
+    expect(result.messageId).toBeDefined();
+  });
+});
+```
+
+### Integration Testing Agent
+
+```typescript
+describe('ToolCallingAgent', () => {
+  it('executes tool calls correctly', async () => {
+    const mockTools = new Map([
+      ['test_tool', createMockTool()],
+    ]);
+
+    const agent = new ToolCallingAgent(mockClient, new ToolExecutor(mockTools), []);
+
+    const result = await agent.run('Use test_tool');
+
+    expect(result).toContain('success');
+  });
+});
+```
+
+## Performance Optimization
+
+### Batch Tool Calls
+
+```typescript
+// Execute independent tools in parallel
+const independentCalls = toolUseBlocks.filter(isIndependent);
+
+const results = await Promise.all(
+  independentCalls.map(tc => executor.execute(tc))
+);
+```
+
+### Cache Tool Schemas
+
+```typescript
+// Don't recompute schemas every call
+const toolSchemas = new Map(
+  tools.map(t => [t.name, toolToAnthropicSchema(t)])
+);
+
+// Reuse cached schemas
+const response = await client.messages.create({
+  tools: Array.from(toolSchemas.values()),
+  // ...
+});
+```
+
+## Next Steps
+
+You now understand how to convert natural language to reliable tool calls. Continue to:
+
+- [Factor 2: Own Your Prompts](/universities/agentic-workflows/factor-02-own-your-prompts) - Control agent behavior
+- [Factor 3: Own Your Context Window](/universities/agentic-workflows/factor-03-own-your-context) - Manage what the LLM sees
+- [Building Your First Agent](/universities/agentic-workflows/building-first-agent) - Hands-on tutorial
+
+Or explore related concepts:
+
+- [Tools & Integration Glossary](/universities/agentic-workflows/glossary-tools-integrations) - More tool patterns
+- [Error Handling Strategies](/universities/agentic-workflows/error-handling-strategies) - Production error management
