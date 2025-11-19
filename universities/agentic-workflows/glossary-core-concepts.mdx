@@ -1,0 +1,805 @@
+---
+title: "Agentic Workflows Glossary"
+description: "Comprehensive glossary of core agentic workflow concepts, patterns, and terminology with TypeScript examples."
+---
+
+## Core Concepts
+
+### Agent
+
+An autonomous system that uses LLM reasoning to execute multi-step tasks by calling tools, managing state, and adapting to feedback.
+
+**Key characteristics:**
+- Makes decisions based on context
+- Executes actions via tool calls
+- Manages its own execution state
+- Handles errors and recoveries
+
+```typescript
+interface Agent {
+  id: string;
+  name: string;
+  instructions: string;
+  tools: Tool[];
+  state: AgentState;
+  execute: (input: string) => Promise<AgentResult>;
+}
+```
+
+### Agentic Workflow
+
+A multi-step process where an agent autonomously coordinates tasks to achieve a goal, as opposed to a fixed, deterministic workflow.
+
+**Example:** Instead of a hardcoded "if/then" flow, an agent decides which steps to take based on context.
+
+### Tool
+
+A function that an agent can call to perform an action or retrieve information. Tools are the agent's interface to the external world.
+
+```typescript
+interface Tool {
+  name: string;
+  description: string;
+  parameters: z.ZodSchema;
+  execute: (params: unknown) => Promise<unknown>;
+}
+
+// Example tool
+const sendEmailTool: Tool = {
+  name: 'send_email',
+  description: 'Send an email to a recipient',
+  parameters: z.object({
+    to: z.string().email(),
+    subject: z.string(),
+    body: z.string(),
+  }),
+  execute: async (params) => {
+    const { to, subject, body } = params as z.infer<typeof sendEmailTool.parameters>;
+    return await emailService.send({ to, subject, body });
+  },
+};
+```
+
+### Tool Call
+
+An invocation of a tool by the LLM, including the tool name and structured parameters.
+
+```typescript
+interface ToolCall {
+  id: string;
+  name: string;
+  parameters: Record<string, unknown>;
+}
+
+// Example from Claude API
+const toolCall: ToolCall = {
+  id: 'toolu_01A09q90qw90lq917835lq9',
+  name: 'send_email',
+  parameters: {
+    to: 'user@example.com',
+    subject: 'Meeting Follow-up',
+    body: 'Thank you for today\'s discussion...',
+  },
+};
+```
+
+### Function Calling
+
+The capability of an LLM to output structured function invocations instead of plain text. Claude, GPT-4, and other modern LLMs support this natively.
+
+```typescript
+import Anthropic from '@anthropic-ai/sdk';
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const response = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1024,
+  tools: [
+    {
+      name: 'get_weather',
+      description: 'Get the current weather in a given location',
+      input_schema: {
+        type: 'object',
+        properties: {
+          location: {
+            type: 'string',
+            description: 'The city and state, e.g. San Francisco, CA',
+          },
+        },
+        required: ['location'],
+      },
+    },
+  ],
+  messages: [{ role: 'user', content: 'What is the weather in SF?' }],
+});
+```
+
+## State Management
+
+### Execution State
+
+The current status and progress of an agent's execution, including which steps have completed, pending tool calls, and errors encountered.
+
+```typescript
+type ExecutionStatus =
+  | 'idle'
+  | 'planning'
+  | 'executing'
+  | 'awaiting_tool'
+  | 'awaiting_human'
+  | 'paused'
+  | 'completed'
+  | 'failed';
+
+interface ExecutionState {
+  status: ExecutionStatus;
+  currentStep: number;
+  totalSteps: number;
+  pendingToolCalls: ToolCall[];
+  completedToolCalls: ToolCallResult[];
+  errors: Error[];
+}
+```
+
+### Business State
+
+The actual data your application cares about, stored in your database. This should be the source of truth, not duplicated in agent memory.
+
+```typescript
+// WRONG: Duplicated state
+interface AgentMemory {
+  userId: string;
+  userName: string;  // ❌ Also in database
+  userEmail: string; // ❌ Also in database
+  lastLoginTime: Date; // ❌ Also in database
+}
+
+// RIGHT: Reference business state
+interface AgentContext {
+  userId: string; // Use this to query database
+}
+
+// Fetch fresh data when needed
+async function getUserContext(userId: string) {
+  return await db.users.findUnique({ where: { id: userId } });
+}
+```
+
+### State Machine
+
+An explicit model of an agent's control flow, defining valid states and transitions. Prevents invalid states and makes behavior predictable.
+
+```typescript
+import { createMachine, interpret } from 'xstate';
+
+const emailAgentMachine = createMachine({
+  id: 'emailAgent',
+  initial: 'idle',
+  states: {
+    idle: {
+      on: { START: 'fetchingEmails' }
+    },
+    fetchingEmails: {
+      on: {
+        SUCCESS: 'classifyingEmails',
+        ERROR: 'failed'
+      }
+    },
+    classifyingEmails: {
+      on: {
+        URGENT_FOUND: 'draftingResponse',
+        NO_ACTION_NEEDED: 'completed',
+        ERROR: 'failed'
+      }
+    },
+    draftingResponse: {
+      on: {
+        DRAFT_READY: 'awaitingApproval',
+        ERROR: 'failed'
+      }
+    },
+    awaitingApproval: {
+      on: {
+        APPROVED: 'sendingEmail',
+        REJECTED: 'draftingResponse',
+        TIMEOUT: 'failed'
+      }
+    },
+    sendingEmail: {
+      on: {
+        SUCCESS: 'completed',
+        ERROR: 'failed'
+      }
+    },
+    completed: { type: 'final' },
+    failed: { type: 'final' }
+  }
+});
+```
+
+## Reasoning & Planning
+
+### Prompt
+
+The instructions and context sent to an LLM to guide its behavior. In agentic systems, prompts include system instructions, tool definitions, conversation history, and user input.
+
+```typescript
+interface Prompt {
+  system: string;
+  tools: ToolDefinition[];
+  messages: Message[];
+}
+
+const agentPrompt: Prompt = {
+  system: `You are a customer support agent for Acme Corp.
+Your goal is to resolve customer issues efficiently.
+
+Always:
+- Be polite and professional
+- Use tools to look up customer data
+- Escalate to humans for refunds over $100
+
+Available tools: get_customer, search_orders, process_refund`,
+  tools: [getCustomerTool, searchOrdersTool, processRefundTool],
+  messages: [
+    { role: 'user', content: 'I want a refund for order #12345' }
+  ],
+};
+```
+
+### System Prompt
+
+The instructions that define an agent's behavior, personality, and capabilities. This is your primary control mechanism.
+
+```typescript
+const systemPrompt = `You are an email triage agent.
+
+Your responsibilities:
+1. Classify incoming emails by urgency (low/medium/high/critical)
+2. Extract action items and deadlines
+3. Draft responses for routine inquiries
+4. Escalate complex issues to humans
+
+Classification criteria:
+- Critical: Security incidents, system outages, executive requests
+- High: Customer complaints, time-sensitive requests, bugs
+- Medium: Feature requests, general inquiries
+- Low: Newsletters, automated notifications
+
+Always use the classify_email tool first.
+Never send emails without human approval for high/critical items.`;
+```
+
+### Context Window
+
+The amount of text (measured in tokens) an LLM can process in a single request. Includes system prompt, conversation history, tool definitions, and user input.
+
+**Current limits (as of 2025):**
+- Claude 3.5 Sonnet: 200K tokens (~150K words)
+- GPT-4 Turbo: 128K tokens (~96K words)
+
+```typescript
+interface ContextWindow {
+  maxTokens: number;
+  usage: {
+    systemPrompt: number;
+    toolDefinitions: number;
+    conversationHistory: number;
+    currentInput: number;
+    total: number;
+  };
+}
+
+// Monitor context usage
+function estimateTokens(text: string): number {
+  // Rough estimate: 1 token ≈ 4 characters
+  return Math.ceil(text.length / 4);
+}
+
+function checkContextLimit(context: ContextWindow): boolean {
+  return context.usage.total < context.maxTokens;
+}
+```
+
+### Chain of Thought (CoT)
+
+A prompting technique where the LLM is asked to "think step by step" before providing an answer, improving reasoning quality.
+
+```typescript
+const cotPrompt = `Analyze this customer complaint and decide if a refund is warranted.
+
+Think through:
+1. What is the customer's specific complaint?
+2. Is this covered under our refund policy?
+3. Has the customer previously requested refunds?
+4. What is the order value?
+5. What is the customer's lifetime value?
+
+Then provide your recommendation.
+
+Complaint: "${customerMessage}"`;
+```
+
+### ReAct (Reasoning + Acting)
+
+A pattern where the agent alternates between reasoning about what to do and taking actions via tool calls.
+
+```typescript
+// Agent thinks, then acts, then thinks about the result
+const reactLoop = async (input: string) => {
+  let thought = await llm.generate(`Think about how to handle: ${input}`);
+
+  while (!thought.includes('FINAL ANSWER')) {
+    // Reason about next action
+    thought = await llm.generate(`Current situation: ${thought}\nWhat should I do next?`);
+
+    // Extract and execute action
+    const action = extractToolCall(thought);
+    const result = await executeTool(action);
+
+    // Reason about result
+    thought = await llm.generate(`I did: ${action}\nResult: ${result}\nWhat now?`);
+  }
+
+  return extractAnswer(thought);
+};
+```
+
+## Interaction Patterns
+
+### Human-in-the-Loop (HITL)
+
+A pattern where the agent pauses execution to request human approval, input, or decision-making before proceeding.
+
+```typescript
+interface HumanApprovalRequest {
+  id: string;
+  agentId: string;
+  action: string;
+  context: Record<string, unknown>;
+  createdAt: Date;
+  status: 'pending' | 'approved' | 'rejected' | 'timeout';
+}
+
+async function requestApproval(
+  action: string,
+  context: Record<string, unknown>
+): Promise<boolean> {
+  const approval = await db.approvals.create({
+    data: {
+      action,
+      context,
+      status: 'pending',
+    },
+  });
+
+  // Notify human via Slack, email, etc.
+  await notifyHuman(approval);
+
+  // Poll or use webhooks to wait for response
+  return await waitForApproval(approval.id, { timeout: 3600000 }); // 1 hour
+}
+
+// In agent code
+if (refundAmount > 100) {
+  const approved = await requestApproval('process_refund', {
+    orderId,
+    amount: refundAmount,
+    reason: customerReason,
+  });
+
+  if (!approved) {
+    return { status: 'rejected', message: 'Refund denied by supervisor' };
+  }
+}
+```
+
+### Streaming
+
+Returning agent responses incrementally as they're generated, rather than waiting for the complete response.
+
+```typescript
+async function* streamAgentResponse(input: string): AsyncGenerator<string> {
+  const stream = await anthropic.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 1024,
+    messages: [{ role: 'user', content: input }],
+    stream: true,
+  });
+
+  for await (const chunk of stream) {
+    if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+      yield chunk.delta.text;
+    }
+  }
+}
+
+// Usage
+for await (const chunk of streamAgentResponse('Explain quantum computing')) {
+  process.stdout.write(chunk); // Write as it arrives
+}
+```
+
+### Multi-Agent Systems
+
+Multiple specialized agents coordinating to solve complex problems, often with a "manager" agent delegating to "worker" agents.
+
+```typescript
+interface MultiAgentSystem {
+  manager: Agent;
+  workers: {
+    research: Agent;
+    writing: Agent;
+    review: Agent;
+  };
+}
+
+async function executeMultiAgent(task: string): Promise<string> {
+  // Manager analyzes task and creates plan
+  const plan = await manager.execute(`Break down this task: ${task}`);
+
+  // Delegate to specialists
+  const research = await workers.research.execute(plan.steps[0]);
+  const draft = await workers.writing.execute(`Write based on: ${research}`);
+  const final = await workers.review.execute(`Review and improve: ${draft}`);
+
+  return final;
+}
+```
+
+## Error Handling
+
+### Retry Logic
+
+Automatically re-attempting failed operations with backoff strategies.
+
+```typescript
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  options: {
+    maxAttempts: number;
+    backoff: 'linear' | 'exponential';
+    initialDelay: number;
+  }
+): Promise<T> {
+  let lastError: Error;
+
+  for (let attempt = 1; attempt <= options.maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error as Error;
+
+      if (attempt === options.maxAttempts) break;
+
+      const delay = options.backoff === 'exponential'
+        ? options.initialDelay * Math.pow(2, attempt - 1)
+        : options.initialDelay * attempt;
+
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError;
+}
+
+// Usage
+const result = await withRetry(
+  () => callExternalAPI(),
+  { maxAttempts: 3, backoff: 'exponential', initialDelay: 1000 }
+);
+```
+
+### Fallback Strategies
+
+Gracefully degrading functionality when primary approaches fail.
+
+```typescript
+async function getCustomerData(customerId: string): Promise<Customer> {
+  try {
+    // Try primary database
+    return await primaryDB.customers.findUnique({ where: { id: customerId } });
+  } catch (primaryError) {
+    console.warn('Primary DB failed, trying replica', primaryError);
+
+    try {
+      // Fallback to read replica
+      return await replicaDB.customers.findUnique({ where: { id: customerId } });
+    } catch (replicaError) {
+      console.error('Both DBs failed, using cache', replicaError);
+
+      // Last resort: cached data
+      return await cache.get<Customer>(`customer:${customerId}`);
+    }
+  }
+}
+```
+
+### Circuit Breaker
+
+Preventing cascading failures by stopping requests to failing services.
+
+```typescript
+class CircuitBreaker {
+  private failures = 0;
+  private lastFailTime = 0;
+  private state: 'closed' | 'open' | 'half-open' = 'closed';
+
+  constructor(
+    private threshold: number,
+    private timeout: number
+  ) {}
+
+  async execute<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.state === 'open') {
+      if (Date.now() - this.lastFailTime > this.timeout) {
+        this.state = 'half-open';
+      } else {
+        throw new Error('Circuit breaker is OPEN');
+      }
+    }
+
+    try {
+      const result = await fn();
+      this.onSuccess();
+      return result;
+    } catch (error) {
+      this.onFailure();
+      throw error;
+    }
+  }
+
+  private onSuccess() {
+    this.failures = 0;
+    this.state = 'closed';
+  }
+
+  private onFailure() {
+    this.failures++;
+    this.lastFailTime = Date.now();
+
+    if (this.failures >= this.threshold) {
+      this.state = 'open';
+    }
+  }
+}
+
+// Usage
+const breaker = new CircuitBreaker(5, 60000); // 5 failures, 60s timeout
+
+await breaker.execute(() => unreliableAPI.call());
+```
+
+## Performance & Optimization
+
+### Caching
+
+Storing expensive LLM or API call results for reuse.
+
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const llmCache = new LRUCache<string, string>({
+  max: 500, // Maximum number of items
+  ttl: 1000 * 60 * 60, // 1 hour TTL
+  updateAgeOnGet: true,
+});
+
+async function cachedLLMCall(prompt: string): Promise<string> {
+  const cacheKey = hashPrompt(prompt);
+
+  const cached = llmCache.get(cacheKey);
+  if (cached) {
+    console.log('Cache hit');
+    return cached;
+  }
+
+  console.log('Cache miss, calling LLM');
+  const response = await llm.generate(prompt);
+  llmCache.set(cacheKey, response);
+
+  return response;
+}
+
+function hashPrompt(prompt: string): string {
+  return require('crypto')
+    .createHash('sha256')
+    .update(prompt)
+    .digest('hex');
+}
+```
+
+### Parallel Execution
+
+Running independent operations concurrently to reduce total execution time.
+
+```typescript
+// SLOW: Sequential
+async function analyzeSequential(documents: string[]) {
+  const results = [];
+  for (const doc of documents) {
+    results.push(await analyzeDocument(doc));
+  }
+  return results;
+}
+
+// FAST: Parallel
+async function analyzeParallel(documents: string[]) {
+  return await Promise.all(
+    documents.map(doc => analyzeDocument(doc))
+  );
+}
+
+// With concurrency limit
+async function analyzeWithLimit(documents: string[], concurrency: number) {
+  const results: AnalysisResult[] = [];
+
+  for (let i = 0; i < documents.length; i += concurrency) {
+    const batch = documents.slice(i, i + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(doc => analyzeDocument(doc))
+    );
+    results.push(...batchResults);
+  }
+
+  return results;
+}
+```
+
+### Token Optimization
+
+Reducing context size to minimize costs and latency.
+
+```typescript
+function summarizeHistory(messages: Message[], maxTokens: number): Message[] {
+  // Always keep system prompt
+  const systemMessage = messages.find(m => m.role === 'system')!;
+  const otherMessages = messages.filter(m => m.role !== 'system');
+
+  // Keep most recent messages
+  const recentMessages = otherMessages.slice(-10);
+
+  // Estimate tokens
+  const currentTokens = estimateTokens(
+    systemMessage.content + recentMessages.map(m => m.content).join('')
+  );
+
+  if (currentTokens <= maxTokens) {
+    return [systemMessage, ...recentMessages];
+  }
+
+  // Summarize older messages
+  const olderMessages = otherMessages.slice(0, -10);
+  const summary = `[Earlier in conversation: ${olderMessages.length} messages where ${
+    summarizeConversation(olderMessages)
+  }]`;
+
+  return [
+    systemMessage,
+    { role: 'user', content: summary },
+    ...recentMessages
+  ];
+}
+```
+
+## Observability
+
+### Logging
+
+Structured logging for debugging and monitoring agent behavior.
+
+```typescript
+interface AgentLog {
+  timestamp: Date;
+  agentId: string;
+  level: 'debug' | 'info' | 'warn' | 'error';
+  event: string;
+  data: Record<string, unknown>;
+}
+
+class AgentLogger {
+  log(level: AgentLog['level'], event: string, data: Record<string, unknown>) {
+    const logEntry: AgentLog = {
+      timestamp: new Date(),
+      agentId: this.agentId,
+      level,
+      event,
+      data,
+    };
+
+    console.log(JSON.stringify(logEntry));
+
+    // Send to monitoring service
+    if (level === 'error') {
+      this.sendToMonitoring(logEntry);
+    }
+  }
+
+  info(event: string, data: Record<string, unknown>) {
+    this.log('info', event, data);
+  }
+
+  error(event: string, error: Error, data: Record<string, unknown> = {}) {
+    this.log('error', event, { ...data, error: error.message, stack: error.stack });
+  }
+}
+
+// Usage
+logger.info('tool_call_start', { tool: 'send_email', params });
+logger.error('tool_call_failed', error, { tool: 'send_email', params });
+```
+
+### Tracing
+
+Following an agent's execution path through multiple steps and services.
+
+```typescript
+interface Trace {
+  traceId: string;
+  spans: Span[];
+}
+
+interface Span {
+  spanId: string;
+  parentSpanId?: string;
+  operation: string;
+  startTime: Date;
+  endTime?: Date;
+  duration?: number;
+  metadata: Record<string, unknown>;
+}
+
+class AgentTracer {
+  private currentTrace: Trace;
+
+  startTrace(operation: string): string {
+    this.currentTrace = {
+      traceId: generateId(),
+      spans: [],
+    };
+
+    return this.startSpan(operation);
+  }
+
+  startSpan(operation: string, parentSpanId?: string): string {
+    const span: Span = {
+      spanId: generateId(),
+      parentSpanId,
+      operation,
+      startTime: new Date(),
+      metadata: {},
+    };
+
+    this.currentTrace.spans.push(span);
+    return span.spanId;
+  }
+
+  endSpan(spanId: string, metadata: Record<string, unknown> = {}) {
+    const span = this.currentTrace.spans.find(s => s.spanId === spanId);
+    if (span) {
+      span.endTime = new Date();
+      span.duration = span.endTime.getTime() - span.startTime.getTime();
+      span.metadata = { ...span.metadata, ...metadata };
+    }
+  }
+
+  getTrace(): Trace {
+    return this.currentTrace;
+  }
+}
+```
+
+## Next Steps
+
+Now that you understand the core concepts, dive into:
+
+- [LLM & AI Terminology](/universities/agentic-workflows/glossary-llm-ai) - Deeper into LLM mechanics
+- [Framework Glossary](/universities/agentic-workflows/glossary-frameworks) - LangChain, LangGraph, and alternatives
+- [Tools & Integration Glossary](/universities/agentic-workflows/glossary-tools-integrations) - Function calling patterns
+
+Or jump straight into implementation:
+
+- [Factor 1: Natural Language to Tool Calls](/universities/agentic-workflows/factor-01-natural-language-to-tools)

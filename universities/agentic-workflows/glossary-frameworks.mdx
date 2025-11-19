@@ -1,0 +1,684 @@
+---
+title: "LangChain & Framework Glossary"
+description: "Complete guide to agent frameworks: LangChain, LangGraph, CrewAI, and alternatives. When to use them vs. custom TypeScript."
+---
+
+## Overview
+
+Agent frameworks provide abstractions for building LLM applications. They can accelerate development but add complexity. This guide helps you understand what each framework does and when to use it.
+
+**The key trade-off:** Frameworks offer convenience but reduce control. For production systems, custom TypeScript often wins.
+
+## LangChain
+
+### What is LangChain?
+
+A framework providing modular components for building LLM applications. Available in Python and JavaScript/TypeScript.
+
+**Core philosophy:** Composable chains of components (LLMs, prompts, memory, tools) connected via a standardized interface.
+
+```typescript
+import { ChatAnthropic } from '@langchain/anthropic';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+import { StringOutputParser } from '@langchain/core/output_parsers';
+
+// Create a simple chain
+const llm = new ChatAnthropic({
+  modelName: 'claude-3-5-sonnet-20241022',
+  anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const prompt = ChatPromptTemplate.fromMessages([
+  ['system', 'You are a helpful assistant'],
+  ['human', '{input}'],
+]);
+
+const outputParser = new StringOutputParser();
+
+const chain = prompt.pipe(llm).pipe(outputParser);
+
+// Execute
+const result = await chain.invoke({
+  input: 'Explain async/await',
+});
+```
+
+### Key Concepts
+
+#### Chains
+
+Sequences of components that process inputs through transformations.
+
+```typescript
+import { RunnableSequence } from '@langchain/core/runnables';
+
+// Create a multi-step chain
+const analysisChain = RunnableSequence.from([
+  {
+    // Step 1: Extract entities
+    entities: async (input) => await entityExtractor.invoke(input),
+    original: (input) => input,
+  },
+  {
+    // Step 2: Classify sentiment
+    sentiment: async ({ entities, original }) =>
+      await sentimentAnalyzer.invoke(original),
+    entities: ({ entities }) => entities,
+  },
+  {
+    // Step 3: Generate summary
+    summary: async ({ sentiment, entities, original }) =>
+      await summarizer.invoke({ sentiment, entities, text: original }),
+  },
+]);
+```
+
+#### Agents
+
+LLMs that decide which tools to call and in what order.
+
+```typescript
+import { initializeAgentExecutorWithOptions } from 'langchain/agents';
+import { DynamicTool } from '@langchain/core/tools';
+
+// Define tools
+const tools = [
+  new DynamicTool({
+    name: 'calculator',
+    description: 'Performs mathematical calculations',
+    func: async (input: string) => {
+      return eval(input).toString(); // Don't use eval in production
+    },
+  }),
+  new DynamicTool({
+    name: 'search',
+    description: 'Searches the web for current information',
+    func: async (query: string) => {
+      return await searchAPI(query);
+    },
+  }),
+];
+
+// Create agent
+const executor = await initializeAgentExecutorWithOptions(tools, llm, {
+  agentType: 'chat-conversational-react-description',
+  verbose: true,
+});
+
+// Run
+const result = await executor.invoke({
+  input: 'What is the square root of the current year?',
+});
+```
+
+#### Memory
+
+Storing conversation history and context between interactions.
+
+```typescript
+import { BufferMemory } from 'langchain/memory';
+import { ConversationChain } from 'langchain/chains';
+
+const memory = new BufferMemory();
+
+const conversation = new ConversationChain({
+  llm,
+  memory,
+});
+
+// First interaction
+await conversation.call({ input: 'My name is Alice' });
+
+// Memory persists
+const response = await conversation.call({ input: 'What is my name?' });
+// Response: "Your name is Alice"
+```
+
+### When to Use LangChain
+
+**Good for:**
+- Rapid prototyping and experimentation
+- Standard use cases (chatbots, Q&A, summarization)
+- Teams already familiar with the framework
+- Projects with many integrations (50+ data sources)
+
+**Avoid for:**
+- Production systems requiring fine-grained control
+- Performance-critical applications
+- Custom control flow requirements
+- When you need to understand every abstraction layer
+
+### Criticism
+
+**The main issues with LangChain:**
+
+1. **Over-abstraction:** Simple tasks become complex due to many layers
+2. **Hidden behavior:** Hard to debug when things go wrong
+3. **Performance overhead:** Extra abstractions add latency
+4. **Version instability:** Frequent breaking changes
+5. **Magic strings:** Relies on string-based configuration
+
+```typescript
+// LangChain way (abstracted)
+const chain = RunnableSequence.from([
+  prompt,
+  llm,
+  new StringOutputParser(),
+]);
+
+// Direct way (explicit)
+async function process(input: string): Promise<string> {
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: input },
+  ];
+
+  const response = await anthropic.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 1024,
+    messages,
+  });
+
+  return response.content[0].text;
+}
+
+// The direct way is more code but completely transparent
+```
+
+## LangGraph
+
+### What is LangGraph?
+
+A library for building stateful, multi-actor applications with LLMs as directed graphs. Built by LangChain team for more complex workflows.
+
+**Core philosophy:** Model agent systems as state machines with explicit nodes and edges.
+
+```typescript
+import { StateGraph, END } from '@langchain/langgraph';
+
+// Define state
+interface AgentState {
+  messages: Message[];
+  nextAction?: string;
+}
+
+// Create graph
+const workflow = new StateGraph<AgentState>({
+  channels: {
+    messages: {
+      value: (x, y) => x.concat(y),
+      default: () => [],
+    },
+  },
+});
+
+// Add nodes
+workflow.addNode('agent', async (state) => {
+  const response = await llm.invoke(state.messages);
+  return { messages: [response] };
+});
+
+workflow.addNode('tools', async (state) => {
+  const lastMessage = state.messages[state.messages.length - 1];
+  const toolResult = await executeTool(lastMessage);
+  return { messages: [toolResult] };
+});
+
+// Add edges (control flow)
+workflow.addEdge('agent', 'tools');
+workflow.addConditionalEdges('tools', (state) => {
+  return state.nextAction === 'continue' ? 'agent' : END;
+});
+
+// Set entry point
+workflow.setEntryPoint('agent');
+
+// Compile and run
+const app = workflow.compile();
+const result = await app.invoke({ messages: [{ role: 'user', content: 'Hello' }] });
+```
+
+### Key Concepts
+
+#### State Graph
+
+A directed graph where nodes are functions that update state, and edges define transitions.
+
+```typescript
+interface ResearchState {
+  query: string;
+  searchResults: string[];
+  analysis: string;
+  summary: string;
+  status: 'searching' | 'analyzing' | 'summarizing' | 'complete';
+}
+
+const researchGraph = new StateGraph<ResearchState>({
+  channels: {
+    searchResults: { value: (x, y) => x.concat(y), default: () => [] },
+    // ... other channels
+  },
+});
+
+researchGraph.addNode('search', async (state) => {
+  const results = await searchWeb(state.query);
+  return {
+    searchResults: results,
+    status: 'analyzing',
+  };
+});
+
+researchGraph.addNode('analyze', async (state) => {
+  const analysis = await analyzeResults(state.searchResults);
+  return {
+    analysis,
+    status: 'summarizing',
+  };
+});
+
+researchGraph.addNode('summarize', async (state) => {
+  const summary = await createSummary(state.analysis);
+  return {
+    summary,
+    status: 'complete',
+  };
+});
+```
+
+#### Conditional Edges
+
+Edges that choose the next node based on the current state.
+
+```typescript
+workflow.addConditionalEdges(
+  'agent',
+  (state) => {
+    const lastMessage = state.messages[state.messages.length - 1];
+
+    if (lastMessage.toolCalls?.length > 0) {
+      return 'tools';
+    }
+
+    if (state.needsHumanApproval) {
+      return 'awaitApproval';
+    }
+
+    return END;
+  },
+  {
+    tools: 'tools',
+    awaitApproval: 'humanApproval',
+    [END]: END,
+  }
+);
+```
+
+#### Persistence
+
+Built-in checkpointing to save and resume agent state.
+
+```typescript
+import { MemorySaver } from '@langchain/langgraph';
+
+const checkpointer = new MemorySaver();
+
+const app = workflow.compile({ checkpointer });
+
+// Run with thread ID for persistence
+const config = { configurable: { thread_id: 'user-123' } };
+
+await app.invoke({ messages: [userMessage] }, config);
+
+// Later, resume from checkpoint
+await app.invoke({ messages: [followUpMessage] }, config);
+```
+
+### When to Use LangGraph
+
+**Good for:**
+- Complex multi-step workflows with branching logic
+- Systems requiring human-in-the-loop
+- Applications that need state persistence
+- Multi-agent coordination
+- When you want state machines but not XState
+
+**Avoid for:**
+- Simple request/response patterns
+- When you're not already using LangChain
+- Performance-critical paths
+- Teams preferring vanilla TypeScript
+
+### LangGraph vs XState
+
+| Feature | LangGraph | XState |
+|---------|-----------|---------|
+| Purpose | Agent workflows | General state machines |
+| Learning curve | Medium | Steep |
+| TypeScript support | Good | Excellent |
+| Visualization | Yes | Yes (inspector) |
+| Persistence | Built-in | Manual |
+| Community | Growing | Mature |
+| Production-ready | Improving | Battle-tested |
+
+**Recommendation:** Use XState for production. It's more mature and gives you full control.
+
+## CrewAI
+
+### What is CrewAI?
+
+A Python framework for orchestrating role-based AI agents to work together on complex tasks.
+
+**Core philosophy:** Model teams of specialists (agents) working toward a common goal, similar to a real company structure.
+
+**Note:** CrewAI is Python-only. For TypeScript, you'll build similar patterns manually.
+
+### Python Example (for reference)
+
+```python
+from crewai import Agent, Task, Crew
+
+# Define agents
+researcher = Agent(
+    role='Research Analyst',
+    goal='Find and summarize information',
+    backstory='Expert at finding relevant information',
+    tools=[search_tool, scrape_tool]
+)
+
+writer = Agent(
+    role='Content Writer',
+    goal='Create engaging content',
+    backstory='Skilled writer with years of experience',
+    tools=[grammar_tool]
+)
+
+# Define tasks
+research_task = Task(
+    description='Research recent developments in AI agents',
+    agent=researcher
+)
+
+writing_task = Task(
+    description='Write a blog post based on the research',
+    agent=writer
+)
+
+# Create crew
+crew = Crew(
+    agents=[researcher, writer],
+    tasks=[research_task, writing_task],
+    verbose=True
+)
+
+# Execute
+result = crew.kickoff()
+```
+
+### TypeScript Alternative
+
+Since CrewAI is Python-only, here's how to build similar patterns in TypeScript:
+
+```typescript
+interface Agent {
+  role: string;
+  goal: string;
+  tools: Tool[];
+  execute: (task: Task) => Promise<TaskResult>;
+}
+
+interface Task {
+  description: string;
+  assignedTo: Agent;
+  dependencies?: Task[];
+}
+
+class Crew {
+  constructor(
+    private agents: Agent[],
+    private tasks: Task[]
+  ) {}
+
+  async execute(): Promise<Record<string, TaskResult>> {
+    const results: Record<string, TaskResult> = {};
+
+    // Topological sort tasks by dependencies
+    const sortedTasks = this.topologicalSort(this.tasks);
+
+    for (const task of sortedTasks) {
+      // Wait for dependencies
+      if (task.dependencies) {
+        await Promise.all(
+          task.dependencies.map(dep => results[dep.description])
+        );
+      }
+
+      // Execute task
+      results[task.description] = await task.assignedTo.execute(task);
+    }
+
+    return results;
+  }
+
+  private topologicalSort(tasks: Task[]): Task[] {
+    // Implementation of topological sort
+    // ...
+  }
+}
+
+// Usage
+const researcher = createResearchAgent();
+const writer = createWriterAgent();
+
+const crew = new Crew(
+  [researcher, writer],
+  [
+    { description: 'Research AI agents', assignedTo: researcher },
+    {
+      description: 'Write blog post',
+      assignedTo: writer,
+      dependencies: [researchTask],
+    },
+  ]
+);
+
+const results = await crew.execute();
+```
+
+### When to Use CrewAI (or similar patterns)
+
+**Good for:**
+- Complex projects requiring specialization
+- Simulating organizational workflows
+- Tasks benefiting from role-playing prompts
+- Python-based projects
+
+**Avoid for:**
+- TypeScript projects (no official support)
+- Simple single-agent tasks
+- Performance-critical applications
+- When you need fine-grained control
+
+## Other Frameworks
+
+### AutoGPT
+
+An autonomous agent that attempts to achieve goals by breaking them into sub-tasks and executing them.
+
+**Status:** Mostly proof-of-concept. Not recommended for production.
+
+**Key issue:** Unreliable for real-world tasks. Often gets stuck in loops or makes poor decisions.
+
+### BabyAGI
+
+A minimal autonomous agent that creates and executes tasks based on a goal.
+
+**Status:** Educational/experimental. Not for production use.
+
+### Semantic Kernel (Microsoft)
+
+An SDK for integrating LLMs with conventional programming languages, similar to LangChain but with Microsoft backing.
+
+**TypeScript support:** Yes, but less mature than Python version.
+
+```typescript
+import { Kernel, OpenAIChatCompletion } from '@microsoft/semantic-kernel';
+
+const kernel = new Kernel();
+
+const chatCompletion = new OpenAIChatCompletion({
+  apiKey: process.env.OPENAI_API_KEY,
+  model: 'gpt-4',
+});
+
+kernel.addService(chatCompletion);
+
+// Define a semantic function (prompt)
+const summarize = kernel.createSemanticFunction(
+  'Summarize the following text:\n\n{{$input}}',
+  { maxTokens: 200, temperature: 0 }
+);
+
+const result = await summarize('Long text here...');
+```
+
+**When to use:** If you're already in the Microsoft ecosystem (.NET, Azure).
+
+### Haystack
+
+A framework for building search and Q&A systems with LLMs, focused on retrieval-augmented generation (RAG).
+
+**Language:** Python only
+
+**When to use:** Document Q&A systems, semantic search applications.
+
+### LlamaIndex (formerly GPT Index)
+
+A data framework for connecting LLMs with external data sources, optimized for RAG use cases.
+
+**Languages:** Python (primary), TypeScript (community-driven)
+
+```typescript
+import { Document, VectorStoreIndex } from 'llamaindex';
+
+// Load documents
+const documents = [
+  new Document({ text: 'Content here...', id_: 'doc1' }),
+  new Document({ text: 'More content...', id_: 'doc2' }),
+];
+
+// Create index
+const index = await VectorStoreIndex.fromDocuments(documents);
+
+// Query
+const queryEngine = index.asQueryEngine();
+const response = await queryEngine.query('What is the main topic?');
+
+console.log(response.toString());
+```
+
+**When to use:** RAG applications, document Q&A, knowledge bases.
+
+## Framework Decision Matrix
+
+| Framework | Best For | Language | Maturity | Learning Curve |
+|-----------|----------|----------|----------|----------------|
+| **None (Custom)** | Production apps | TypeScript | ✅ Stable | Low |
+| **LangChain** | Rapid prototyping | Both | ⚠️ Unstable | Medium |
+| **LangGraph** | Stateful workflows | Both | 🔨 Building | Medium |
+| **XState** | State machines | TypeScript | ✅ Mature | High |
+| **CrewAI** | Multi-agent (Python) | Python | 🔨 Building | Medium |
+| **LlamaIndex** | RAG applications | Both | ✅ Mature | Medium |
+
+## When to Avoid Frameworks
+
+Choose custom TypeScript when you need:
+
+1. **Production reliability** - Full control over every abstraction
+2. **Performance** - Minimal overhead and latency
+3. **Debuggability** - Clear stack traces and behavior
+4. **Stability** - No breaking changes from framework updates
+5. **Team understanding** - Everyone knows how it works
+
+### Custom Implementation Example
+
+```typescript
+// Clear, explicit, production-ready
+class ProductionAgent {
+  constructor(
+    private client: Anthropic,
+    private tools: Tool[],
+    private state: StateStore
+  ) {}
+
+  async execute(input: string): Promise<AgentResult> {
+    const context = await this.state.getContext();
+
+    const response = await this.client.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 4096,
+      system: this.buildSystemPrompt(),
+      tools: this.tools.map(t => t.definition),
+      messages: [
+        ...context.history,
+        { role: 'user', content: input },
+      ],
+    });
+
+    // Handle tool calls
+    if (this.hasToolCalls(response)) {
+      const toolResults = await this.executeTools(response);
+      return this.execute(this.formatToolResults(toolResults));
+    }
+
+    // Save state and return
+    await this.state.save(response);
+    return { status: 'success', content: response.content[0].text };
+  }
+
+  private buildSystemPrompt(): string {
+    return `You are a customer support agent...`;
+  }
+
+  private hasToolCalls(response: Message): boolean {
+    return response.content.some(block => block.type === 'tool_use');
+  }
+
+  private async executeTools(response: Message): Promise<ToolResult[]> {
+    const toolCalls = response.content.filter(
+      (block): block is ToolUseBlock => block.type === 'tool_use'
+    );
+
+    return Promise.all(
+      toolCalls.map(async (call) => {
+        const tool = this.tools.find(t => t.name === call.name);
+        if (!tool) throw new Error(`Unknown tool: ${call.name}`);
+
+        const result = await tool.execute(call.input);
+        return { id: call.id, result };
+      })
+    );
+  }
+
+  private formatToolResults(results: ToolResult[]): string {
+    return results.map(r => `Tool result: ${JSON.stringify(r)}`).join('\n');
+  }
+}
+```
+
+**Why this is better:**
+- Every line is explicit and understandable
+- No hidden abstractions or magic
+- Easy to debug and test
+- Full type safety with TypeScript
+- No framework dependency that might break
+
+## Next Steps
+
+Continue to:
+
+- [Tools & Integration Glossary](/universities/agentic-workflows/glossary-tools-integrations) - Function calling patterns
+
+Or dive into implementation:
+
+- [Factor 1: Natural Language to Tool Calls](/universities/agentic-workflows/factor-01-natural-language-to-tools)
+- [Framework Comparison](/universities/agentic-workflows/framework-comparison) - Detailed comparison with code examples

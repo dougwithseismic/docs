@@ -1,0 +1,870 @@
+---
+title: "Tools & Integration Glossary"
+description: "Complete guide to agent tools: function calling, API integrations, webhooks, tool schemas, and implementation patterns with TypeScript."
+---
+
+## Tool Fundamentals
+
+### Tool Definition
+
+A tool is a function that an agent can invoke to perform actions or retrieve information. Tools are defined with a schema that describes their purpose, parameters, and behavior.
+
+```typescript
+import { z } from 'zod';
+
+interface Tool<TParams = unknown, TResult = unknown> {
+  name: string;
+  description: string;
+  parameters: z.ZodSchema<TParams>;
+  execute: (params: TParams) => Promise<TResult>;
+}
+
+// Example: Weather tool
+const getWeatherTool: Tool<{ location: string }, WeatherData> = {
+  name: 'get_weather',
+  description: 'Get current weather for a specific location',
+  parameters: z.object({
+    location: z.string().describe('City and state, e.g., San Francisco, CA'),
+  }),
+  execute: async ({ location }) => {
+    const response = await fetch(
+      `https://api.weather.com/v3/wx/conditions/current?location=${location}`
+    );
+    return await response.json();
+  },
+};
+```
+
+### Tool Schema
+
+A JSON Schema description of a tool's parameters that the LLM uses to understand how to call it.
+
+```typescript
+function toolToAnthropicSchema(tool: Tool): AnthropicTool {
+  return {
+    name: tool.name,
+    description: tool.description,
+    input_schema: zodToJsonSchema(tool.parameters),
+  };
+}
+
+// Convert Zod schema to JSON Schema
+function zodToJsonSchema(schema: z.ZodSchema): JSONSchema {
+  // Using zod-to-json-schema library
+  return {
+    type: 'object',
+    properties: {
+      location: {
+        type: 'string',
+        description: 'City and state, e.g., San Francisco, CA',
+      },
+    },
+    required: ['location'],
+  };
+}
+
+// Usage with Anthropic
+const response = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1024,
+  tools: [toolToAnthropicSchema(getWeatherTool)],
+  messages: [{ role: 'user', content: 'What\'s the weather in NYC?' }],
+});
+```
+
+### Tool Execution
+
+The process of validating tool parameters, calling the tool function, and returning results.
+
+```typescript
+class ToolExecutor {
+  constructor(private tools: Map<string, Tool>) {}
+
+  async execute(toolCall: ToolCall): Promise<ToolResult> {
+    const tool = this.tools.get(toolCall.name);
+
+    if (!tool) {
+      return {
+        success: false,
+        error: `Unknown tool: ${toolCall.name}`,
+      };
+    }
+
+    try {
+      // Validate parameters with Zod
+      const validatedParams = tool.parameters.parse(toolCall.parameters);
+
+      // Execute tool
+      const result = await tool.execute(validatedParams);
+
+      return {
+        success: true,
+        data: result,
+      };
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return {
+          success: false,
+          error: `Invalid parameters: ${error.message}`,
+        };
+      }
+
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  }
+}
+
+// Usage
+const executor = new ToolExecutor(
+  new Map([
+    ['get_weather', getWeatherTool],
+    ['send_email', sendEmailTool],
+  ])
+);
+
+const result = await executor.execute({
+  id: 'tool_123',
+  name: 'get_weather',
+  parameters: { location: 'San Francisco, CA' },
+});
+```
+
+## Function Calling Patterns
+
+### Basic Function Calling
+
+The LLM decides to call a function based on the user's request and available tools.
+
+```typescript
+async function agentLoop(userMessage: string): Promise<string> {
+  const messages: AnthropicMessage[] = [
+    { role: 'user', content: userMessage },
+  ];
+
+  while (true) {
+    const response = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 4096,
+      tools: [
+        toolToAnthropicSchema(getWeatherTool),
+        toolToAnthropicSchema(sendEmailTool),
+      ],
+      messages,
+    });
+
+    // Check if Claude wants to use a tool
+    const toolUse = response.content.find(
+      (block): block is ToolUseBlock => block.type === 'tool_use'
+    );
+
+    if (!toolUse) {
+      // No more tools needed, return text response
+      const textBlock = response.content.find(
+        (block): block is TextBlock => block.type === 'text'
+      );
+      return textBlock?.text || '';
+    }
+
+    // Execute tool
+    const toolResult = await executor.execute({
+      id: toolUse.id,
+      name: toolUse.name,
+      parameters: toolUse.input,
+    });
+
+    // Add assistant's response and tool result to conversation
+    messages.push(
+      { role: 'assistant', content: response.content },
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'tool_result',
+            tool_use_id: toolUse.id,
+            content: JSON.stringify(toolResult),
+          },
+        ],
+      }
+    );
+  }
+}
+```
+
+### Parallel Function Calling
+
+Executing multiple independent tools simultaneously for better performance.
+
+```typescript
+async function handleParallelTools(
+  response: AnthropicResponse
+): Promise<ToolResult[]> {
+  const toolCalls = response.content.filter(
+    (block): block is ToolUseBlock => block.type === 'tool_use'
+  );
+
+  // Execute all tools in parallel
+  return await Promise.all(
+    toolCalls.map(async (toolCall) => {
+      const result = await executor.execute({
+        id: toolCall.id,
+        name: toolCall.name,
+        parameters: toolCall.input,
+      });
+
+      return {
+        tool_use_id: toolCall.id,
+        content: JSON.stringify(result),
+      };
+    })
+  );
+}
+
+// Usage in agent loop
+if (toolCalls.length > 0) {
+  const results = await handleParallelTools(response);
+
+  messages.push(
+    { role: 'assistant', content: response.content },
+    {
+      role: 'user',
+      content: results.map(r => ({
+        type: 'tool_result' as const,
+        tool_use_id: r.tool_use_id,
+        content: r.content,
+      })),
+    }
+  );
+}
+```
+
+### Forced Tool Use
+
+Requiring the LLM to use a specific tool instead of responding with text.
+
+```typescript
+const response = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1024,
+  tools: [toolToAnthropicSchema(extractDataTool)],
+  tool_choice: {
+    type: 'tool',
+    name: 'extract_data', // Force this specific tool
+  },
+  messages: [{ role: 'user', content: customerEmail }],
+});
+
+// Claude MUST respond with extract_data tool call
+// Useful for structured data extraction
+```
+
+### Tool Choice Strategies
+
+```typescript
+type ToolChoiceStrategy =
+  | { type: 'auto' }       // Let Claude decide
+  | { type: 'any' }        // Must use a tool (any)
+  | { type: 'tool'; name: string } // Must use specific tool
+
+async function executeWithStrategy(
+  message: string,
+  strategy: ToolChoiceStrategy
+): Promise<AgentResponse> {
+  return await anthropic.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 1024,
+    tools: availableTools,
+    tool_choice: strategy,
+    messages: [{ role: 'user', content: message }],
+  });
+}
+
+// Examples
+await executeWithStrategy('What\'s the weather?', { type: 'auto' });
+await executeWithStrategy('Extract data from this', {
+  type: 'tool',
+  name: 'extract_structured_data'
+});
+```
+
+## Common Tool Types
+
+### Data Retrieval Tools
+
+Tools that fetch information from external sources.
+
+```typescript
+const searchWebTool: Tool<{ query: string }, SearchResult[]> = {
+  name: 'search_web',
+  description: 'Search the web for current information',
+  parameters: z.object({
+    query: z.string().describe('Search query'),
+  }),
+  execute: async ({ query }) => {
+    const response = await fetch(
+      `https://api.search.com/search?q=${encodeURIComponent(query)}`
+    );
+    return await response.json();
+  },
+};
+
+const getDatabaseRecordTool: Tool<{ id: string }, DatabaseRecord> = {
+  name: 'get_database_record',
+  description: 'Fetch a record from the database',
+  parameters: z.object({
+    id: z.string().uuid().describe('Record ID'),
+  }),
+  execute: async ({ id }) => {
+    return await db.records.findUnique({ where: { id } });
+  },
+};
+```
+
+### Data Modification Tools
+
+Tools that create, update, or delete data.
+
+```typescript
+const createCustomerTool: Tool<CreateCustomerParams, Customer> = {
+  name: 'create_customer',
+  description: 'Create a new customer record',
+  parameters: z.object({
+    name: z.string(),
+    email: z.string().email(),
+    company: z.string().optional(),
+  }),
+  execute: async (params) => {
+    return await db.customers.create({ data: params });
+  },
+};
+
+const updateOrderStatusTool: Tool<UpdateOrderParams, Order> = {
+  name: 'update_order_status',
+  description: 'Update the status of an order',
+  parameters: z.object({
+    orderId: z.string(),
+    status: z.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
+  }),
+  execute: async ({ orderId, status }) => {
+    return await db.orders.update({
+      where: { id: orderId },
+      data: { status },
+    });
+  },
+};
+```
+
+### Communication Tools
+
+Tools that send messages via email, Slack, SMS, etc.
+
+```typescript
+const sendEmailTool: Tool<EmailParams, EmailResult> = {
+  name: 'send_email',
+  description: 'Send an email to a recipient',
+  parameters: z.object({
+    to: z.string().email(),
+    subject: z.string().max(200),
+    body: z.string(),
+    cc: z.array(z.string().email()).optional(),
+  }),
+  execute: async (params) => {
+    return await emailService.send(params);
+  },
+};
+
+const sendSlackMessageTool: Tool<SlackParams, SlackResult> = {
+  name: 'send_slack_message',
+  description: 'Send a message to a Slack channel',
+  parameters: z.object({
+    channel: z.string().describe('Channel ID or name'),
+    text: z.string(),
+    thread_ts: z.string().optional().describe('Thread timestamp for replies'),
+  }),
+  execute: async (params) => {
+    return await slackClient.chat.postMessage(params);
+  },
+};
+```
+
+### Computation Tools
+
+Tools that perform calculations or transformations.
+
+```typescript
+const calculateMetricsTool: Tool<MetricsParams, MetricsResult> = {
+  name: 'calculate_metrics',
+  description: 'Calculate business metrics for a time period',
+  parameters: z.object({
+    startDate: z.string().datetime(),
+    endDate: z.string().datetime(),
+    metrics: z.array(z.enum(['revenue', 'users', 'churn', 'mrr'])),
+  }),
+  execute: async ({ startDate, endDate, metrics }) => {
+    const results: Record<string, number> = {};
+
+    for (const metric of metrics) {
+      results[metric] = await metricsService.calculate(
+        metric,
+        startDate,
+        endDate
+      );
+    }
+
+    return results;
+  },
+};
+```
+
+### Human Interaction Tools
+
+Tools that request human input or approval.
+
+```typescript
+const requestApprovalTool: Tool<ApprovalParams, ApprovalResult> = {
+  name: 'request_approval',
+  description: 'Request human approval for an action',
+  parameters: z.object({
+    action: z.string().describe('Description of action requiring approval'),
+    context: z.record(z.unknown()).describe('Additional context'),
+    urgency: z.enum(['low', 'medium', 'high']),
+  }),
+  execute: async (params) => {
+    // Create approval request
+    const approval = await db.approvals.create({
+      data: {
+        action: params.action,
+        context: params.context,
+        urgency: params.urgency,
+        status: 'pending',
+      },
+    });
+
+    // Notify human (Slack, email, etc.)
+    await notifyHuman(approval);
+
+    // Wait for response (via webhook or polling)
+    return await waitForApproval(approval.id, { timeout: 3600000 });
+  },
+};
+```
+
+## Tool Security
+
+### Input Validation
+
+Always validate tool inputs to prevent injection attacks and data corruption.
+
+```typescript
+const executeSqlQueryTool: Tool<{ query: string }, QueryResult[]> = {
+  name: 'execute_sql_query',
+  description: 'Execute a read-only SQL query',
+  parameters: z.object({
+    query: z.string().describe('SQL SELECT query'),
+  }),
+  execute: async ({ query }) => {
+    // Validate query is read-only
+    const normalizedQuery = query.trim().toUpperCase();
+
+    if (!normalizedQuery.startsWith('SELECT')) {
+      throw new Error('Only SELECT queries are allowed');
+    }
+
+    if (
+      normalizedQuery.includes('DROP') ||
+      normalizedQuery.includes('DELETE') ||
+      normalizedQuery.includes('UPDATE') ||
+      normalizedQuery.includes('INSERT')
+    ) {
+      throw new Error('Destructive operations not allowed');
+    }
+
+    // Execute in read-only transaction
+    return await db.$queryRaw`${query}`;
+  },
+};
+```
+
+### Permission Checking
+
+Verify the agent has permission to perform actions.
+
+```typescript
+interface ToolContext {
+  userId: string;
+  permissions: string[];
+}
+
+class SecureToolExecutor extends ToolExecutor {
+  constructor(
+    tools: Map<string, Tool>,
+    private context: ToolContext
+  ) {
+    super(tools);
+  }
+
+  async execute(toolCall: ToolCall): Promise<ToolResult> {
+    const tool = this.tools.get(toolCall.name);
+
+    if (!tool) {
+      return { success: false, error: 'Unknown tool' };
+    }
+
+    // Check permissions
+    if (!this.hasPermission(toolCall.name)) {
+      return {
+        success: false,
+        error: `Permission denied for tool: ${toolCall.name}`,
+      };
+    }
+
+    return await super.execute(toolCall);
+  }
+
+  private hasPermission(toolName: string): boolean {
+    const requiredPermission = `tool:${toolName}`;
+    return this.context.permissions.includes(requiredPermission);
+  }
+}
+```
+
+### Rate Limiting
+
+Prevent abuse by limiting tool execution frequency.
+
+```typescript
+class RateLimitedToolExecutor extends ToolExecutor {
+  private callCounts = new Map<string, { count: number; resetAt: number }>();
+
+  constructor(
+    tools: Map<string, Tool>,
+    private limits: Map<string, { calls: number; windowMs: number }>
+  ) {
+    super(tools);
+  }
+
+  async execute(toolCall: ToolCall): Promise<ToolResult> {
+    // Check rate limit
+    if (!this.checkRateLimit(toolCall.name)) {
+      return {
+        success: false,
+        error: 'Rate limit exceeded. Please try again later.',
+      };
+    }
+
+    // Increment counter
+    this.incrementCallCount(toolCall.name);
+
+    return await super.execute(toolCall);
+  }
+
+  private checkRateLimit(toolName: string): boolean {
+    const limit = this.limits.get(toolName);
+    if (!limit) return true;
+
+    const now = Date.now();
+    const record = this.callCounts.get(toolName);
+
+    if (!record || now > record.resetAt) {
+      return true;
+    }
+
+    return record.count < limit.calls;
+  }
+
+  private incrementCallCount(toolName: string) {
+    const limit = this.limits.get(toolName);
+    if (!limit) return;
+
+    const now = Date.now();
+    const record = this.callCounts.get(toolName);
+
+    if (!record || now > record.resetAt) {
+      this.callCounts.set(toolName, {
+        count: 1,
+        resetAt: now + limit.windowMs,
+      });
+    } else {
+      record.count++;
+    }
+  }
+}
+```
+
+## API Integration Patterns
+
+### REST API Tool
+
+Wrapping REST APIs as agent tools.
+
+```typescript
+class RestApiTool implements Tool {
+  constructor(
+    public name: string,
+    public description: string,
+    private baseUrl: string,
+    private apiKey: string,
+    public parameters: z.ZodSchema
+  ) {}
+
+  async execute(params: unknown): Promise<unknown> {
+    const response = await fetch(`${this.baseUrl}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify(params),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.statusText}`);
+    }
+
+    return await response.json();
+  }
+}
+
+// Usage
+const githubCreateIssueTool = new RestApiTool(
+  'create_github_issue',
+  'Create a new GitHub issue',
+  'https://api.github.com/repos/owner/repo/issues',
+  process.env.GITHUB_TOKEN!,
+  z.object({
+    title: z.string(),
+    body: z.string(),
+    labels: z.array(z.string()).optional(),
+  })
+);
+```
+
+### GraphQL Tool
+
+Wrapping GraphQL APIs as tools.
+
+```typescript
+const graphqlTool: Tool<{ query: string; variables: Record<string, unknown> }, unknown> = {
+  name: 'query_graphql',
+  description: 'Execute a GraphQL query',
+  parameters: z.object({
+    query: z.string().describe('GraphQL query string'),
+    variables: z.record(z.unknown()).optional(),
+  }),
+  execute: async ({ query, variables }) => {
+    const response = await fetch('https://api.example.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.API_KEY}`,
+      },
+      body: JSON.stringify({ query, variables }),
+    });
+
+    const result = await response.json();
+
+    if (result.errors) {
+      throw new Error(`GraphQL errors: ${JSON.stringify(result.errors)}`);
+    }
+
+    return result.data;
+  },
+};
+```
+
+### Database Tool Factory
+
+Generating tools from database schemas.
+
+```typescript
+function createDatabaseTools(schema: DatabaseSchema): Tool[] {
+  const tools: Tool[] = [];
+
+  for (const table of schema.tables) {
+    // Create read tool
+    tools.push({
+      name: `get_${table.name}`,
+      description: `Fetch records from ${table.name} table`,
+      parameters: z.object({
+        where: z.record(z.unknown()).optional(),
+        limit: z.number().max(100).default(10),
+      }),
+      execute: async ({ where, limit }) => {
+        return await db[table.name].findMany({ where, take: limit });
+      },
+    });
+
+    // Create write tool (if allowed)
+    if (table.permissions.includes('write')) {
+      tools.push({
+        name: `create_${table.name}`,
+        description: `Create a new ${table.name} record`,
+        parameters: createZodSchemaFromTable(table),
+        execute: async (data) => {
+          return await db[table.name].create({ data });
+        },
+      });
+    }
+  }
+
+  return tools;
+}
+```
+
+## Webhooks & Event-Driven Tools
+
+### Webhook Tool
+
+Tool that triggers webhooks and optionally waits for callbacks.
+
+```typescript
+const triggerWebhookTool: Tool<WebhookParams, WebhookResult> = {
+  name: 'trigger_webhook',
+  description: 'Trigger a webhook and optionally wait for response',
+  parameters: z.object({
+    url: z.string().url(),
+    payload: z.record(z.unknown()),
+    waitForCallback: z.boolean().default(false),
+  }),
+  execute: async ({ url, payload, waitForCallback }) => {
+    const webhookId = generateId();
+
+    // Send webhook
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, webhookId }),
+    });
+
+    if (!waitForCallback) {
+      return { success: response.ok };
+    }
+
+    // Wait for callback
+    return await waitForWebhookCallback(webhookId, { timeout: 30000 });
+  },
+};
+```
+
+### Event Listener Tool
+
+Tool that subscribes to events from external systems.
+
+```typescript
+class EventListenerTool implements Tool {
+  private listeners = new Map<string, (event: unknown) => void>();
+
+  constructor(
+    public name: string,
+    public description: string,
+    public parameters: z.ZodSchema,
+    private eventBus: EventBus
+  ) {}
+
+  async execute(params: { eventType: string; filter?: Record<string, unknown> }): Promise<unknown> {
+    return new Promise((resolve) => {
+      const listener = (event: unknown) => {
+        if (this.matchesFilter(event, params.filter)) {
+          this.eventBus.off(params.eventType, listener);
+          resolve(event);
+        }
+      };
+
+      this.eventBus.on(params.eventType, listener);
+
+      // Timeout after 5 minutes
+      setTimeout(() => {
+        this.eventBus.off(params.eventType, listener);
+        resolve({ timeout: true });
+      }, 300000);
+    });
+  }
+
+  private matchesFilter(event: unknown, filter?: Record<string, unknown>): boolean {
+    if (!filter) return true;
+
+    // Simple filter matching
+    return Object.entries(filter).every(
+      ([key, value]) => (event as any)[key] === value
+    );
+  }
+}
+```
+
+## Tool Composition
+
+### Composite Tools
+
+Tools that internally use other tools.
+
+```typescript
+const researchAndDraftTool: Tool<{ topic: string }, DraftResult> = {
+  name: 'research_and_draft',
+  description: 'Research a topic and draft content about it',
+  parameters: z.object({
+    topic: z.string(),
+  }),
+  execute: async ({ topic }) => {
+    // Use search tool
+    const searchResults = await searchWebTool.execute({ query: topic });
+
+    // Use analysis tool
+    const analysis = await analyzeTool.execute({
+      data: searchResults,
+      task: 'summarize',
+    });
+
+    // Use writing tool
+    const draft = await draftContentTool.execute({
+      topic,
+      research: analysis,
+    });
+
+    return draft;
+  },
+};
+```
+
+### Tool Pipelines
+
+Chaining tools together for complex workflows.
+
+```typescript
+class ToolPipeline {
+  constructor(private tools: Tool[]) {}
+
+  async execute(initialInput: unknown): Promise<unknown> {
+    let currentInput = initialInput;
+
+    for (const tool of this.tools) {
+      currentInput = await tool.execute(currentInput);
+    }
+
+    return currentInput;
+  }
+}
+
+// Usage
+const contentPipeline = new ToolPipeline([
+  fetchArticleTool,
+  extractKeyPointsTool,
+  summarizeTool,
+  formatForSocialTool,
+]);
+
+const socialPost = await contentPipeline.execute({ url: articleUrl });
+```
+
+## Next Steps
+
+You now understand the full toolkit for building agentic systems. Continue to:
+
+- [Factor 1: Natural Language to Tool Calls](/universities/agentic-workflows/factor-01-natural-language-to-tools) - Start implementing
+- [Building Your First Agent](/universities/agentic-workflows/building-first-agent) - Hands-on tutorial
+
+Or review the foundations:
+
+- [Core Concepts Glossary](/universities/agentic-workflows/glossary-core-concepts)
+- [LLM & AI Terminology](/universities/agentic-workflows/glossary-llm-ai)
