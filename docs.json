@@ -386,6 +386,41 @@
           },
 
           {
+            "group": "Agentic Workflows University",
+            "icon": "robot",
+            "pages": [
+              "universities/agentic-workflows/introduction",
+              {
+                "group": "Glossaries",
+                "pages": [
+                  "universities/agentic-workflows/glossary-core-concepts",
+                  "universities/agentic-workflows/glossary-llm-ai",
+                  "universities/agentic-workflows/glossary-frameworks",
+                  "universities/agentic-workflows/glossary-tools-integrations"
+                ]
+              },
+              {
+                "group": "12 Factor Agents",
+                "pages": [
+                  "universities/agentic-workflows/12-factor-agents-overview",
+                  "universities/agentic-workflows/factor-01-natural-language-to-tools",
+                  "universities/agentic-workflows/factor-02-own-your-prompts",
+                  "universities/agentic-workflows/factor-03-own-your-context",
+                  "universities/agentic-workflows/factor-04-structured-outputs",
+                  "universities/agentic-workflows/factor-05-unify-state",
+                  "universities/agentic-workflows/factor-06-pause-resume",
+                  "universities/agentic-workflows/factor-07-human-in-loop",
+                  "universities/agentic-workflows/factor-08-control-flow",
+                  "universities/agentic-workflows/factor-09-error-handling",
+                  "universities/agentic-workflows/factor-10-focused-agents",
+                  "universities/agentic-workflows/factor-11-flexible-triggers",
+                  "universities/agentic-workflows/factor-12-stateless-reducer"
+                ]
+              }
+            ]
+          },
+
+          {
             "group": "n8n University",
             "icon": "graduation-cap",
             "pages": [
