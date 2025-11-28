@@ -1,0 +1,348 @@
+---
+title: "The Founder's Guide to Reviewing Vibe-Coded Apps"
+description: "How to audit, secure, and deploy AI-generated codebases - including what to look for, who to hire, and what it should cost"
+---
+
+_Published: November 2024_
+
+I was halfway through an interview process with a company here in Prague. Standard full-stack engineering role. During my research, I decided to poke around their recently launched product - a low-code app they'd built quickly to capture a market opportunity.
+
+Within five minutes, I had access to their entire database. Over 2,000 customer records. Names, emails, payment information, chat messages. Everything.
+
+When I reported this to them - coming from a place of genuine concern, trying to help - they got defensive. Really defensive. Instead of thanking me for the heads-up, they treated me like I'd done something wrong.
+
+This happens more often than you'd think. And it's why I'm writing this guide.
+
+## The Five-Minute Database Breach
+
+Before we talk about hiring someone to review your vibe-coded app, let me show you how to check for the most critical issue yourself. This takes five minutes and requires zero technical skill.
+
+### How to Check Your Own App Right Now
+
+If your app uses Supabase (and most vibe-coded apps do), here's exactly what an attacker would do:
+
+**Step 1: Open your app in Chrome and press F12** (or right-click → Inspect)
+
+**Step 2: Go to the Network tab**
+
+**Step 3: Use your app normally** - log in, click around, load some data
+
+**Step 4: Look for requests to Supabase**
+
+Filter the network requests by typing "supabase" in the filter box. You're looking for requests to URLs like `xxxxx.supabase.co`.
+
+**Step 5: Click on any Supabase request and find the headers**
+
+Look in the Request Headers for something called `apikey`. It'll be a long string starting with `eyJ...`
+
+**Step 6: Copy that API key**
+
+This is your anon/public key. It's *supposed* to be public - that's not the problem. The problem is what that key can access.
+
+**Step 7: Test what's exposed**
+
+Take your Supabase URL and that API key to [Supabase Schema](https://supabase-schema.vercel.app/). Paste them in and click Fetch. You'll see every table in your database.
+
+Now here's the scary part: for each table you see, try querying it directly. If Row Level Security isn't configured properly, you'll get back *all* the data - not just the current user's data.
+
+<Warning>
+**What I've found doing this**: User tables with emails and passwords in plain text. Payment records. Job applications. Private messages. Quotes and pricing data. If it's in your database and RLS isn't set up correctly, anyone with browser dev tools can see it.
+</Warning>
+
+### What You're Looking For
+
+When you visualize your schema, here are the red flags:
+
+- **Tables with no relationships** (orphaned data that's probably insecure)
+- **Missing `created_at` / `updated_at` timestamps** (no audit trail)
+- **Sensitive data stored as plain text** (passwords, API keys)
+- **No `user_id` foreign key on user-owned data** (no way to restrict access)
+- **Tables named `test`, `temp`, or `backup`** (forgotten development artifacts)
+
+And the good signs:
+- Clear naming conventions
+- Proper UUID primary keys
+- Foreign key relationships defined
+- Timestamp columns for audit trails
+
+<Warning>
+**If Someone Reports a Vulnerability to You**
+
+Don't do what that Prague company did. When someone reports a security issue:
+
+1. **Thank them** - they're trying to help you, not hurt you
+2. **Don't get defensive** - this isn't about blame, it's about fixing the problem
+3. **Ask what they found** - get specifics so you can fix it properly
+4. **Don't assume malice** - security researchers report issues in good faith
+5. **Fix it immediately** - every hour it stays open is a risk
+
+The person reporting the issue is on your side. They could have exploited it or sold the information. Instead, they told you. That's a gift.
+</Warning>
+
+## What "Vibe Coding" Actually Produces
+
+When you build with AI tools - Cursor, Lovable, Bolt, Replit, v0 - you're asking an AI to generate code based on your prompts. The AI doesn't understand your business logic, your security requirements, or your scaling needs. It understands patterns from training data.
+
+The result is code that works - until it doesn't. Here's what's typically hiding under the hood:
+
+- **Inconsistent patterns**: Each prompt might generate code following different conventions
+- **Security gaps**: API keys in frontend code, missing authentication checks, overly permissive database rules
+- **No error handling**: Happy path works great, edge cases crash
+- **Performance landmines**: Queries that work with 10 users but break with 1,000
+- **Accumulated complexity**: Features stacked on features with no refactoring
+
+The good news: these issues are fixable. But you need to know what you're dealing with.
+
+## The Code Review Checklist
+
+A proper code review for a vibe-coded app covers different ground than a typical review. Here's what needs examination:
+
+### Authentication & Authorization
+
+| Check | What to look for |
+|-------|------------------|
+| Auth implementation | Is Supabase Auth (or similar) properly configured? |
+| Route protection | Are authenticated routes actually protected? |
+| Role-based access | If you have admin features, are they properly gated? |
+| Token handling | Are JWTs stored securely (not localStorage for sensitive apps)? |
+| Session management | Do sessions expire appropriately? |
+
+### Database Security (RLS)
+
+Row Level Security is where most vibe-coded apps fail. Check:
+
+| Check | What to look for |
+|-------|------------------|
+| RLS enabled | Is RLS actually turned on for each table? |
+| Policy coverage | Do policies exist for SELECT, INSERT, UPDATE, DELETE? |
+| Policy logic | Can users only access their own data? |
+| Admin bypass | Is there a proper service role pattern for admin functions? |
+
+<Warning>
+**Common vibe-coding mistake**: RLS disabled entirely, or policies that use `true` (allowing all access). This means any authenticated user can read/modify any data in your database.
+</Warning>
+
+### API & Environment Variables
+
+| Check | What to look for |
+|-------|------------------|
+| Key exposure | Are API keys hardcoded in frontend code? |
+| Env separation | Different keys for dev/staging/production? |
+| Secret handling | Sensitive keys only on backend/serverless functions? |
+| Rate limiting | Any protection against API abuse? |
+
+### Frontend Security
+
+| Check | What to look for |
+|-------|------------------|
+| Input validation | Are user inputs sanitized? |
+| XSS protection | Can users inject scripts through form fields? |
+| CORS configuration | Is it properly restricted or wide open (`*`)? |
+| Error messages | Do errors expose internal details to users? |
+
+### Code Quality
+
+| Check | What to look for |
+|-------|------------------|
+| Consistent patterns | Same approach used throughout, or chaos? |
+| Error handling | Try/catch blocks, error boundaries? |
+| Type safety | TypeScript types actually defined, or `any` everywhere? |
+| Dead code | Unused components, commented-out blocks? |
+
+## The Supabase Security Audit
+
+If you're hiring someone to review your app, this is what they should be checking:
+
+### 1. Check RLS Status
+- Go to Table Editor in Supabase
+- Look for the shield icon on each table
+- If it's grayed out, RLS is disabled (bad)
+
+### 2. Review Policies
+- Go to Authentication → Policies
+- Each table should have policies defined
+- Policies should reference `auth.uid()` to restrict to current user
+
+### 3. Check Function Permissions
+- Go to Database → Functions
+- Look for `SECURITY DEFINER` functions (they run with elevated privileges)
+- These need careful review
+
+### 4. Audit Storage Buckets
+- Go to Storage
+- Check bucket policies
+- Are uploaded files public when they shouldn't be?
+
+### Common Security Issues in AI-Generated Code
+
+**1. The "Works Locally" Problem**
+
+AI tools often generate code that works in development but exposes secrets in production:
+
+```javascript
+// Bad: API key in frontend
+const stripe = new Stripe('sk_live_xxxxx')
+
+// Good: Key only on server
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+```
+
+**2. Missing Server-Side Validation**
+
+Just because the frontend validates doesn't mean the API does. Check that:
+- All API endpoints validate input
+- Database constraints exist as a last line of defense
+- No business logic relies solely on frontend checks
+
+**3. Over-Privileged Database Access**
+
+Check if the app uses the service role key from the frontend (it shouldn't).
+
+## Deployment Readiness
+
+Before going to production (or if you're already there), verify:
+
+### Environment Configuration
+
+| Item | Production requirement |
+|------|----------------------|
+| Environment variables | All secrets in env vars, not code |
+| Build configuration | Production builds enabled (no dev mode) |
+| Error tracking | Sentry or similar configured |
+| Logging | Structured logs for debugging |
+| Monitoring | Uptime monitoring in place |
+
+### Performance Baseline
+
+| Check | Why it matters |
+|-------|----------------|
+| Database indexes | Slow queries will kill you at scale |
+| Image optimization | Large images destroy load times |
+| Bundle size | AI tools often import entire libraries |
+| Caching | Static assets should be cached |
+
+### Backup & Recovery
+
+| Requirement | Status needed |
+|-------------|---------------|
+| Database backups | Automated daily backups |
+| Point-in-time recovery | Ability to restore to specific moment |
+| Backup testing | Actually tested restoring from backup |
+
+## Who to Hire for This Work
+
+You need a senior full-stack developer with specific experience. Here's the profile:
+
+### Must-Have Qualifications
+
+- **5+ years** professional development experience
+- **Production Supabase experience** (or equivalent - Firebase, Postgres)
+- **Security background** - has performed security audits before
+- **AI-code experience** - has cleaned up vibe-coded apps before
+
+### Nice-to-Have
+
+- Experience with your specific stack (Next.js, React, etc.)
+- DevOps/deployment experience
+- Has worked with early-stage startups
+
+### Questions to Ask Candidates
+
+**Technical verification:**
+1. "Walk me through how you'd audit RLS policies in Supabase"
+2. "What are the top 3 security issues you see in AI-generated code?"
+3. "How would you handle finding API keys exposed in the frontend?"
+
+**Experience verification:**
+
+4. "Tell me about a vibe-coded app you've reviewed. What did you find?"
+5. "What's your process for a code security audit?"
+6. "How do you prioritize which issues to fix first?"
+
+**Communication check:**
+
+7. "How would you explain a critical security issue to a non-technical founder?"
+8. "What documentation would you provide after the review?"
+
+### Red Flags in Candidates
+
+- Can't explain their process clearly
+- Wants to rewrite everything immediately
+- Dismissive of AI-generated code without nuance
+- No specific Supabase/database security experience
+- Can't provide references from similar work
+
+## Timeline & Cost Expectations
+
+### Typical Timeline
+
+| Phase | Duration | What happens |
+|-------|----------|--------------|
+| **Initial Assessment** | 1 day | Schema review, high-level code scan, critical issues identified |
+| **Deep Audit** | 2-3 days | Full code review, security testing, documentation |
+| **Fix Critical Issues** | 1-2 days | Patch immediate security problems |
+| **Full Remediation** | 1-2 weeks | Complete fixes, testing, deployment prep |
+
+**Total for review + critical fixes: 3-5 days**
+
+### Cost Breakdown
+
+For a senior full-stack developer at **$100-150/hour**:
+
+| Scope | Hours | Cost range |
+|-------|-------|------------|
+| Schema + security audit only | 8-12 hrs | $800 - $1,800 |
+| Full code review + documentation | 20-30 hrs | $2,000 - $4,500 |
+| Review + fix critical issues | 30-40 hrs | $3,000 - $6,000 |
+| Complete remediation + deployment | 60-80 hrs | $6,000 - $12,000 |
+
+<Info>
+**Budget reality check**: If someone quotes significantly less, they're either inexperienced or planning to cut corners. If they quote significantly more, they may be padding for a full rebuild.
+</Info>
+
+### What You Should Receive
+
+At minimum, your review should deliver:
+
+1. **Executive summary** - Top issues in plain English
+2. **Security report** - All vulnerabilities with severity ratings
+3. **Code quality assessment** - Patterns, technical debt, maintainability
+4. **Prioritized fix list** - What to fix first, second, third
+5. **Deployment checklist** - What's needed before/for production
+6. **Recommendations** - Rebuild vs. remediate decision
+
+## The Rebuild vs. Remediate Decision
+
+Sometimes the answer is: start fresh. Here's how to know:
+
+### Remediate When:
+
+- Core architecture is sound
+- Issues are fixable in < 2 weeks
+- Business logic is correct, just insecure
+- You have time pressure and the app is "mostly there"
+
+### Rebuild When:
+
+- No consistent patterns exist
+- Security issues are fundamental (not just missing pieces)
+- Adding features takes 3x longer than it should
+- The developer estimates remediation > new build
+
+A senior developer should give you an honest assessment. If they recommend a rebuild, ask them to explain why in business terms - not just "the code is bad."
+
+## Next Steps
+
+1. **Do the five-minute check**: Open dev tools, find your Supabase key, see what's exposed
+2. **Document what you know**: List features, integrations, and any issues you've noticed
+3. **Find the right person**: Use the hiring criteria above
+4. **Get the audit**: 3-5 days for a thorough review
+5. **Make the call**: Remediate or rebuild based on findings
+
+The goal isn't perfection - it's production-readiness. A good reviewer will help you understand what "good enough" looks like for your stage and get you there efficiently.
+
+---
+
+<Info>
+**Need help with this?** WithSeismic specializes in taking vibe-coded MVPs to production. We've reviewed dozens of AI-generated codebases and know exactly where they break down. [Get in touch](/contact) for a no-BS assessment of your app.
+</Info>
