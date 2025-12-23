@@ -1,21 +1,23 @@
 export const CostComparison = () => {
-  const [weeks, setWeeks] = React.useState(4);
+  const [sprints, setSprints] = React.useState(2);
   const [hasInteracted, setHasInteracted] = React.useState(false);
 
-  const withSeismicCost = weeks * 3000;
+  const sprintCost = 7000; // $7,000 per two-week sprint
+  const withSeismicCost = sprints * sprintCost;
+  const weeks = sprints * 2; // Each sprint is 2 weeks
   const freelancerCost = weeks * 40 * 100; // $100/hr * 40hrs/week
   const agencyCost = weeks * 40 * 200; // $200/hr * 40hrs/week
   const fullTimeCost = Math.round((150000 / 52) * weeks); // $150k/year senior dev
 
   const handleSliderChange = (value) => {
-    setWeeks(value);
+    setSprints(parseInt(value));
 
     // Track the first interaction with the pricing calculator
     if (!hasInteracted && window.WithSeismicTracker) {
       setHasInteracted(true);
       window.WithSeismicTracker.trackTool('pricing_calculator', {
-        weeks: value,
-        withSeismicCost: value * 3000
+        sprints: value,
+        withSeismicCost: value * sprintCost
       });
     }
   };
@@ -24,20 +26,23 @@ export const CostComparison = () => {
     <div className="bg-background rounded-lg p-6 my-6 border border-neutral-500/20 shadow-sm">
       <div className="mb-6">
         <label className="block text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Project Duration Calculator
+          Sprint Calculator
         </label>
         <div className="bg-neutral-500/5 p-4 rounded border border-neutral-500/10">
           <input
             type="range"
             min="1"
-            max="12"
-            value={weeks}
+            max="6"
+            value={sprints}
             onChange={(e) => handleSliderChange(e.target.value)}
             className="w-full"
           />
           <div className="text-center mt-3">
             <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {weeks} {weeks === 1 ? 'week' : 'weeks'}
+              {sprints} {sprints === 1 ? 'Sprint' : 'Sprints'}
+            </span>
+            <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
+              ({weeks} weeks)
             </span>
           </div>
         </div>

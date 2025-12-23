@@ -30,7 +30,7 @@
       "og:type": "website",
       "og:url": "https://withseismic.com",
       "og:image": "/images/og.png",
-      "og:description": "Doug Silkstone builds custom software and automation. MVPs, Chrome extensions, and engineering solutions. Starting at $3,500/month.",
+      "og:description": "Doug Silkstone builds custom software and automation. MVPs, Chrome extensions, and engineering solutions. $7,000 per two-week sprint.",
       "og:site_name": "WithSeismic",
       "twitter:card": "summary_large_image",
       "twitter:title": "Doug Silkstone - Software Engineer & Automation Consultant",
@@ -39,7 +39,7 @@
     }
   },
   "banner": {
-    "content": "Book a Discovery Call. Start your MVP from £4,500. [Get started →](/contact)",
+    "content": "Book a Discovery Call. Two-week sprints from $7,000. [Get started →](/contact)",
     "dismissible": true
   },
   "navigation": {

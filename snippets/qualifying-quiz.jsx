@@ -106,10 +106,10 @@ export const QualifyingQuiz = () => {
     const stageAnswer = answers.stage?.value;
     const modelAnswer = answers.model?.value;
 
-    // Logic to determine recommendation
-    let recommendation = "Recommended: The Sprint ($7,500)";
+    // Logic to determine recommendation based on scope
+    let recommendation = "Recommended: Single Sprint ($7,000)";
     if (stageAnswer === "scaling" || stageAnswer === "live_broken" || modelAnswer === "partner") {
-      recommendation = "Recommended: The Partnership ($4,950/mo)";
+      recommendation = "Recommended: Multi-Sprint Engagement ($21,000 - $28,000)";
     }
 
     if (fitScore >= 80) {
