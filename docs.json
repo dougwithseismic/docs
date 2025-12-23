@@ -51,7 +51,6 @@
             "group": "Getting Started",
             "pages": [
               "index",
-              "skool-community",
               "about-withseismic",
               "testimonials",
               "pricing",
@@ -426,11 +425,6 @@
     ],
     "global": {
       "anchors": [
-        {
-          "anchor": "Skool Community",
-          "href": "https://www.skool.com/entrepreneurs-in-residence-8755/about?ref=eb861b717df44205aca7c9882c6c2d3f",
-          "icon": "users"
-        },
         {
           "anchor": "Book A Meeting",
           "href": "https://withseismic.com/contact",
