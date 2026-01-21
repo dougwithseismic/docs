@@ -1,0 +1,93 @@
+---
+title: "Local Supabase Instance Manager"
+description: "A desktop app to manage all your local Supabase instances - see what's running, start, stop, and grab your .env files."
+icon: "database"
+---
+
+<script type="application/ld+json">
+  {`{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Local Supabase Instance Manager",
+  "description": "A desktop app to manage all your local Supabase instances.",
+  "url": "https://withseismic.com/case-studies/local-supabase-manager",
+  "author": {
+    "@type": "Organization",
+    "name": "WithSeismic"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "WithSeismic",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://withseismic.com/logo/light.svg"
+    }
+  }
+}`}
+</script>
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 not-prose">
+  <Card title="React + Rust" icon="code">
+    Cross-platform desktop application
+  </Card>
+  <Card title="Zero Config" icon="gear">
+    Automatic instance detection
+  </Card>
+  <Card title="One Click" icon="mouse-pointer">
+    Start, stop, and manage instances
+  </Card>
+</div>
+
+## The Problem
+
+Stop fighting with Docker ports every morning.
+
+Developers working with Supabase locally often juggle multiple projects, each with its own local Supabase instance. Managing these instances means:
+
+- Manually tracking which Docker containers are running
+- Remembering port configurations for each project
+- Hunting down `.env` files across different directories
+- Conflicts when multiple instances try to use the same ports
+
+## The Solution
+
+One app to manage all your local Supabase instances.
+
+We built a desktop application that provides a unified dashboard for all your Supabase development environments. See what's running at a glance, start and stop instances with a single click, and grab your `.env` configurations instantly.
+
+### Key Features
+
+<CardGroup cols={2}>
+  <Card title="Instance Discovery" icon="magnifying-glass">
+    Automatically finds all Supabase projects on your machine
+  </Card>
+  <Card title="Status Dashboard" icon="gauge">
+    Real-time view of running containers and ports
+  </Card>
+  <Card title="Quick Actions" icon="bolt">
+    Start, stop, and restart with one click
+  </Card>
+  <Card title="Env Export" icon="file-export">
+    Instantly copy connection strings and credentials
+  </Card>
+</CardGroup>
+
+## Technical Stack
+
+Built with a modern cross-platform approach:
+
+- **Frontend**: React with a clean, minimal interface
+- **Backend**: Rust for fast, reliable Docker container management
+- **Integration**: Direct Docker API communication for real-time status
+
+## Why It Matters
+
+Developer tools should reduce friction, not add to it. This project exemplifies our approach: identify a daily pain point, build the simplest possible solution, and ship it.
+
+<Card
+  title="View on Contra"
+  icon="arrow-up-right-from-square"
+  href="https://contra.com/p/Yqc7OA7O-local-supabase-instance-manager-exploration"
+>
+  See the full project showcase
+</Card>
