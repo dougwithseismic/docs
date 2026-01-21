@@ -107,7 +107,6 @@
             "pages": [
               "case-studies/vouchernaut-programmatic-ppc",
               "case-studies/lead-qualifier",
-              "case-studies/fingers-on-pulse-content-intelligence",
               "case-studies/local-supabase-manager",
               "case-studies/growth-society-ecommerce"
             ]
@@ -116,7 +115,6 @@
             "group": "AI & LLM Solutions",
             "pages": [
               "case-studies/snacker-ai-video-platform",
-              "case-studies/fingers-on-pulse-content-intelligence",
               "case-studies/ctx-eng-awwwards",
               "case-studies/ai-native-engineer-marketplace",
               "case-studies/helix-ai-landing-page",
