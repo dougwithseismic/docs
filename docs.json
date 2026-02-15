@@ -506,6 +506,9 @@
       }
     ]
   },
+  "styling": {
+    "latex": false
+  },
   "custom": {
     "js": ["/analytics.js"],
     "css": ["custom.css"]

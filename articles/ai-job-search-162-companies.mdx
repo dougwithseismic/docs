@@ -1,6 +1,6 @@
 ---
 title: "How AI Agents Are Really Replacing Software in an Afternoon"
-description: "AI agents replaced Glassdoor, screenshot APIs, and job board filtering with custom tools — all in one day. A real-world case study in what happens when building is cheaper than buying."
+description: "AI agents replaced Glassdoor, screenshot APIs, and job board filtering with custom tools — all in 45 minutes. A real-world case study in what happens when building is cheaper than buying."
 ---
 
 <script type="application/ld+json">
@@ -8,7 +8,7 @@ description: "AI agents replaced Glassdoor, screenshot APIs, and job board filte
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "How AI Agents Are Really Replacing Software in an Afternoon",
-  "description": "AI agents replaced Glassdoor, screenshot APIs, and job board filtering with custom tools — all in one day. A real-world case study in what happens when building is cheaper than buying.",
+  "description": "AI agents replaced Glassdoor, screenshot APIs, and job board filtering with custom tools — all in 45 minutes. A real-world case study in what happens when building is cheaper than buying.",
   "url": "https://withseismic.com/articles/ai-job-search-162-companies",
   "author": {
     "@type": "Person",
@@ -24,7 +24,7 @@ description: "AI agents replaced Glassdoor, screenshot APIs, and job board filte
     }
   },
   "datePublished": "2026-02-15",
-  "articleBody": "How a growth engineer used AI agents, browser automation, and custom tooling to research 162 European startups in a single day"
+  "articleBody": "How a growth engineer used AI agents, browser automation, and custom tooling to research 162 European startups in 45 minutes"
 }`}
 </script>
 
@@ -72,7 +72,7 @@ So the problem was clear: I needed to find 160+ companies across Europe that mat
 
 ## Swiping Blind on 162 Companies
 
-The first research sprint produced 101 companies in a few hours. Three parallel AI agents searched Wellfound, remote job boards, EU startup databases, and company career pages. They came back with names, locations, one-line descriptions, funding stages, and rough fit scores. Music tech startups in Berlin. Gaming studios in Prague. Event platforms in Barcelona. Creative tools companies across Scandinavia.
+The first research sprint produced 101 companies in ten minutes. Three parallel AI agents searched Wellfound, remote job boards, EU startup databases, and company career pages. They came back with names, locations, one-line descriptions, funding stages, and rough fit scores. Music tech startups in Berlin. Gaming studios in Prague. Event platforms in Barcelona. Creative tools companies across Scandinavia.
 
 And the data was almost useless.
 
@@ -120,7 +120,7 @@ This was a micro case study in what AI-assisted development does to the build-vs
 
 **Layer five: the live research panel.** Every company card now has a panel beneath it showing a website screenshot, the top five Hacker News mentions (via the [Algolia API](https://hn.algolia.com/api) — free, 10k requests/hour), and one-click links to Google News, LinkedIn, Glassdoor, and GitHub. Results are cached to a JSON file on disk, same philosophy as everything else in this system: files over ephemeral state, human-readable and diffable. The entire data architecture followed one principle: everything on disk, nothing in browser state. Decisions go to `decisions.json`. Company data lives in three synced files. Screenshot images sit in a local directory. HN mentions cache to JSON. The result is a system where every piece of state is versionable, diffable, and consumable by other agents — which matters when you have ten Claude threads running simultaneously and any of them might need to read another's output.
 
-The whole stack — five layers, six research rounds, 162 companies scored and rated — was built and operated in a single day by two people. My girlfriend Inna and I, both software engineers, worked from two MacBooks connected to a shared code-server. At peak, ten concurrent Claude threads were running: some doing research, some building features, some debugging. It's pair programming, but instead of two people on one problem, it's two people directing ten parallel AI streams across different problems.
+The whole stack — five layers, six research rounds, 162 companies scored and rated — was built and operated in about 45 minutes and two cups of tea. My girlfriend Inna and I, both software engineers, worked from two MacBooks connected to a shared code-server. At peak, ten concurrent Claude threads were running: some doing research, some building features, some debugging. It's pair programming, but instead of two people on one problem, it's two people directing ten parallel AI streams across different problems.
 
 ---
 
@@ -158,7 +158,7 @@ What differentiates these studios from traditional agencies is that engineers ar
 
 The irony isn't lost on me: I used growth engineering to find a growth engineering job.
 
-The skills are the same. Finding signal in noise. Building systems that scale data collection. Measuring what matters instead of what's easy. Optimizing for conversion. A/B testing approaches. The discipline that makes me effective at growing a product is the same discipline I applied to growing my career options from zero to 162 qualified targets in a single day.
+The skills are the same. Finding signal in noise. Building systems that scale data collection. Measuring what matters instead of what's easy. Optimizing for conversion. A/B testing approaches. The discipline that makes me effective at growing a product is the same discipline I applied to growing my career options from zero to 162 qualified targets in under an hour.
 
 The data on traditional job searching is grim. Cold online applications have roughly a [2% success rate](https://www.openarc.net/the-power-of-networking-why-85-of-jobs-are-never-posted-online-2025-data/). One senior engineer documented his entire 2025 search: [150 applications, 53% with no response whatsoever](https://hamy.xyz/blog/2025-04_job-search-results), 88 hours invested in studying and interviewing. Five offers from 30 interviews from 150 applications — and only one inbound recruiter contact during the entire process. The referral path is [15x more effective](https://blog.theinterviewguys.com/the-hidden-job-market/), with a 30% hiring rate compared to 7% for all other methods combined. But it requires the one thing most engineers don't invest in: making their work visible before they need a job.
 
@@ -168,8 +168,8 @@ The thesis is simple: demonstrate, don't apply. Show up with the receipt, not th
 
 This entire project is the demonstration. It shows systems thinking (a multi-agent research pipeline). Data literacy (extracting patterns from 162 company profiles). Build-vs-buy judgment (Puppeteer over broken SaaS). Communication (you're reading the proof right now). Every skill a growth engineering role requires is embedded in the thing I built to find that role. The job search process became the portfolio piece.
 
-And it wasn't a solo effort. Two engineers, one shared code-server, ten parallel Claude threads — that's how you research 162 companies, build a review tool, create a reputation scoring system, replace two SaaS products, and write the strategy playbook in a single day. The bottleneck was never the AI. It was human attention — directing the agents, reviewing their output, catching errors, deciding what to research next. Having two sets of eyes meant twice the capacity to review, redirect, and catch the things agents miss. The agents are fast and thorough, but they don't know which companies make your gut feel uneasy or which job description sounds like it was written by someone who understands engineering. That judgment layer is still human.
+And it wasn't a solo effort. Two engineers, one shared code-server, ten parallel Claude threads — that's how you research 162 companies, build a review tool, create a reputation scoring system, replace two SaaS products, and write the strategy playbook in under an hour. The bottleneck was never the AI. It was human attention — directing the agents, reviewing their output, catching errors, deciding what to research next. Having two sets of eyes meant twice the capacity to review, redirect, and catch the things agents miss. The agents are fast and thorough, but they don't know which companies make your gut feel uneasy or which job description sounds like it was written by someone who understands engineering. That judgment layer is still human.
 
 If you're a senior engineer staring down your next job search, here's what I'd suggest: spend [80% of your time on demonstration and networking](https://www.openarc.net/the-power-of-networking-why-85-of-jobs-are-never-posted-online-2025-data/), 20% on applications. Build something that solves your actual problem. Make it public. Write about it honestly — including what didn't work. The best outreach isn't a cover letter — it's work that speaks for itself. One referral is worth approximately 40 cold applications. Every hour spent building in public compounds; every hour spent refreshing LinkedIn doesn't.
 
-The system found me 162 companies in a single day. But the real product was never the database. It was the proof that I know how to find signal in noise, build tools that don't exist yet, and ship under pressure — which is exactly what growth engineering is.
+The system found me 162 companies in 45 minutes. But the real product was never the database. It was the proof that I know how to find signal in noise, build tools that don't exist yet, and ship under pressure — which is exactly what growth engineering is.
