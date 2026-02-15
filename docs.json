@@ -39,7 +39,7 @@
     }
   },
   "banner": {
-    "content": "Book a Discovery Call. Two-week sprints from $7,000. [Get started →](/contact)",
+    "content": "Latest Article: How AI Agents Are Really Replacing Software in an Afternoon. [Read it →](/articles/ai-job-search-162-companies)",
     "dismissible": true
   },
   "navigation": {
@@ -348,6 +348,7 @@
           {
             "group": "Insights",
             "pages": [
+              "articles/ai-job-search-162-companies",
               "articles/programmatic-acquisition-playbook",
               "articles/cold-outreach-developer-services",
               "articles/wtf-is-clawdbot-moltbot",
