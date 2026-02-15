@@ -44,7 +44,17 @@ Daniel Chait, CEO of Greenhouse, calls this the "AI doom loop." Both sides weapo
 
 The mechanics are vicious. Candidates mass-apply with AI-optimized resumes. Employers get flooded with generic applications. They deploy more aggressive AI screening to cope. Candidates adapt with more sophisticated prompt engineering. The cycle repeats, and each iteration erodes trust further. Ninety percent of employers [now report more spam applications](https://www.talroo.com/blog/fighting-resume-spam-in-2025-how-to-identify-low-intent-applications/), and some recruiters say volume went from thousands per month to thousands per day. New auto-apply services let candidates pay a few dollars to spray hundreds of applications overnight. Jamie Kohn, Senior Director of Research at Gartner, put it bluntly: the technology designed to make the process better is making it worse.
 
-The result? [75% of job applications](https://blog.theinterviewguys.com/the-2025-ghosting-index/) vanish with no response. Applicants are three times less likely to hear back than they were in 2021. The average senior engineering role takes 42-50 days to fill. And the people running the process know it's broken — 80% of hiring managers admit to ghosting candidates. Hiring teams now conduct [42% more interviews per hire](https://www.ashbyhq.com/talent-trends-report/reports/2023-recruiter-productivity-trends-report) than they did in 2021 — 20 per hire instead of 14 — because nobody trusts the signal anymore.
+The result?
+
+| Metric | Stat |
+|--------|------|
+| Job applications with no response | 75% |
+| Decrease in response rate vs 2021 | 3x less likely |
+| Average time to fill senior role | 42-50 days |
+| Hiring managers who admit to ghosting | 80% |
+| Interviews per hire (2021 → 2025) | 14 → 20 (+42%) |
+
+[75% of job applications](https://blog.theinterviewguys.com/the-2025-ghosting-index/) vanish with no response. Applicants are three times less likely to hear back than they were in 2021. The average senior engineering role takes 42-50 days to fill. And the people running the process know it's broken — 80% of hiring managers admit to ghosting candidates. Hiring teams now conduct [42% more interviews per hire](https://www.ashbyhq.com/talent-trends-report/reports/2023-recruiter-productivity-trends-report) than they did in 2021 — 20 per hire instead of 14 — because nobody trusts the signal anymore.
 
 Here's the thing about being a senior engineer with specific criteria: you don't want "a job." You want ownership of a revenue-adjacent problem at a funded European startup in an interesting vertical that isn't fintech. Every criterion halves the pool. Five requirements means roughly 3% of the original space. The tools designed for volume — LinkedIn, Indeed, Wellfound — show you everything except what matters. They'll surface ten thousand jobs and none of them are right.
 
@@ -136,9 +146,29 @@ So we applied those patterns algorithmically to the 96 companies I hadn't review
 
 Fifty companies that survived needed prioritization. Not every "yes" deserves the same investment. Apify — a Prague-based scraping and automation company where my literal specialty is their product category, with a 4.8 Glassdoor and zero layoffs — deserves a fundamentally different approach than a Tier 3 gaming studio where I'd be one of two hundred applicants. So we built a tier list.
 
-Tier 1 was seven dream roles. Full investment: deep-dive intelligence dossier, a proof-of-work project, personalized outreach to specific people by name. Apify in Prague, where scraping and automation is the thing I do for fun. Photoroom in Paris, Glassdoor 4.9, culture rated a perfect 5.0. Framer in Amsterdam — a former client, warm intro already possible. Mews, Prague's $1.2 billion unicorn in hospitality tech. Overwolf, the gaming modding platform that maps directly to the Source 2 project I'm building on weekends. Bakken & Baeck, the best-rated agency in European tech — 4.7 Glassdoor, 100% of employees recommend, 5.0 work-life balance across five offices from Oslo to Barcelona. And Tractive in Austria, four-day work week, actively hiring a Senior Full-Stack Developer, three hours from Prague by train.
+<Tabs>
+  <Tab title="Tier 1 — Dream Roles (7)">
+    Full investment: deep-dive intelligence dossier, proof-of-work project, personalized outreach to specific people by name.
 
-Tier 2 was fifteen strong matches: Deezer, Contra, Supercell, Linear, Musixmatch, MapTiler, and nine others where the fit is strong but not exceptional. Personalized outreach with tailored CV emphasis. Tier 3 was twenty-eight worth applying — quality applications, lighter touch, but still not spray-and-pray.
+    | Company | Location | Why |
+    |---------|----------|-----|
+    | Apify | Prague | Scraping and automation is my literal specialty |
+    | Photoroom | Paris | Glassdoor 4.9, culture rated 5.0 |
+    | Framer | Amsterdam | Former client, warm intro possible |
+    | Mews | Prague | $1.2B unicorn, hospitality tech |
+    | Overwolf | Gaming | Maps directly to the Source 2 project I'm building on weekends |
+    | Bakken & Baeck | Oslo / Amsterdam / London / Barcelona / Bonn | 4.7 Glassdoor, 100% recommend, 5.0 work-life balance |
+    | Tractive | Austria | Four-day work week, actively hiring Senior Full-Stack, 3hrs from Prague |
+  </Tab>
+  <Tab title="Tier 2 — Strong Matches (15)">
+    Personalized outreach with tailored CV emphasis.
+
+    Deezer, Contra, Supercell, Linear, Musixmatch, MapTiler, and nine others where fit is strong but not exceptional.
+  </Tab>
+  <Tab title="Tier 3 — Worth Applying (28)">
+    Quality applications, lighter touch — but still not spray-and-pray.
+  </Tab>
+</Tabs>
 
 The tiering also revealed geographic and vertical clusters that make the outreach efficient. Fourteen music tech companies share enough domain overlap that one well-crafted music demo covers a huge surface area. Seven gaming companies are all addressed by the Source 2 modding platform I'm already building. Six creative agencies respond to the same portfolio narrative. Proof-of-work scales by cluster, not by company — which means seven proof-of-work projects can reach fifty companies.
 
@@ -146,9 +176,45 @@ Then we built the pipeline. Three new Claude Code skills, each feeding the next 
 
 We ran the deep-dive skill across all fifty companies at once. Ten parallel agents, each handling a batch of three to seven companies. Tier 1 got two dedicated agents for the deepest research. Tier 2 and Tier 3 were distributed across the remaining eight. Forty-four out of fifty dossiers completed before the agents hit the API usage ceiling. Two follow-up agents caught the remaining six. Result: 51 intelligence dossiers — each one the equivalent of a few hours of manual LinkedIn stalking, careers-page reading, and news searching, compressed into minutes by agents that don't get bored or forget to check the engineering blog.
 
-The dossiers surfaced things that no amount of database scanning or fit scoring would have revealed. Raycast had been sitting in Tier 3 under "developer tools" — generic, easy to overlook. The deep dive uncovered that their "Design Engineer" role is actually a senior web engineering position paying EUR 100,000 to 135,000, fully remote from Prague, built on Next.js and TypeScript with Radix Primitives. Their open-source repository `ray-so` has 2,200 stars and seven open issues — a ready-made contribution path before even applying. The agent recommended upgrading Raycast to borderline Tier 1. Musixmatch revealed two live engineering roles invisible from the surface data: a Frontend React Developer and a Senior Backend JavaScript Engineer, at a profitable company doing nearly $68 million in revenue. Moises AI has no current web role posted, but a $40 million Series A just closed and their open-source project openDAW — a TypeScript web-based digital audio workstation updated two days before I found it — represents the single highest-value open-source contribution opportunity across all fifty companies. Spitfire Audio got upgraded from Tier 3 to Tier 2 once the dossier revealed their WebView architecture bridges directly to web engineering expertise.
+The dossiers surfaced things that no amount of database scanning or fit scoring would have revealed:
 
-These discoveries fed the outreach strategy — a playbook of seven approaches, each calibrated to a different company type and a different kind of proof. Growth audits: thirty-minute teardowns of a target company's public product, delivered as a one-page PDF alongside the application. Open-source contributions: submit a PR to their codebase, then apply as someone who already shipped code in their repository. Micro-demos: two-to-four-hour builds demonstrating domain understanding — a Three.js experiment for creative agencies, an API-powered toy for voice AI companies, the Source 2 modding platform for gaming studios. Speculative "What I'd Build" documents: one-pagers outlining the first ninety days at a specific company, referencing their actual product and actual gaps. The "Forward Deployed Engineer" pitch: reframing a decade of consultancy work across Contra, Sky, Groupon, and MIT as exactly the parachute-in-and-ship pattern that agencies and startups need. And the article you're reading right now — which reaches all 162 companies at once while demonstrating the exact growth engineering thinking the role requires.
+<CardGroup cols={2}>
+  <Card title="Raycast" icon="arrow-up">
+    **Tier 3 → Tier 1 candidate.** "Design Engineer" role is actually senior web engineering — EUR 100-135k, fully remote from Prague, Next.js/TypeScript with Radix Primitives. Open-source repo `ray-so` has 2,200 stars and 7 open issues — a ready-made contribution path.
+  </Card>
+  <Card title="Musixmatch" icon="music">
+    **Two hidden roles** invisible from surface data: Frontend React Developer and Senior Backend JavaScript Engineer. Profitable company doing nearly $68M in revenue.
+  </Card>
+  <Card title="Moises AI" icon="waveform-lines">
+    **No web role posted, but $40M Series A just closed.** Open-source project openDAW — a TypeScript web-based DAW updated 2 days before discovery — the single highest-value OSS contribution opportunity across all 50 companies.
+  </Card>
+  <Card title="Spitfire Audio" icon="volume-high">
+    **Tier 3 → Tier 2.** Dossier revealed their WebView architecture bridges directly to web engineering expertise — a connection invisible from the outside.
+  </Card>
+</CardGroup>
+
+These discoveries fed the outreach strategy — a playbook of six approaches, each calibrated to a different company type and a different kind of proof:
+
+<CardGroup cols={2}>
+  <Card title="Growth Audits" icon="magnifying-glass-chart">
+    30-minute teardowns of a target company's public product, delivered as a one-page PDF alongside the application.
+  </Card>
+  <Card title="Open-Source Contributions" icon="code-pull-request">
+    Submit a PR to their codebase, then apply as someone who already shipped code in their repository.
+  </Card>
+  <Card title="Micro-Demos" icon="flask">
+    2-4 hour builds: Three.js experiments for creative agencies, API-powered toys for voice AI companies, Source 2 modding platform for gaming studios.
+  </Card>
+  <Card title="What I'd Build Documents" icon="file-lines">
+    One-pagers outlining the first 90 days at a specific company, referencing their actual product and actual gaps.
+  </Card>
+  <Card title="Forward Deployed Engineer Pitch" icon="parachute-box">
+    Reframing a decade of consultancy across Contra, Sky, Groupon, and MIT as the parachute-in-and-ship pattern agencies need.
+  </Card>
+  <Card title="This Article" icon="newspaper">
+    Reaches all 162 companies at once while demonstrating the exact growth engineering thinking the role requires.
+  </Card>
+</CardGroup>
 
 The last piece was making the research browsable. We added dynamic company detail pages to the web app — every one of the 162 companies now has its own URL, showing the full profile, the yes/no/maybe decision, and the rendered dossier in one place. Click a company name in the swipe tool, read the complete intelligence file, click back. The dossiers went from raw markdown files in a directory to a browsable research interface that makes the outreach phase feel like working from a CRM, not a filesystem.
 
@@ -166,7 +232,15 @@ Evernote — 129 employees fired. Filmic — entire workforce terminated. Mosaic
 
 The overall Glassdoor score is "real" in the narrowest sense — [The Pragmatic Engineer profiled them](https://newsletter.pragmaticengineer.com/p/twisting-the-rules-of-building-software) and confirmed the internal team rates the experience positively. But the reviews come from the survivors, not the hundreds of people fired from acquired companies. It's survivorship bias in star-rating form.
 
-This pattern repeated across the database. Spitfire Audio carries a 4.4 rating despite cutting roughly 25% of staff in 2023 and losing a co-founder. Ableton sits at 3.2 after laying off 20% of their workforce. Epidemic Sound pulls in $182 million in annual revenue while maintaining a 2.8 rating and conducting rolling layoffs every six to eight weeks. Productboard, once a Prague unicorn, imploded through waves of layoffs so severe that employees describe the culture as "trauma bonding."
+This pattern repeated across the database:
+
+| Company | Glassdoor | Reality |
+|---------|-----------|---------|
+| Bending Spoons | 4.7 (97% recommend) | Evernote: 129 fired. Filmic: all fired. Mosaic: 330 fired. WeTransfer: 75% fired. Vimeo: majority fired. |
+| Spitfire Audio | 4.4 | ~25% staff cut in 2023, co-founder departed |
+| Ableton | 3.2 | 20% workforce reduction |
+| Epidemic Sound | 2.8 | $182M revenue, rolling layoffs every 6-8 weeks |
+| Productboard | — | Wave layoffs so severe employees describe culture as "trauma bonding" |
 
 The structural conflict runs deeper than bad actors. Glassdoor's business model relies on revenue from the very companies being reviewed — employer branding products, job listings, premium company profiles. The platform that's supposed to hold employers accountable is funded by those employers. The WSJ found that during review manipulation surges, five-star ratings made up 45% of reviews, compared to just 25% in the preceding six months. Glassdoor claims to reject 5-10% of reviews for violating guidelines, but the actual manipulation rate appears much higher.
 
